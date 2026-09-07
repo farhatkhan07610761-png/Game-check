@@ -1,1 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameCheck</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+<header>
+  <div class="logo">GAME<span>CHECK</span></div>
+
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#vs">VS</a>
+    <a href="#pc">PC Check</a>
+    <a href="#leaderboard">Leaderboard</a>
+    <a href="#friends">Friends</a>
+  </nav>
+
+  <button class="login-btn" onclick="showLogin()">Login</button>
+</header>
+
+<main>
+
+<section id="home" class="hero">
+  <div class="hero-text">
+    <p class="tag">THE GAMING PERFORMANCE HUB</p>
+
+    <h1>
+      CHECK.<br>
+      COMPARE.<br>
+      <span>COMPETE.</span>
+    </h1>
+
+    <p class="description">
+      Compare gaming PCs, check performance,
+      challenge your friends and climb the leaderboard.
+    </p>
+
+    <div class="buttons">
+      <button class="primary" onclick="location.href='#vs'">
+        ⚡ Start VS
+      </button>
+
+      <button class="secondary" onclick="location.href='#pc'">
+        Check My PC
+      </button>
+    </div>
+  </div>
+
+  <div class="vs-card">
+    <div class="player">
+      <div class="avatar">A</div>
+      <b>ShadowAUK</b>
+      <small>PC Score</small>
+      <strong>9,240</strong>
+    </div>
+
+    <div class="vs">VS</div>
+
+    <div class="player">
+      <div class="avatar red">N</div>
+      <b>NightFox</b>
+      <small>PC Score</small>
+      <strong>8,870</strong>
+    </div>
+  </div>
+</section>
+
+
+<section id="vs" class="section">
+  <p class="tag">PLAYER BATTLE</p>
+  <h2>VS <span>Comparison</span></h2>
+
+  <div class="comparison">
+
+    <div class="form-card">
+      <h3>PLAYER 1</h3>
+
+      <input id="player1" placeholder="Username" value="ShadowAUK">
+
+      <select id="gpu1">
+        <option>RTX 3060</option>
+        <option>RTX 4060</option>
+        <option>RTX 4070</option>
+        <option>RX 7600</option>
+      </select>
+
+      <select id="cpu1">
+        <option>Ryzen 5 5600</option>
+        <option>Ryzen 5 7600</option>
+        <option>Core i5-12400F</option>
+        <option>Core i7-13700K</option>
+      </select>
+    </div>
+
+    <div class="big-vs">VS</div>
+
+    <div class="form-card">
+      <h3>PLAYER 2</h3>
+
+      <input id="player2" placeholder="Username" value="NightFox">
+
+      <select id="gpu2">
+        <option>RTX 3060</option>
+        <option>RTX 4060</option>
+        <option>RTX 4070</option>
+        <option>RX 7600</option>
+      </select>
+
+      <select id="cpu2">
+        <option>Ryzen 5 5600</option>
+        <option>Ryzen 5 7600</option>
+        <option>Core i5-12400F</option>
+        <option>Core i7-13700K</option>
+      </select>
+    </div>
+
+  </div>
+
+  <button class="primary start" onclick="comparePlayers()">
+    ⚡ START COMPARISON
+  </button>
+
+  <div id="vsResult" class="result"></div>
+</section>
+
+
+<section id="pc" class="section">
+  <p class="tag">PC ANALYZER</p>
+  <h2>Check Your <span>PC</span></h2>
+
+  <div class="pc-form">
+
+    <div class="form-card">
+      <label>CPU</label>
+
+      <select id="cpu">
+        <option>Ryzen 5 5600</option>
+        <option>Ryzen 5 7600</option>
+        <option>Core i5-12400F</option>
+        <option>Core i7-13700K</option>
+      </select>
+    </div>
+
+    <div class="form-card">
+      <label>GPU</label>
+
+      <select id="gpu">
+        <option>RTX 3060</option>
+        <option>RTX 4060</option>
+        <option>RTX 4070</option>
+        <option>RX 7600</option>
+      </select>
+    </div>
+
+    <div class="form-card">
+      <label>RAM</label>
+
+      <select id="ram">
+        <option>8 GB</option>
+        <option selected>16 GB</option>
+        <option>32 GB</option>
+      </select>
+    </div>
+
+    <div class="form-card">
+      <label>GAME</label>
+
+      <select id="game">
+        <option>Minecraft</option>
+        <option>Fortnite</option>
+        <option>Valorant</option>
+        <option>GTA V</option>
+      </select>
+    </div>
+
+  </div>
+
+  <button class="primary start" onclick="checkPC()">
+    CALCULATE PERFORMANCE
+  </button>
+
+  <div id="pcResult" class="result"></div>
+
+  <p class="note">
+    FPS values are estimates and can vary depending on settings and other hardware.
+  </p>
+</section>
+
+
+<section id="leaderboard" class="section">
+  <p class="tag">GLOBAL RANKING</p>
+  <h2>PC <span>Leaderboard</span></h2>
+
+  <div id="leaderboardList"></div>
+</section>
+
+
+<section id="friends" class="section">
+  <p class="tag">SOCIAL</p>
+  <h2>Your <span>Friends</span></h2>
+
+  <div class="friend-add">
+    <input id="friendName" placeholder="Enter username">
+    <button class="primary" onclick="addFriend()">Add Friend</button>
+  </div>
+
+  <div id="friendsList"></div>
+</section>
+
+</main>
+
+
+<footer>
+  GameCheck • <b>Made by AUK</b>
+</footer>
+
+
+<div id="loginBox" class="login-box">
+  <div class="login-card">
+    <button class="close" onclick="closeLogin()">×</button>
+
+    <h2>Welcome to <span>GameCheck</span></h2>
+
+    <input placeholder="Username">
+
+    <input type="password" placeholder="Password">
+
+    <button class="primary">LOGIN</button>
+
+    <p>Don't have an account? <b>Sign Up</b></p>
+  </div>
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
