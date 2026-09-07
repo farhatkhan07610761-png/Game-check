@@ -1,807 +1,1046 @@
-/* =========================================
-   GAMECHECK
-   ========================================= */
+/* =========================================================
+   GAMECHECK V2
+   Made by AUK
+   ========================================================= */
 
 
-/* GAME DATABASE */
+/* ---------- GAME DATABASE ---------- */
 
 const games = [
-
-  ["Minecraft","survival","https://cdn.simpleicons.org/minecraft"],
-  ["Fortnite","fps","https://cdn.simpleicons.org/fortnite"],
-  ["Valorant","fps","https://cdn.simpleicons.org/valorant"],
-  ["Grand Theft Auto V","rpg","https://cdn.simpleicons.org/gta"],
-  ["Counter-Strike 2","fps","https://cdn.simpleicons.org/counterstrike"],
-  ["Roblox","survival","https://cdn.simpleicons.org/roblox"],
-  ["Apex Legends","fps","https://cdn.simpleicons.org/apexlegends"],
-  ["Call of Duty","fps","https://cdn.simpleicons.org/callofduty"],
-  ["PUBG","fps","https://cdn.simpleicons.org/pubg"],
-  ["Rocket League","sports","https://cdn.simpleicons.org/rocketleague"],
-  ["Overwatch 2","fps","https://cdn.simpleicons.org/overwatch"],
-  ["League of Legends","rpg","https://cdn.simpleicons.org/leagueoflegends"],
-  ["Elden Ring","rpg","https://cdn.simpleicons.org/eldenring"],
-  ["Cyberpunk 2077","rpg","https://cdn.simpleicons.org/cyberpunk2077"],
-  ["Red Dead Redemption 2","rpg","https://cdn.simpleicons.org/reddeadredemption"],
-  ["Rainbow Six Siege","fps","https://cdn.simpleicons.org/rainbowsixsiege"],
-  ["EA SPORTS FC","sports","https://cdn.simpleicons.org/easports"],
-  ["Trackmania","racing","https://cdn.simpleicons.org/trackmania"]
-
+  ["Minecraft","survival","⛏️"],
+  ["Fortnite","battle","🏗️"],
+  ["Valorant","fps","🎯"],
+  ["Counter-Strike 2","fps","💥"],
+  ["Apex Legends","battle","🔺"],
+  ["PUBG","battle","🪖"],
+  ["Grand Theft Auto V","rpg","🚗"],
+  ["Grand Theft Auto VI","rpg","🔥"],
+  ["Red Dead Redemption 2","rpg","🤠"],
+  ["Cyberpunk 2077","rpg","🌃"],
+  ["Elden Ring","rpg","⚔️"],
+  ["Dark Souls III","rpg","💀"],
+  ["The Witcher 3","rpg","🐺"],
+  ["Forza Horizon 5","racing","🏎️"],
+  ["Forza Motorsport","racing","🏁"],
+  ["Need for Speed Heat","racing","🚘"],
+  ["Need for Speed Unbound","racing","🎨"],
+  ["Rocket League","battle","🚀"],
+  ["Overwatch 2","fps","🦾"],
+  ["Call of Duty Warzone","fps","🎖️"],
+  ["Call of Duty Black Ops 6","fps","🔫"],
+  ["DOOM Eternal","fps","👹"],
+  ["Halo Infinite","fps","🪐"],
+  ["Battlefield 2042","fps","💣"],
+  ["Rainbow Six Siege","fps","🛡️"],
+  ["Destiny 2","fps","🌌"],
+  ["The Finals","fps","🏆"],
+  ["Helldivers 2","fps","🚀"],
+  ["Palworld","survival","🐾"],
+  ["ARK Survival Ascended","survival","🦖"],
+  ["Rust","survival","🔨"],
+  ["DayZ","survival","☣️"],
+  ["Subnautica","survival","🌊"],
+  ["Sons of the Forest","survival","🌲"],
+  ["Terraria","survival","🌳"],
+  ["Valheim","survival","🛡️"],
+  ["Hogwarts Legacy","rpg","🪄"],
+  ["Baldur's Gate 3","rpg","🐉"],
+  ["Starfield","rpg","🚀"],
+  ["Diablo IV","rpg","😈"],
+  ["Monster Hunter Wilds","rpg","🐲"],
+  ["Black Myth Wukong","rpg","🐒"],
+  ["God of War Ragnarök","rpg","⚔️"],
+  ["Spider-Man Remastered","rpg","🕷️"],
+  ["Horizon Forbidden West","rpg","🏹"],
+  ["The Last of Us Part I","rpg","🍄"],
+  ["Resident Evil 4","rpg","🧟"],
+  ["Resident Evil Village","rpg","🏚️"],
+  ["Dead by Daylight","survival","☠️"],
+  ["Phasmophobia","survival","👻"],
+  ["Lethal Company","survival","👽"],
+  ["Among Us","battle","🚀"],
+  ["Fall Guys","battle","🏃"],
+  ["The Sims 4","rpg","🏠"],
+  ["Cities Skylines II","rpg","🏙️"],
+  ["Microsoft Flight Simulator","racing","✈️"],
+  ["Euro Truck Simulator 2","racing","🚛"],
+  ["Assetto Corsa","racing","🏎️"],
+  ["BeamNG.drive","racing","🚘"],
+  ["Dirt Rally 2.0","racing","🏁"],
+  ["F1 25","racing","🏎️"],
+  ["Street Fighter 6","battle","🥊"],
+  ["Tekken 8","battle","👊"],
+  ["Mortal Kombat 1","battle","⚡"],
+  ["Dragon Ball Sparking Zero","battle","🐉"],
+  ["EA Sports FC 26","battle","⚽"],
+  ["NBA 2K26","battle","🏀"],
+  ["Paladins","fps","🛡️"],
+  ["Warframe","fps","🥷"],
+  ["War Thunder","battle","✈️"],
+  ["World of Tanks","battle","🪖"],
+  ["Enlisted","fps","🎖️"],
+  ["Insurgency Sandstorm","fps","🎯"],
+  ["Left 4 Dead 2","fps","🧟"],
+  ["Borderlands 3","fps","🔫"],
+  ["Far Cry 6","fps","🌴"],
+  ["Crysis Remastered","fps","🦾"],
+  ["Metro Exodus","fps","🚇"],
+  ["Dying Light 2","survival","🧟"],
+  ["Dead Space","rpg","👽"],
+  ["Control","rpg","🌀"],
+  ["Alan Wake 2","rpg","🔦"],
+  ["Death Stranding","rpg","🌧️"],
+  ["Sekiro","rpg","⚔️"],
+  ["Lies of P","rpg","🤖"],
+  ["Hades II","rpg","🔥"],
+  ["Hades","rpg","🔥"],
+  ["Hollow Knight","rpg","🐞"],
+  ["Ori and the Will of the Wisps","rpg","🌿"],
+  ["No Man's Sky","survival","🌌"],
+  ["Grounded","survival","🐜"],
+  ["The Forest","survival","🌲"],
+  ["Don't Starve Together","survival","🔥"],
+  ["Project Zomboid","survival","🧟"],
+  ["7 Days to Die","survival","🧟"],
+  ["Satisfactory","rpg","🏭"],
+  ["Factorio","rpg","⚙️"],
+  ["Stardew Valley","rpg","🌱"],
+  ["Brotato","battle","🥔"],
+  ["Vampire Survivors","battle","🧛"],
+  ["Risk of Rain 2","battle","🌧️"],
+  ["Dead Cells","rpg","⚔️"],
+  ["Cuphead","battle","☕"],
+  ["Terraria","survival","⛏️"],
+  ["Portal 2","rpg","🌀"],
+  ["Half-Life 2","fps","🔬"],
+  ["Garry's Mod","rpg","🔧"],
+  ["Dota 2","battle","⚔️"],
+  ["League of Legends","battle","🧙"],
+  ["Path of Exile 2","rpg","💀"],
+  ["Lost Ark","rpg","⚔️"],
+  ["New World","rpg","🌎"],
+  ["Black Desert","rpg","🐎"],
+  ["Warhammer 40K Space Marine 2","fps","⚔️"],
+  ["Star Wars Jedi Survivor","rpg","⚔️"],
+  ["Assassin's Creed Shadows","rpg","🥷"],
+  ["Assassin's Creed Valhalla","rpg","🪓"],
+  ["Far Cry 5","fps","🔫"],
+  ["Watch Dogs Legion","rpg","💻"],
+  ["Sleeping Dogs","rpg","🥋"],
+  ["Just Cause 4","rpg","💥"],
+  ["Dying Light","survival","🧟"],
+  ["Dead Island 2","rpg","🧟"],
+  ["Borderlands 2","fps","🔫"],
+  ["Borderlands 4","fps","💥"],
+  ["Payday 3","fps","💰"],
+  ["Hunt Showdown 1896","fps","🎯"],
+  ["Escape from Tarkov","fps","🎒"],
+  ["BattleBit Remastered","fps","🪖"],
+  ["Splitgate 2","fps","🌀"],
+  ["XDefiant","fps","🎯"],
+  ["Titanfall 2","fps","🤖"],
+  ["Quake Champions","fps","⚡"],
+  ["Unreal Tournament","fps","💥"],
+  ["The Elder Scrolls V Skyrim","rpg","🐉"],
+  ["Fallout 4","rpg","☢️"],
+  ["Fallout 76","rpg","☢️"],
+  ["Mass Effect Legendary Edition","rpg","🚀"],
+  ["Dragon Age The Veilguard","rpg","🐉"],
+  ["Final Fantasy VII Rebirth","rpg","🗡️"],
+  ["Final Fantasy XVI","rpg","🔥"],
+  ["Persona 5 Royal","rpg","🎭"],
+  ["Monster Hunter World","rpg","🐲"],
+  ["Monster Hunter Rise","rpg","🐲"],
+  ["Dragon Quest XI","rpg","🐉"],
+  ["Kingdom Come Deliverance II","rpg","⚔️"],
+  ["Bioshock Infinite","fps","🔫"],
+  ["Dishonored 2","rpg","🐀"],
+  ["Prey","fps","👽"],
+  ["Wolfenstein II","fps","🔫"],
+  ["DOOM","fps","👹"],
+  ["DOOM 3","fps","👹"],
+  ["Quake","fps","💥"],
+  ["Metro Last Light","fps","🚇"],
+  ["Stalker 2","fps","☢️"],
+  ["Chernobylite","survival","☢️"],
+  ["Generation Zero","fps","🤖"],
+  ["SnowRunner","racing","🚛"],
+  ["Wreckfest","racing","💥"],
+  ["The Crew Motorfest","racing","🏎️"],
+  ["Need for Speed Payback","racing","🚘"],
+  ["Need for Speed Rivals","racing","🏁"],
+  ["Trackmania","racing","🏁"],
+  ["MotoGP 25","racing","🏍️"],
+  ["Ride 5","racing","🏍️"],
+  ["WWE 2K25","battle","🤼"],
+  ["Madden NFL 26","battle","🏈"],
+  ["Golf With Your Friends","battle","⛳"],
+  ["Human Fall Flat","rpg","🧍"],
+  ["Gang Beasts","battle","👊"],
+  ["Totally Accurate Battle Simulator","battle","⚔️"],
+  ["Goat Simulator 3","rpg","🐐"],
+  ["Teardown","rpg","💥"],
+  ["PowerWash Simulator","rpg","💦"],
+  ["House Flipper 2","rpg","🏠"],
+  ["Lies of P","rpg","🤖"],
+  ["Remnant II","rpg","👹"],
+  ["Warhammer Vermintide 2","battle","⚔️"],
+  ["Deep Rock Galactic","survival","⛏️"],
+  ["Sea of Thieves","rpg","🏴‍☠️"],
+  ["Grounded 2","survival","🐜"],
+  ["Enshrouded","survival","🌫️"],
+  ["Once Human","survival","☣️"],
+  ["V Rising","survival","🧛"],
+  ["Conan Exiles","survival","⚔️"],
+  ["Arkham Knight","rpg","🦇"],
+  ["Batman Arkham City","rpg","🦇"],
+  ["Middle-earth Shadow of War","rpg","⚔️"],
+  ["Mad Max","rpg","🚗"],
+  ["Watch Dogs 2","rpg","💻"],
+  ["Mafia Definitive Edition","rpg","🚗"],
+  ["Mafia II","rpg","🚗"],
+  ["Hitman World of Assassination","rpg","🎯"],
+  ["Deathloop","fps","🔫"],
+  ["Returnal","fps","👽"],
+  ["Ratchet & Clank Rift Apart","rpg","🔧"],
+  ["Horizon Zero Dawn","rpg","🏹"],
+  ["Days Gone","survival","🏍️"],
+  ["Uncharted Legacy of Thieves","rpg","🗺️"],
+  ["Ghost of Tsushima","rpg","⚔️"],
+  ["Death Stranding 2","rpg","🌧️"],
+  ["Cyberpunk Phantom Liberty","rpg","🌃"],
+  ["Control Ultimate Edition","rpg","🌀"],
+  ["Remnant From the Ashes","rpg","🔫"],
+  ["Outlast","survival","👻"],
+  ["Outlast 2","survival","👻"],
+  ["Amnesia The Bunker","survival","👻"],
+  ["Little Nightmares II","survival","👁️"],
+  ["Inside","rpg","👁️"],
+  ["Limbo","rpg","🌑"],
+  ["It Takes Two","rpg","👫"],
+  ["A Way Out","rpg","🔓"],
+  ["Sea of Stars","rpg","⭐"],
+  ["Baldur's Gate 3","rpg","🐉"],
+  ["Divinity Original Sin 2","rpg","🐲"],
+  ["Civilization VI","rpg","🌎"],
+  ["Age of Empires IV","rpg","🏰"],
+  ["Total War Warhammer III","rpg","⚔️"],
+  ["StarCraft II","fps","🚀"],
+  ["Warcraft III","rpg","⚔️"],
+  ["Diablo III","rpg","😈"],
+  ["Torchlight II","rpg","🔥"],
+  ["Grim Dawn","rpg","💀"],
+  ["Terraria Calamity","survival","⛏️"]
 ];
 
+
+/* ---------- STATE ---------- */
+
+let visibleGames = 24;
+let currentCategory = "all";
+let currentSearch = "";
+
+const $ = id => document.getElementById(id);
+
+
+/* ---------- LOGOS ---------- */
 
 /*
-   Expand the library for the prototype.
-   These are searchable entries and can later be
-   replaced with a full verified 600+ game dataset.
+  Some remote game-logo URLs can disappear.
+  GameCheck therefore ALWAYS has an emoji fallback.
 */
 
-const extraGames = [
-  "Terraria","Among Us","Fall Guys","Genshin Impact",
-  "Honkai Star Rail","The Witcher 3","Skyrim",
-  "Forza Horizon 5","Forza Motorsport","Need for Speed Heat",
-  "Need for Speed Unbound","Assetto Corsa","F1 26",
-  "BeamNG.drive","Euro Truck Simulator 2","War Thunder",
-  "Dota 2","Team Fortress 2","Paladins","Destiny 2",
-  "Warframe","Borderlands 3","Far Cry 6","Far Cry 5",
-  "Assassin's Creed Mirage","Assassin's Creed Valhalla",
-  "Assassin's Creed Odyssey","God of War","God of War Ragnarok",
-  "Hogwarts Legacy","Monster Hunter Wilds","Baldur's Gate 3",
-  "Diablo IV","Path of Exile 2","Dark Souls III",
-  "Sekiro","Lies of P","Resident Evil 4","Resident Evil Village",
-  "Dead by Daylight","Phasmophobia","Subnautica",
-  "Palworld","Rust","DayZ","ARK Survival Ascended",
-  "7 Days to Die","The Forest","Sons of the Forest",
-  "Left 4 Dead 2","Half-Life 2","Portal 2",
-  "Starfield","No Man's Sky","Sea of Thieves",
-  "Fallout 4","Fallout 76","Mass Effect Legendary Edition",
-  "Dragon Age Veilguard","Marvel Rivals","The Finals",
-  "XDefiant","Battlefield 2042","Battlefield V",
-  "Battlefield 1","Battlefield 6","Halo Infinite",
-  "Halo MCC","Destiny","Quake Champions","DOOM Eternal",
-  "DOOM","Mortal Kombat 1","Street Fighter 6",
-  "Tekken 8","Guilty Gear Strive","WWE 2K26",
-  "NBA 2K26","eFootball","FIFA 23","F1 25",
-  "MotoGP 25","Wreckfest","Dirt Rally 2.0",
-  "The Crew Motorfest","Watch Dogs 2","Sleeping Dogs",
-  "Just Cause 4","Mafia Definitive Edition",
-  "Lethal Company","Content Warning","Brotato",
-  "Hades","Hades II","Hollow Knight","Cuphead",
-  "Celeste","Stardew Valley","Dead Cells",
-  "Risk of Rain 2","Valheim","V Rising",
-  "Factorio","Satisfactory","Cities Skylines II"
-];
-
-extraGames.forEach(name => {
-  games.push([
-    name,
-    guessCategory(name),
-    "https://cdn.simpleicons.org/gamepad"
-  ]);
-});
+const logoMap = {
+  "Minecraft": "https://cdn.simpleicons.org/minecraft",
+  "Fortnite": "https://cdn.simpleicons.org/fortnite",
+  "Valorant": "https://cdn.simpleicons.org/valorant",
+  "Counter-Strike 2": "https://cdn.simpleicons.org/counterstrike",
+  "Apex Legends": "https://cdn.simpleicons.org/apexlegends",
+  "PUBG": "https://cdn.simpleicons.org/pubg",
+  "Grand Theft Auto V": "https://cdn.simpleicons.org/grandtheftauto",
+  "Grand Theft Auto VI": "https://cdn.simpleicons.org/grandtheftauto",
+  "Rocket League": "https://cdn.simpleicons.org/rocketleague",
+  "Overwatch 2": "https://cdn.simpleicons.org/overwatch",
+  "Dota 2": "https://cdn.simpleicons.org/dota2",
+  "League of Legends": "https://cdn.simpleicons.org/leagueoflegends",
+  "Warframe": "https://cdn.simpleicons.org/warframe",
+  "The Witcher 3": "https://cdn.simpleicons.org/thewitcher",
+  "Cyberpunk 2077": "https://cdn.simpleicons.org/cyberdefenders",
+  "Forza Horizon 5": "https://cdn.simpleicons.org/forza",
+  "EA Sports FC 26": "https://cdn.simpleicons.org/easports"
+};
 
 
-/* CATEGORY GUESS */
+/* ---------- GAME RENDER ---------- */
 
-function guessCategory(name) {
+function filteredGames() {
+  return games.filter(game => {
 
-  const n = name.toLowerCase();
+    const name = game[0];
+    const category = game[1];
 
-  if (
-    n.includes("call") ||
-    n.includes("battlefield") ||
-    n.includes("valorant") ||
-    n.includes("counter") ||
-    n.includes("halo") ||
-    n.includes("doom") ||
-    n.includes("apex") ||
-    n.includes("siege")
-  ) return "fps";
+    const categoryMatch =
+      currentCategory === "all" ||
+      category === currentCategory;
 
-  if (
-    n.includes("racing") ||
-    n.includes("forza") ||
-    n.includes("need for speed") ||
-    n.includes("f1") ||
-    n.includes("assetto") ||
-    n.includes("track") ||
-    n.includes("crew") ||
-    n.includes("dirt")
-  ) return "racing";
+    const searchMatch =
+      name.toLowerCase().includes(currentSearch.toLowerCase());
 
-  if (
-    n.includes("fc") ||
-    n.includes("fifa") ||
-    n.includes("nba") ||
-    n.includes("wwe") ||
-    n.includes("football")
-  ) return "sports";
-
-  if (
-    n.includes("elden") ||
-    n.includes("witcher") ||
-    n.includes("skyrim") ||
-    n.includes("cyberpunk") ||
-    n.includes("god of war") ||
-    n.includes("assassin") ||
-    n.includes("diablo")
-  ) return "rpg";
-
-  return "survival";
+    return categoryMatch && searchMatch;
+  });
 }
-
-
-/* GAME DISPLAY */
-
-let displayedGames = 16;
-let currentCategory = "all";
 
 
 function renderGames() {
 
-  const grid = document.getElementById("gameGrid");
+  const grid = $("gameGrid");
 
-  const search =
-    document.getElementById("gameSearch").value.toLowerCase();
+  if (!grid) return;
+
+  const list = filteredGames().slice(0, visibleGames);
 
   grid.innerHTML = "";
 
-  let filtered = games.filter(game => {
+  if (!list.length) {
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--muted)">
+        No games found.
+      </div>
+    `;
+    return;
+  }
 
-    const matchesSearch =
-      game[0].toLowerCase().includes(search);
+  list.forEach((game, index) => {
 
-    const matchesCategory =
-      currentCategory === "all" ||
-      game[1] === currentCategory;
+    const [name, category, emoji] = game;
 
-    return matchesSearch && matchesCategory;
-  });
-
-  const visible = filtered.slice(0, displayedGames);
-
-  visible.forEach((game,index) => {
-
-    const card = document.createElement("div");
+    const card = document.createElement("article");
 
     card.className = "game-card";
+    card.style.animation = `gameIn .45s ease ${Math.min(index,10) * .025}s both`;
 
-    if (
-      game[0] ===
-      document.getElementById("selectedGame").textContent
-    ) {
-      card.classList.add("selected");
-    }
-
-    card.style.animationDelay =
-      `${index * 0.035}s`;
+    const logo = logoMap[name];
 
     card.innerHTML = `
-      <img
-        class="game-logo"
-        src="${game[2]}"
-        alt="${game[0]} logo"
-        onerror="this.src='https://cdn.simpleicons.org/gamepad'"
-      >
+      <div class="game-category">${category.toUpperCase()}</div>
 
-      <h3>${game[0]}</h3>
+      <div class="game-logo">
+        ${
+          logo
+          ? `<img src="${logo}" alt="${name}" loading="lazy">`
+          : emoji
+        }
+      </div>
 
-      <p>${game[1].toUpperCase()}</p>
+      <h3>${name}</h3>
+      <small>Check estimated performance →</small>
     `;
 
-    card.onclick = () => selectGame(game[0]);
+    const img = card.querySelector("img");
+
+    if (img) {
+      img.addEventListener("error", () => {
+        img.remove();
+        card.querySelector(".game-logo").textContent = emoji;
+      });
+    }
+
+    card.addEventListener("click", () => {
+
+      $("checkGame").value = name;
+
+      document.querySelector("#pc").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+      setTimeout(() => {
+        $("checkPcBtn").focus();
+      }, 500);
+    });
 
     grid.appendChild(card);
-
   });
 
-  document.getElementById("loadMore").style.display =
-    visible.length < filtered.length ? "block" : "none";
+  $("loadMore").style.display =
+    list.length < filteredGames().length ? "block" : "none";
 }
 
 
-function selectGame(name) {
+const gameStyle = document.createElement("style");
 
-  document.getElementById("selectedGame").textContent = name;
+gameStyle.textContent = `
+@keyframes gameIn {
+  from {
+    opacity:0;
+    transform:translateY(15px);
+  }
+  to {
+    opacity:1;
+    transform:none;
+  }
+}`;
 
-  const select = document.getElementById("pcGame");
+document.head.appendChild(gameStyle);
 
-  select.value = name;
+
+/* ---------- GAME FILTER ---------- */
+
+$("gameSearch").addEventListener("input", e => {
+
+  currentSearch = e.target.value;
+  visibleGames = 24;
 
   renderGames();
-}
+});
 
 
-function filterGames() {
+document.querySelectorAll("#categories button").forEach(button => {
 
-  displayedGames = 16;
-  renderGames();
+  button.addEventListener("click", () => {
 
-}
+    document.querySelectorAll("#categories button")
+      .forEach(b => b.classList.remove("active"));
 
+    button.classList.add("active");
 
-function filterCategory(category,button) {
+    currentCategory = button.dataset.category;
+    visibleGames = 24;
 
-  currentCategory = category;
-  displayedGames = 16;
+    renderGames();
+  });
 
-  document.querySelectorAll(".filter")
-    .forEach(x => x.classList.remove("active"));
-
-  button.classList.add("active");
-
-  renderGames();
-}
+});
 
 
-function loadMoreGames() {
+$("loadMore").addEventListener("click", () => {
 
-  displayedGames += 16;
+  visibleGames += 24;
 
   renderGames();
 
-}
+});
 
 
-/* PC GAME SELECT */
+/* ---------- GAME SELECT ---------- */
 
 function fillGameSelect() {
 
-  const select = document.getElementById("pcGame");
-
-  games.forEach(game => {
-
-    const option = document.createElement("option");
-
-    option.value = game[0];
-    option.textContent = game[0];
-
-    select.appendChild(option);
-
-  });
-
-  select.value = "Minecraft";
-}
-
-
-/* HARDWARE SCORES */
-
-const gpuScores = {
-  "RTX 3060":55,
-  "RTX 4060":68,
-  "RTX 4070":88,
-  "RX 7600":65
-};
-
-const cpuScores = {
-  "Ryzen 5 5600":58,
-  "Ryzen 5 7600":72,
-  "Core i5-12400F":64,
-  "Core i7-13700K":90
-};
-
-const ramScores = {
-  "8 GB":45,
-  "16 GB":70,
-  "32 GB":82
-};
-
-
-/* FPS MULTIPLIERS */
-
-const fpsMultiplier = {
-  "Minecraft":1.25,
-  "Fortnite":1.05,
-  "Valorant":1.55,
-  "Grand Theft Auto V":.95,
-  "Counter-Strike 2":1.35,
-  "Roblox":1.50,
-  "Apex Legends":1,
-  "Call of Duty":.85,
-  "PUBG":1,
-  "Rocket League":1.45,
-  "Overwatch 2":1.30,
-  "League of Legends":1.65,
-  "Elden Ring":.65,
-  "Cyberpunk 2077":.55,
-  "Red Dead Redemption 2":.60
-};
-
-
-/* SCORE */
-
-function pcScore(gpu,cpu,ram) {
-
-  return Math.min(
-    100,
-    Math.round(
-      (
-        gpuScores[gpu] +
-        cpuScores[cpu] +
-        ramScores[ram]
-      ) / 2.4
-    )
-  );
+  $("checkGame").innerHTML = games
+    .map(g => `<option value="${g[0]}">${g[0]}</option>`)
+    .join("");
 
 }
 
+fillGameSelect();
+renderGames();
 
-/* VS BATTLE */
+
+/* =========================================================
+   VS BATTLE
+   ========================================================= */
 
 let battleRunning = false;
 
 
-function startBattle() {
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+function getPlayerStats(player) {
+
+  const gpu = Number($(player === 1 ? "gpu1" : "gpu2").value);
+  const ram = Number($(player === 1 ? "ram1" : "ram2").value);
+  const cpu = Number($(player === 1 ? "cpu1" : "cpu2").value);
+
+  return { gpu, ram, cpu };
+}
+
+
+function setHP(player, value) {
+
+  value = Math.max(0, Math.round(value));
+
+  const bar = $(player === 1 ? "hp1" : "hp2");
+  const number = $(player === 1 ? "hpNumber1" : "hpNumber2");
+
+  bar.style.width = `${value}%`;
+  number.textContent = value;
+}
+
+
+async function countdown() {
+
+  for (const number of ["3", "2", "1"]) {
+
+    $("countdown").textContent = number;
+
+    await wait(650);
+  }
+
+  $("countdown").textContent = "GO!";
+
+  await wait(500);
+}
+
+
+function attack(side, weapon, damage) {
+
+  const effect = $("attackEffect");
+  const impact = $("impact");
+  const arena = $("battleArena");
+
+  $("weapon").textContent = weapon;
+
+  effect.className = "";
+
+  void effect.offsetWidth;
+
+  effect.classList.add(side === 1 ? "attack-left" : "attack-right");
+
+  impact.className = "";
+
+  void impact.offsetWidth;
+
+  impact.classList.add("impact-animation");
+
+  arena.classList.remove("screen-shake");
+
+  void arena.offsetWidth;
+
+  arena.classList.add("screen-shake");
+
+  return wait(500);
+}
+
+
+async function doRound(round, stat1, stat2) {
+
+  const roundNames = [
+    ["ROUND 1", "GPU CLASH", "⚔️"],
+    ["ROUND 2", "RAM RAID", "🔫"],
+    ["ROUND 3", "CPU OVERDRIVE", "🚀"]
+  ];
+
+  const [roundName, title, weapon] = roundNames[round - 1];
+
+  $("roundText").textContent = `${roundName} • ${title}`;
+  $("arenaText").textContent = title;
+  $("weapon").textContent = weapon;
+
+  await wait(700);
+
+  const first = stat1 >= stat2 ? 1 : 2;
+
+  const advantage = Math.abs(stat1 - stat2);
+
+  let damage = 15 + Math.min(25, Math.round(advantage * .45));
+
+  if (stat1 === stat2) {
+    damage = 18;
+  }
+
+  if (first === 1) {
+
+    await attack(1, weapon, damage);
+
+    const current = Number($("hpNumber2").textContent);
+    setHP(2, current - damage);
+
+  } else {
+
+    await attack(2, weapon, damage);
+
+    const current = Number($("hpNumber1").textContent);
+    setHP(1, current - damage);
+  }
+
+  await wait(600);
+
+  return first;
+}
+
+
+async function startBattle() {
 
   if (battleRunning) return;
 
   battleRunning = true;
 
-  const arena = document.querySelector(".battle-arena");
-  const countdown = document.getElementById("countdown");
-  const result = document.getElementById("battleResult");
+  $("startBattle").disabled = true;
+  $("battleResult").innerHTML = "";
 
-  let hp1 = 100;
-  let hp2 = 100;
+  const name1 = $("player1").value.trim() || "Player 1";
+  const name2 = $("player2").value.trim() || "Player 2";
 
-  document.getElementById("hp1").style.width = "100%";
-  document.getElementById("hp2").style.width = "100%";
+  $("fighterName1").textContent = name1.toUpperCase();
+  $("fighterName2").textContent = name2.toUpperCase();
 
-  document.getElementById("hpText1").textContent = "100 HP";
-  document.getElementById("hpText2").textContent = "100 HP";
+  $("hpName1").textContent = name1;
+  $("hpName2").textContent = name2;
 
-  result.innerHTML = "";
+  setHP(1, 100);
+  setHP(2, 100);
 
-  const sequence = ["3","2","1","FIGHT!"];
+  $("arenaText").textContent = "ENTERING ARENA";
 
-  let i = 0;
+  await countdown();
 
-  const timer = setInterval(() => {
+  const p1 = getPlayerStats(1);
+  const p2 = getPlayerStats(2);
 
-    countdown.textContent = sequence[i];
+  /*
+    Round 1 = GPU
+    Round 2 = RAM
+    Round 3 = CPU
+  */
 
-    countdown.animate(
-      [
-        {transform:"scale(.4)",opacity:0},
-        {transform:"scale(1.4)",opacity:1},
-        {transform:"scale(1)",opacity:1}
-      ],
-      {duration:500}
-    );
+  const results = [];
 
-    i++;
+  results.push(await doRound(1, p1.gpu, p2.gpu));
 
-    if (i === sequence.length) {
+  if (Number($("hpNumber1").textContent) <= 0 ||
+      Number($("hpNumber2").textContent) <= 0) {
+    return finishBattle(name1, name2);
+  }
 
-      clearInterval(timer);
+  await wait(400);
 
-      setTimeout(() => {
+  results.push(await doRound(2, p1.ram, p2.ram));
 
-        runRound(1,() => {
+  if (Number($("hpNumber1").textContent) <= 0 ||
+      Number($("hpNumber2").textContent) <= 0) {
+    return finishBattle(name1, name2);
+  }
 
-          runRound(2,() => {
+  await wait(400);
 
-            runRound(3,() => {
+  results.push(await doRound(3, p1.cpu, p2.cpu));
 
-              finishBattle(hp1,hp2);
+  await wait(600);
 
-            });
-
-          });
-
-        });
-
-      },600);
-
-    }
-
-  },700);
+  finishBattle(name1, name2);
+}
 
 
-  function runRound(round,done) {
+async function finishBattle(name1, name2) {
 
-    const roundNames = [
-      "GPU",
-      "RAM",
-      "CPU"
-    ];
+  let hp1 = Number($("hpNumber1").textContent);
+  let hp2 = Number($("hpNumber2").textContent);
 
-    const weapons = [
-      "⚔️",
-      "💣",
-      "🔫"
-    ];
+  /*
+    If both survive, compare total component score.
+  */
 
-    document.getElementById("roundText").textContent =
-      `ROUND ${round} — ${roundNames[round-1]}`;
+  if (hp1 > 0 && hp2 > 0) {
 
-    document.getElementById("weapon").textContent =
-      weapons[round-1];
+    const p1 = getPlayerStats(1);
+    const p2 = getPlayerStats(2);
 
-    const gpu1 = document.getElementById("gpu1").value;
-    const gpu2 = document.getElementById("gpu2").value;
+    const score1 = p1.gpu + p1.ram + p1.cpu;
+    const score2 = p2.gpu + p2.ram + p2.cpu;
 
-    const ram1 = document.getElementById("ram1").value;
-    const ram2 = document.getElementById("ram2").value;
-
-    const cpu1 = document.getElementById("cpu1").value;
-    const cpu2 = document.getElementById("cpu2").value;
-
-    let score1;
-    let score2;
-
-    if (round === 1) {
-      score1 = gpuScores[gpu1];
-      score2 = gpuScores[gpu2];
-    }
-
-    if (round === 2) {
-      score1 = ramScores[ram1];
-      score2 = ramScores[ram2];
-    }
-
-    if (round === 3) {
-      score1 = cpuScores[cpu1];
-      score2 = cpuScores[cpu2];
-    }
-
-    countdown.textContent = "FIGHT!";
-
-    const attack =
-      document.getElementById("attackEffect");
-
-    attack.className = "attack-effect";
-
-    void attack.offsetWidth;
-
-    if (score1 >= score2) {
-
-      attack.classList.add("attack-left");
-
-      hp2 = Math.max(
-        0,
-        hp2 - Math.max(10,Math.round(score1/6))
-      );
-
-      setTimeout(() => {
-
-        showImpact();
-
-        updateHP();
-
-        setTimeout(done,900);
-
-      },500);
-
+    if (score1 > score2) {
+      hp2 = 0;
+    } else if (score2 > score1) {
+      hp1 = 0;
     } else {
-
-      attack.classList.add("attack-right");
-
-      hp1 = Math.max(
-        0,
-        hp1 - Math.max(10,Math.round(score2/6))
-      );
-
-      setTimeout(() => {
-
-        showImpact();
-
-        updateHP();
-
-        setTimeout(done,900);
-
-      },500);
-
+      hp1 = 0;
+      hp2 = 0;
     }
 
+    setHP(1, hp1);
+    setHP(2, hp2);
   }
 
+  $("roundText").textContent = "FINAL HIT";
 
-  function showImpact() {
+  $("arenaText").textContent =
+    "OH NO… HERE WE GO!";
 
-    const impact =
-      document.getElementById("impact");
+  $("weapon").textContent = "💥";
 
-    impact.classList.remove("show");
+  $("impact").classList.remove("impact-animation");
 
-    void impact.offsetWidth;
+  void $("impact").offsetWidth;
 
-    impact.classList.add("show");
+  $("impact").classList.add("impact-animation");
 
-    arena.classList.remove("shake");
+  $("battleArena").classList.add("screen-shake");
 
-    void arena.offsetWidth;
+  await wait(900);
 
-    arena.classList.add("shake");
+  let result;
 
-  }
+  if (hp1 > hp2) {
 
-
-  function updateHP() {
-
-    document.getElementById("hp1").style.width =
-      hp1 + "%";
-
-    document.getElementById("hp2").style.width =
-      hp2 + "%";
-
-    document.getElementById("hpText1").textContent =
-      hp1 + " HP";
-
-    document.getElementById("hpText2").textContent =
-      hp2 + " HP";
-
-  }
-
-
-  function finishBattle() {
-
-    const name1 =
-      document.getElementById("player1").value || "PLAYER 1";
-
-    const name2 =
-      document.getElementById("player2").value || "PLAYER 2";
-
-    const gpuWinner =
-      gpuScores[
-        document.getElementById("gpu1").value
-      ] >=
-      gpuScores[
-        document.getElementById("gpu2").value
-      ] ? 1 : 2;
-
-    const ramWinner =
-      ramScores[
-        document.getElementById("ram1").value
-      ] >=
-      ramScores[
-        document.getElementById("ram2").value
-      ] ? 1 : 2;
-
-    const cpuWinner =
-      cpuScores[
-        document.getElementById("cpu1").value
-      ] >=
-      cpuScores[
-        document.getElementById("cpu2").value
-      ] ? 1 : 2;
-
-    const wins1 =
-      [gpuWinner,ramWinner,cpuWinner]
-      .filter(x => x === 1).length;
-
-    const wins2 =
-      [gpuWinner,ramWinner,cpuWinner]
-      .filter(x => x === 2).length;
-
-    const winner =
-      wins1 >= wins2 ? name1 : name2;
-
-    countdown.textContent = "BATTLE COMPLETE!";
-
-    result.innerHTML = `
-      <div style="font-size:45px">🏆</div>
-      <div>${winner} WINS!</div>
-      <small>
-        GPU: ${gpuWinner === 1 ? name1 : name2}
-        •
-        RAM: ${ramWinner === 1 ? name1 : name2}
-        •
-        CPU: ${cpuWinner === 1 ? name1 : name2}
-      </small>
+    result = `
+      🏆 ${name1.toUpperCase()} WINS
+      <small>ULTIMATE PC POWER</small>
     `;
 
-    result.animate(
-      [
-        {opacity:0,transform:"scale(.5)"},
-        {opacity:1,transform:"scale(1.15)"},
-        {opacity:1,transform:"scale(1)"}
-      ],
-      {duration:900}
-    );
+  } else if (hp2 > hp1) {
 
-    battleRunning = false;
+    result = `
+      🏆 ${name2.toUpperCase()} WINS
+      <small>ULTIMATE PC POWER</small>
+    `;
 
+  } else {
+
+    result = `
+      🤝 DRAW
+      <small>BOTH PCS ARE EVEN</small>
+    `;
   }
 
+  $("battleResult").innerHTML = result;
+
+  $("startBattle").disabled = false;
+
+  battleRunning = false;
 }
 
 
-/* PC ANALYZER */
+$("startBattle").addEventListener("click", startBattle);
 
-function checkPC() {
 
-  const gpu =
-    document.getElementById("pcGPU").value;
+/* =========================================================
+   PC ANALYSIS
+   ========================================================= */
 
-  const cpu =
-    document.getElementById("pcCPU").value;
+const fpsMultiplier = {
 
-  const ram =
-    document.getElementById("pcRAM").value;
+  "Minecraft": 2.1,
+  "Fortnite": 1.65,
+  "Valorant": 2.4,
+  "Counter-Strike 2": 2.0,
+  "Apex Legends": 1.5,
+  "PUBG": 1.45,
+  "Grand Theft Auto V": 1.7,
+  "Grand Theft Auto VI": .65,
+  "Cyberpunk 2077": .8,
+  "Red Dead Redemption 2": .9,
+  "Elden Ring": 1.0,
+  "Forza Horizon 5": 1.15,
+  "Call of Duty Warzone": 1.2,
+  "Hogwarts Legacy": .85,
+  "Black Myth Wukong": .65,
+  "Starfield": .7
+};
 
-  const game =
-    document.getElementById("pcGame").value;
 
-  const score =
-    pcScore(gpu,cpu,ram);
+function calculatePCScore(gpu, cpu, ram) {
 
-  const multiplier =
-    fpsMultiplier[game] || 1;
+  /*
+    This is a GAMECHECK ESTIMATE,
+    not a real benchmark.
+  */
 
-  const fps =
-    Math.round(score * multiplier * 2);
-
-  document.getElementById("pcResult").innerHTML = `
-
-    <div class="score">${score}</div>
-
-    <p>GAMECHECK PERFORMANCE SCORE</p>
-
-    <div class="stat-bar">
-      <label>
-        GPU
-        <span>${gpuScores[gpu]}/100</span>
-      </label>
-
-      <div class="bar">
-        <i style="width:${gpuScores[gpu]}%"></i>
-      </div>
-    </div>
-
-    <div class="stat-bar">
-      <label>
-        CPU
-        <span>${cpuScores[cpu]}/100</span>
-      </label>
-
-      <div class="bar">
-        <i style="width:${cpuScores[cpu]}%"></i>
-      </div>
-    </div>
-
-    <div class="stat-bar">
-      <label>
-        RAM
-        <span>${ramScores[ram]}/100</span>
-      </label>
-
-      <div class="bar">
-        <i style="width:${ramScores[ram]}%"></i>
-      </div>
-    </div>
-
-    <h3 style="margin-top:25px">
-      ${game}
-    </h3>
-
-    <p style="color:var(--muted);margin-top:8px">
-      Prototype estimated FPS:
-      <strong style="color:var(--accent)">
-        ${fps} FPS
-      </strong>
-    </p>
-
-  `;
-
+  return Math.round(
+    gpu * .48 +
+    cpu * .34 +
+    ram * .18
+  );
 }
 
 
-/* LEADERBOARD */
+function getFPS(game, score) {
 
-const leaderboard = [
-  ["1","ShadowAUK","9240","RTX 4070"],
-  ["2","NightFox","9180","RTX 4070"],
-  ["3","PixelRush","8140","RTX 4060"],
-  ["4","VoidX","7820","RX 7600"],
-  ["5","CraftKing","7020","RTX 3060"]
+  const multiplier = fpsMultiplier[game] || 1.15;
+
+  return Math.max(
+    18,
+    Math.round(score * multiplier)
+  );
+}
+
+
+function performanceTier(score) {
+
+  if (score >= 85) {
+    return [
+      "MONSTER PERFORMANCE",
+      "Excellent gaming performance. High settings should be comfortable for many games."
+    ];
+  }
+
+  if (score >= 70) {
+    return [
+      "GREAT PERFORMANCE",
+      "A strong gaming setup suitable for demanding games."
+    ];
+  }
+
+  if (score >= 55) {
+    return [
+      "PLAYABLE",
+      "Good for gaming with sensible graphics settings."
+    ];
+  }
+
+  return [
+    "ENTRY LEVEL",
+    "Lower graphics settings may be needed for demanding games."
+  ];
+}
+
+
+function bottleneck(gpu, cpu, ram) {
+
+  const lowest = Math.min(gpu, cpu, ram);
+
+  if (lowest === gpu) return "GPU";
+  if (lowest === cpu) return "CPU";
+
+  return "RAM";
+}
+
+
+async function animateNumber(element, target, duration = 1000) {
+
+  const start = performance.now();
+
+  return new Promise(resolve => {
+
+    function frame(now) {
+
+      const progress =
+        Math.min(1, (now - start) / duration);
+
+      const eased =
+        1 - Math.pow(1 - progress, 3);
+
+      element.textContent =
+        Math.round(target * eased);
+
+      if (progress < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        resolve();
+      }
+    }
+
+    requestAnimationFrame(frame);
+  });
+}
+
+
+async function analysisStage(id, label, message, start, end) {
+
+  const stage = $(id);
+
+  stage.classList.remove("done");
+  stage.classList.add("active");
+
+  $("scanStatus").textContent = message;
+
+  const duration = 850;
+
+  const startTime = performance.now();
+
+  return new Promise(resolve => {
+
+    function tick(now) {
+
+      const progress =
+        Math.min(1,(now-startTime)/duration);
+
+      const percent =
+        Math.round(start + (end-start)*progress);
+
+      $("scanProgress").style.width = `${percent}%`;
+      $("scanPercent").textContent = `${percent}%`;
+
+      if (progress < 1) {
+
+        requestAnimationFrame(tick);
+
+      } else {
+
+        stage.classList.remove("active");
+        stage.classList.add("done");
+        stage.querySelector("b").textContent = "COMPLETE";
+
+        resolve();
+      }
+    }
+
+    requestAnimationFrame(tick);
+  });
+}
+
+
+async function checkPC() {
+
+  const button = $("checkPcBtn");
+
+  button.disabled = true;
+
+  $("pcResult").classList.remove("show");
+
+  document.querySelectorAll(".scan-stage").forEach(stage => {
+
+    stage.classList.remove("active","done");
+
+    stage.querySelector("b").textContent = "WAITING";
+  });
+
+  $("scanProgress").style.width = "0%";
+  $("scanPercent").textContent = "0%";
+
+  $("analysisMessages").textContent =
+    "Connecting to GameCheck diagnostics...";
+
+  await wait(500);
+
+  await analysisStage(
+    "stageGpu",
+    "GPU",
+    "SCANNING GRAPHICS PROCESSOR...",
+    0,
+    25
+  );
+
+  await analysisStage(
+    "stageCpu",
+    "CPU",
+    "ANALYZING PROCESSOR POWER...",
+    25,
+    50
+  );
+
+  await analysisStage(
+    "stageRam",
+    "RAM",
+    "CHECKING MEMORY CAPACITY...",
+    50,
+    72
+  );
+
+  await analysisStage(
+    "stageGame",
+    "GAME",
+    "SIMULATING GAME LOAD...",
+    72,
+    100
+  );
+
+  $("scanStatus").textContent =
+    "CALCULATING FINAL RESULT...";
+
+  $("analysisMessages").textContent =
+    "Combining hardware scores and estimating performance...";
+
+  await wait(800);
+
+  const gpu = Number($("checkGpu").value);
+  const cpu = Number($("checkCpu").value);
+  const ram = Number($("checkRam").value);
+
+  const game = $("checkGame").value;
+
+  const score = calculatePCScore(gpu,cpu,ram);
+  const fps = getFPS(game,score);
+
+  const [title,text] = performanceTier(score);
+
+  const weak = bottleneck(gpu,cpu,ram);
+
+  $("pcResult").classList.add("show");
+
+  $("performanceTitle").textContent = title;
+  $("performanceText").textContent =
+    `${text} Estimated for ${game}.`;
+
+  $("fpsValue").textContent = `${fps}+`;
+
+  $("gpuResult").textContent = `${gpu}/100`;
+  $("cpuResult").textContent = `${cpu}/100`;
+  $("ramResult").textContent = `${ram}/100`;
+
+  $("bottleneckValue").textContent =
+    weak === "RAM"
+      ? "RAM may limit multitasking / demanding games."
+      : `${weak} is currently your weakest component.`;
+
+  await animateNumber($("scoreValue"),score,1100);
+
+  button.disabled = false;
+
+  $("pcResult").scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+}
+
+
+$("checkPcBtn").addEventListener("click", checkPC);
+
+
+/* =========================================================
+   FRIENDS
+   ========================================================= */
+
+const defaultFriends = [
+  ["Shadow", "RTX 4070", true],
+  ["Nova", "RTX 4060", true],
+  ["Rex", "RX 7600", false]
 ];
 
 
-function renderLeaderboard() {
+function getFriends() {
 
-  const box =
-    document.getElementById("leaderboardList");
+  const saved = localStorage.getItem("gamecheckFriends");
 
-  box.innerHTML = "";
-
-  leaderboard.forEach((p,i) => {
-
-    const row = document.createElement("div");
-
-    row.className = "leader";
-
-    row.style.animationDelay =
-      `${i*.12}s`;
-
-    row.innerHTML = `
-      <div class="rank">#${p[0]}</div>
-
-      <div>
-        <strong>${p[1]}</strong>
-        <small>PC POWER PLAYER</small>
-      </div>
-
-      <strong>${p[2]}</strong>
-
-      <small>${p[3]}</small>
-    `;
-
-    box.appendChild(row);
-
-  });
-
+  return saved
+    ? JSON.parse(saved)
+    : defaultFriends;
 }
-
-
-/* FRIENDS */
-
-let friends =
-  JSON.parse(
-    localStorage.getItem("gamecheckFriends") ||
-    '["NightFox","PixelRush"]'
-  );
 
 
 function renderFriends() {
 
-  const box =
-    document.getElementById("friendsList");
+  const list = $("friendList");
 
-  box.innerHTML = "";
+  list.innerHTML = "";
 
-  friends.forEach(name => {
+  getFriends().forEach(friend => {
 
-    const div =
-      document.createElement("div");
+    const [name, gpu, online] = friend;
 
-    div.className = "friend";
+    const card = document.createElement("div");
 
-    div.innerHTML = `
-      <strong>🟢 ${name}</strong>
-      <button onclick="removeFriend('${name}')">
-        REMOVE
-      </button>
+    card.className = "friend-card";
+
+    card.innerHTML = `
+      <strong>${name}</strong>
+      <small>${gpu}</small>
+      <br>
+      <small class="${online ? "online" : ""}">
+        ${online ? "● ONLINE" : "○ OFFLINE"}
+      </small>
     `;
 
-    box.appendChild(div);
-
+    list.appendChild(card);
   });
-
 }
 
 
-function addFriend() {
+$("addFriend").addEventListener("click", () => {
 
-  const input =
-    document.getElementById("friendInput");
-
-  const name =
-    input.value.trim();
+  const name = prompt("Enter friend's username:");
 
   if (!name) return;
 
-  if (!friends.includes(name)) {
+  const friends = getFriends();
 
-    friends.push(name);
-
-    localStorage.setItem(
-      "gamecheckFriends",
-      JSON.stringify(friends)
-    );
-
-  }
-
-  input.value = "";
-
-  renderFriends();
-
-}
-
-
-function removeFriend(name) {
-
-  friends =
-    friends.filter(x => x !== name);
+  friends.push([
+    name.slice(0,18),
+    "PC not scanned",
+    false
+  ]);
 
   localStorage.setItem(
     "gamecheckFriends",
@@ -809,209 +1048,313 @@ function removeFriend(name) {
   );
 
   renderFriends();
+});
+
+
+renderFriends();
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+$("loginBtn").addEventListener("click", () => {
+
+  $("loginModal").classList.add("open");
+
+});
+
+
+$("loginSubmit").addEventListener("click", () => {
+
+  const name =
+    $("loginName").value.trim();
+
+  if (!name) {
+    $("loginName").focus();
+    return;
+  }
+
+  localStorage.setItem("gamecheckUser",name);
+
+  $("loginBtn").textContent =
+    name.slice(0,10).toUpperCase();
+
+  $("loginModal").classList.remove("open");
+
+});
+
+
+const savedUser =
+  localStorage.getItem("gamecheckUser");
+
+if (savedUser) {
+
+  $("loginBtn").textContent =
+    savedUser.slice(0,10).toUpperCase();
 
 }
 
 
-/* LOGIN */
-
-function openLogin() {
-  document
-    .getElementById("loginModal")
-    .classList.add("show");
-}
-
-function closeLogin() {
-  document
-    .getElementById("loginModal")
-    .classList.remove("show");
-}
-
-function demoLogin() {
-
-  alert(
-    "GameCheck login is currently a UI prototype. Real accounts will need a backend."
-  );
-
-}
-
-
-/* THEMES */
-
-function openThemes() {
-
-  document
-    .getElementById("themeModal")
-    .classList.add("show");
-
-}
-
-function closeThemes() {
-
-  document
-    .getElementById("themeModal")
-    .classList.remove("show");
-
-}
-
+/* =========================================================
+   THEMES
+   ========================================================= */
 
 function setTheme(theme) {
 
-  document.body.className = "";
+  document.body.classList.remove(
+    "theme-inferno",
+    "theme-toxic",
+    "theme-aqua",
+    "theme-midnight",
+    "theme-electric"
+  );
 
   if (theme !== "cyber") {
 
     document.body.classList.add(
-      "theme-" + theme
+      `theme-${theme}`
     );
-
   }
 
   localStorage.setItem(
     "gamecheckTheme",
     theme
   );
+}
 
-  closeThemes();
+
+const savedTheme =
+  localStorage.getItem("gamecheckTheme");
+
+if (savedTheme) {
+  setTheme(savedTheme);
+}
+
+
+$("themeBtn").addEventListener("click", () => {
+
+  $("themeModal").classList.add("open");
+
+});
+
+
+document.querySelectorAll("[data-theme]").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    setTheme(button.dataset.theme);
+
+    $("themeModal").classList.remove("open");
+  });
+
+});
+
+
+/* First visit theme picker */
+
+if (!savedTheme) {
+
+  setTimeout(() => {
+    $("themeModal").classList.add("open");
+  }, 1500);
 
 }
 
 
-/* FIRST VISIT THEME */
+/* Close modals */
 
-function loadTheme() {
+document.querySelectorAll("[data-close]").forEach(button => {
 
-  const saved =
-    localStorage.getItem("gamecheckTheme");
+  button.addEventListener("click", () => {
 
-  if (saved) {
+    const modal =
+      $(button.dataset.close);
 
-    setTheme(saved);
+    modal.classList.remove("open");
+  });
 
-  } else {
-
-    setTimeout(() => {
-      openThemes();
-    },3200);
-
-  }
-
-}
+});
 
 
-/* SCROLL REVEAL */
+document.querySelectorAll(".modal").forEach(modal => {
 
-function setupScrollAnimations() {
+  modal.addEventListener("click", event => {
 
-  const observer =
-    new IntersectionObserver(
-      entries => {
+    if (event.target === modal) {
+      modal.classList.remove("open");
+    }
 
-        entries.forEach(entry => {
+  });
 
-          if (entry.isIntersecting) {
+});
 
-            entry.target.classList.add("visible");
 
-            observer.unobserve(entry.target);
+/* =========================================================
+   SCROLL REVEAL
+   ========================================================= */
 
-          }
+const observer =
+  new IntersectionObserver(entries => {
 
-        });
+    entries.forEach(entry => {
 
-      },
-      {
-        threshold:.12
+      if (entry.isIntersecting) {
+
+        entry.target.classList.add("visible");
+
+        observer.unobserve(entry.target);
       }
-    );
 
-  document
-    .querySelectorAll(".reveal")
-    .forEach(el => observer.observe(el));
+    });
 
-}
+  }, {
+    threshold: .12
+  });
 
 
-/* PARTICLES */
+document.querySelectorAll(".reveal")
+  .forEach(element => observer.observe(element));
+
+
+/* =========================================================
+   COUNTERS
+   ========================================================= */
+
+document.querySelectorAll(".counter")
+  .forEach(counter => {
+
+    const target =
+      Number(counter.dataset.target);
+
+    let value = 0;
+
+    const interval = setInterval(() => {
+
+      value += Math.max(1,Math.ceil(target/35));
+
+      if (value >= target) {
+
+        value = target;
+
+        clearInterval(interval);
+      }
+
+      counter.textContent = value;
+
+    },35);
+
+  });
+
+
+/* =========================================================
+   PARTICLES
+   ========================================================= */
 
 function createParticles() {
 
-  const container =
-    document.getElementById("particles");
+  const container = $("particles");
 
-  for(let i=0;i<45;i++) {
+  const mobile =
+    window.matchMedia(
+      "(max-width:650px)"
+    ).matches;
+
+  const count = mobile ? 12 : 28;
+
+  for (let i=0; i<count; i++) {
 
     const particle =
-      document.createElement("div");
+      document.createElement("i");
 
     particle.className = "particle";
 
     particle.style.left =
-      Math.random()*100 + "%";
+      `${Math.random()*100}%`;
 
     particle.style.animationDuration =
-      (8 + Math.random()*15) + "s";
+      `${8 + Math.random()*15}s`;
 
     particle.style.animationDelay =
-      (-Math.random()*15) + "s";
+      `${Math.random()*-15}s`;
 
     particle.style.opacity =
-      (.1 + Math.random()*.4);
+      `${.1 + Math.random()*.3}`;
 
     container.appendChild(particle);
-
   }
-
 }
 
+createParticles();
 
-/* MOUSE PARALLAX FOR PC */
 
-document.addEventListener(
-  "mousemove",
-  e => {
+/* =========================================================
+   DEVICE DETECTION
+   ========================================================= */
 
-    if (window.innerWidth < 900) return;
+function updateDeviceClass() {
 
-    const x =
-      (e.clientX / window.innerWidth - .5);
+  const touch =
+    window.matchMedia(
+      "(hover: none) and (pointer: coarse)"
+    ).matches;
 
-    const y =
-      (e.clientY / window.innerHeight - .5);
+  document.body.classList.toggle(
+    "touch-device",
+    touch
+  );
 
-    const battle =
-      document.querySelector(".hero-battle");
+  document.body.classList.toggle(
+    "desktop-device",
+    !touch
+  );
+}
 
-    if (battle) {
+updateDeviceClass();
 
-      battle.style.transform =
-        `translate(${x*12}px,${y*12}px)`;
-
-    }
-
-  }
+window.addEventListener(
+  "resize",
+  updateDeviceClass
 );
 
 
-/* START */
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+$("menuBtn").addEventListener("click", () => {
 
-    fillGameSelect();
+  const nav =
+    document.querySelector(".navbar nav");
 
-    renderGames();
+  const visible =
+    getComputedStyle(nav).display !== "none";
 
-    renderLeaderboard();
+  if (visible) {
 
-    renderFriends();
+    nav.style.display = "none";
 
-    createParticles();
+  } else {
 
-    setupScrollAnimations();
-
-    loadTheme();
-
+    nav.style.display = "flex";
+    nav.style.position = "absolute";
+    nav.style.top = "72px";
+    nav.style.left = "15px";
+    nav.style.right = "15px";
+    nav.style.padding = "18px";
+    nav.style.flexDirection = "column";
+    nav.style.background = "#0b1020";
+    nav.style.border = "1px solid var(--border)";
+    nav.style.borderRadius = "15px";
   }
+
+});
+
+
+/* =========================================================
+   FINISHED
+   ========================================================= */
+
+console.log(
+  "GAMECHECK V2 ONLINE — Made by AUK"
 );
