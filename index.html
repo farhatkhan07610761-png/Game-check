@@ -3,22 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#070b14">
   <title>GameCheck — Check. Compare. Compete.</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+<!-- LOADER -->
 <div id="loader">
   <div class="loader-logo">GAME<span>CHECK</span></div>
   <div class="loader-ring"></div>
-  <p>LOADING GAMING SYSTEM</p>
+  <p>INITIALIZING SYSTEM...</p>
 </div>
 
-<div class="particles"></div>
+<!-- PARTICLE BACKGROUND -->
+<div id="particles"></div>
 
+<!-- HEADER -->
 <header>
-  <div class="logo">GAME<span>CHECK</span></div>
+  <div class="brand">
+    <div class="brand-icon">GC</div>
+    <div>
+      <strong>GAMECHECK</strong>
+      <small>CHECK • COMPARE • COMPETE</small>
+    </div>
+  </div>
 
   <nav>
     <a href="#home">Home</a>
@@ -29,219 +39,109 @@
     <a href="#friends">Friends</a>
   </nav>
 
-  <button class="login-btn" onclick="showLogin()">LOGIN</button>
+  <button class="theme-button" onclick="openThemes()">🎨</button>
+  <button class="login-button" onclick="openLogin()">LOGIN</button>
 </header>
 
-<main>
 
 <!-- HERO -->
-
-<section id="home" class="hero">
+<section id="home" class="hero reveal">
 
   <div class="hero-content">
-    <div class="live-badge">
+
+    <div class="status">
       <span></span> SYSTEM ONLINE
     </div>
 
-    <p class="tag">THE GAMING PERFORMANCE HUB</p>
-
     <h1>
       CHECK.<br>
-      COMPARE.<br>
-      <span>COMPETE.</span>
+      <span>COMPARE.</span><br>
+      COMPETE.
     </h1>
 
-    <p class="description">
-      Analyze your gaming PC, compare your setup with friends,
-      check FPS and climb the GameCheck leaderboard.
+    <p>
+      Test your PC. Compare your setup with friends.
+      Battle your hardware and discover who has the ultimate gaming machine.
     </p>
 
     <div class="hero-buttons">
-      <button class="primary big-btn" onclick="location.href='#vs'">
-        ⚔️ START VS
-      </button>
-
-      <button class="secondary big-btn" onclick="location.href='#pc'">
-        🖥️ CHECK MY PC
-      </button>
+      <a href="#pc" class="primary-btn">CHECK MY PC →</a>
+      <a href="#vs" class="secondary-btn">⚔ VS A FRIEND</a>
     </div>
 
-    <div class="stats-mini">
+    <div class="hero-stats">
       <div>
-        <b>18+</b>
+        <b>600+</b>
         <small>GAMES</small>
       </div>
-
       <div>
-        <b>100%</b>
-        <small>FREE</small>
+        <b>3</b>
+        <small>VS ROUNDS</small>
       </div>
-
       <div>
-        <b>24/7</b>
-        <small>READY</small>
+        <b>6</b>
+        <small>THEMES</small>
       </div>
     </div>
+
   </div>
 
-  <div class="hero-arena">
-
-    <div class="energy energy-left"></div>
-    <div class="energy energy-right"></div>
-
-    <div class="hero-player blue-player">
-      <div class="hero-avatar">A</div>
-      <strong>ShadowAUK</strong>
-      <small>PC POWER</small>
-      <b>9,240</b>
+  <!-- HERO VS -->
+  <div class="hero-battle">
+    <div class="hero-player left">
+      <div class="avatar">A</div>
+      <b>PLAYER 1</b>
+      <span>RTX 4070</span>
     </div>
 
-    <div class="hero-vs">
-      <div>VS</div>
-      <small>BATTLE</small>
-    </div>
+    <div class="hero-vs">VS</div>
 
-    <div class="hero-player red-player">
-      <div class="hero-avatar red">N</div>
-      <strong>NightFox</strong>
-      <small>PC POWER</small>
-      <b>8,870</b>
+    <div class="hero-player right">
+      <div class="avatar">X</div>
+      <b>PLAYER 2</b>
+      <span>RTX 3060</span>
     </div>
-
   </div>
 
 </section>
 
 
 <!-- GAMES -->
+<section id="games" class="section reveal">
 
-<section id="games" class="section">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">GAME DATABASE</span>
+      <h2>Choose Your Game</h2>
+    </div>
 
-  <p class="tag">🎮 GAME DATABASE</p>
-  <h2>Choose Your <span>Game</span></h2>
-
-  <div class="game-search">
-    <input
-      id="gameSearch"
-      placeholder="🔎 Search games..."
-      oninput="filterGames()"
-    >
+    <div class="game-search">
+      🔎
+      <input
+        id="gameSearch"
+        oninput="filterGames()"
+        placeholder="Search 600+ games..."
+      >
+    </div>
   </div>
 
-  <div class="game-grid" id="gameGrid">
-
-    <button class="game-card active" onclick="selectGame('Minecraft',this)">
-      <div class="game-logo minecraft">M</div>
-      <strong>Minecraft</strong>
-      <small>Sandbox</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('Fortnite',this)">
-      <div class="game-logo fortnite">F</div>
-      <strong>Fortnite</strong>
-      <small>Battle Royale</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('Valorant',this)">
-      <div class="game-logo valorant">V</div>
-      <strong>Valorant</strong>
-      <small>Tactical FPS</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('GTA V',this)">
-      <div class="game-logo gta">V</div>
-      <strong>GTA V</strong>
-      <small>Open World</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('GTA VI',this)">
-      <div class="game-logo gta6">VI</div>
-      <strong>GTA VI</strong>
-      <small>Open World</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('CS2',this)">
-      <div class="game-logo cs2">CS</div>
-      <strong>Counter-Strike 2</strong>
-      <small>Tactical FPS</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('Roblox',this)">
-      <div class="game-logo roblox">R</div>
-      <strong>Roblox</strong>
-      <small>Platform</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('Apex Legends',this)">
-      <div class="game-logo apex">A</div>
-      <strong>Apex Legends</strong>
-      <small>Battle Royale</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('Call of Duty',this)">
-      <div class="game-logo cod">COD</div>
-      <strong>Call of Duty</strong>
-      <small>FPS</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('PUBG',this)">
-      <div class="game-logo pubg">P</div>
-      <strong>PUBG</strong>
-      <small>Battle Royale</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('Rocket League',this)">
-      <div class="game-logo rocket">RL</div>
-      <strong>Rocket League</strong>
-      <small>Sports</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('Overwatch 2',this)">
-      <div class="game-logo overwatch">O</div>
-      <strong>Overwatch 2</strong>
-      <small>Hero Shooter</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('Rainbow Six Siege',this)">
-      <div class="game-logo siege">R6</div>
-      <strong>Rainbow Six Siege</strong>
-      <small>Tactical FPS</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('League of Legends',this)">
-      <div class="game-logo lol">L</div>
-      <strong>League of Legends</strong>
-      <small>MOBA</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('EA FC 26',this)">
-      <div class="game-logo fc">FC</div>
-      <strong>EA FC 26</strong>
-      <small>Football</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('Elden Ring',this)">
-      <div class="game-logo elden">E</div>
-      <strong>Elden Ring</strong>
-      <small>Action RPG</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('Cyberpunk 2077',this)">
-      <div class="game-logo cyber">C</div>
-      <strong>Cyberpunk 2077</strong>
-      <small>RPG</small>
-    </button>
-
-    <button class="game-card" onclick="selectGame('Red Dead Redemption 2',this)">
-      <div class="game-logo rdr">R</div>
-      <strong>Red Dead Redemption 2</strong>
-      <small>Open World</small>
-    </button>
-
+  <div class="filters">
+    <button class="filter active" onclick="filterCategory('all',this)">ALL</button>
+    <button class="filter" onclick="filterCategory('fps',this)">FPS</button>
+    <button class="filter" onclick="filterCategory('rpg',this)">RPG</button>
+    <button class="filter" onclick="filterCategory('racing',this)">RACING</button>
+    <button class="filter" onclick="filterCategory('sports',this)">SPORTS</button>
+    <button class="filter" onclick="filterCategory('survival',this)">SURVIVAL</button>
   </div>
+
+  <div id="gameGrid" class="game-grid"></div>
+
+  <button id="loadMore" class="load-more" onclick="loadMoreGames()">
+    LOAD MORE GAMES
+  </button>
 
   <div class="selected-game">
-    <span>SELECTED GAME</span>
+    SELECTED GAME:
     <strong id="selectedGame">Minecraft</strong>
   </div>
 
@@ -249,32 +149,33 @@
 
 
 <!-- VS ARENA -->
+<section id="vs" class="section vs-section reveal">
 
-<section id="vs" class="section">
-
-  <p class="tag">⚔️ BATTLE SYSTEM</p>
-  <h2>VS <span>ARENA</span></h2>
-
-  <div class="vs-intro">
-    Choose two players and let GameCheck decide who has the stronger gaming setup.
+  <div class="section-heading center">
+    <span class="eyebrow">FRIEND BATTLE</span>
+    <h2>VS ARENA</h2>
+    <p>3 rounds. 3 components. One winner.</p>
   </div>
 
-  <div class="comparison">
+  <div class="vs-inputs">
 
-    <div class="form-card player-card blue-card">
-
-      <div class="player-number">01</div>
-
-      <h3>PLAYER ONE</h3>
-
-      <input id="player1" placeholder="Username" value="ShadowAUK">
+    <div class="fighter-card player-one">
+      <span>PLAYER 1</span>
+      <input id="player1" value="ShadowAUK">
 
       <label>GPU</label>
       <select id="gpu1">
         <option>RTX 3060</option>
         <option>RTX 4060</option>
-        <option>RTX 4070</option>
+        <option selected>RTX 4070</option>
         <option>RX 7600</option>
+      </select>
+
+      <label>RAM</label>
+      <select id="ram1">
+        <option>8 GB</option>
+        <option selected>16 GB</option>
+        <option>32 GB</option>
       </select>
 
       <label>CPU</label>
@@ -282,91 +183,120 @@
         <option>Ryzen 5 5600</option>
         <option>Ryzen 5 7600</option>
         <option>Core i5-12400F</option>
-        <option>Core i7-13700K</option>
+        <option selected>Core i7-13700K</option>
       </select>
-
     </div>
 
-    <div class="arena-center">
-      <div class="electric-ring">
-        <span>VS</span>
+
+    <div class="battle-middle">
+
+      <div id="countdown" class="countdown">READY?</div>
+
+      <div class="battle-arena">
+
+        <div class="battle-player p1">
+          <div class="battle-character">⚡</div>
+          <div class="hp-wrap">
+            <div id="hp1" class="hp hp1"></div>
+          </div>
+          <span id="hpText1">100 HP</span>
+        </div>
+
+        <div class="battle-center">
+          <div id="roundText">ROUND 1</div>
+          <div id="weapon">⚔️</div>
+          <div class="big-vs">VS</div>
+        </div>
+
+        <div class="battle-player p2">
+          <div class="battle-character">🔥</div>
+          <div class="hp-wrap">
+            <div id="hp2" class="hp hp2"></div>
+          </div>
+          <span id="hpText2">100 HP</span>
+        </div>
+
+        <div id="attackEffect" class="attack-effect"></div>
+        <div id="impact" class="impact">💥</div>
+
       </div>
 
-      <div class="versus-line"></div>
+      <button class="battle-btn" onclick="startBattle()">
+        ⚔ START 3-ROUND BATTLE
+      </button>
+
     </div>
 
-    <div class="form-card player-card red-card">
 
-      <div class="player-number">02</div>
-
-      <h3>PLAYER TWO</h3>
-
-      <input id="player2" placeholder="Username" value="NightFox">
+    <div class="fighter-card player-two">
+      <span>PLAYER 2</span>
+      <input id="player2" value="NightFox">
 
       <label>GPU</label>
       <select id="gpu2">
-        <option>RTX 3060</option>
+        <option selected>RTX 3060</option>
         <option>RTX 4060</option>
         <option>RTX 4070</option>
         <option>RX 7600</option>
       </select>
 
+      <label>RAM</label>
+      <select id="ram2">
+        <option selected>8 GB</option>
+        <option>16 GB</option>
+        <option>32 GB</option>
+      </select>
+
       <label>CPU</label>
       <select id="cpu2">
-        <option>Ryzen 5 5600</option>
+        <option selected>Ryzen 5 5600</option>
         <option>Ryzen 5 7600</option>
         <option>Core i5-12400F</option>
         <option>Core i7-13700K</option>
       </select>
-
     </div>
 
   </div>
 
-  <button class="primary start-btn" onclick="comparePlayers()">
-    ⚡ START EPIC BATTLE
-  </button>
-
-  <div id="vsResult" class="result"></div>
+  <div id="battleResult" class="battle-result"></div>
 
 </section>
 
 
 <!-- PC CHECK -->
+<section id="pc" class="section reveal">
 
-<section id="pc" class="section">
-
-  <p class="tag">🖥️ HARDWARE ANALYZER</p>
-  <h2>Analyze Your <span>PC</span></h2>
+  <div class="section-heading center">
+    <span class="eyebrow">SYSTEM ANALYZER</span>
+    <h2>CHECK YOUR PC</h2>
+    <p>Get a GameCheck performance estimate.</p>
+  </div>
 
   <div class="pc-form">
 
     <div class="form-card">
-      <label>⚙️ CPU</label>
+      <label>GPU</label>
+      <select id="pcGPU">
+        <option>RTX 3060</option>
+        <option>RTX 4060</option>
+        <option selected>RTX 4070</option>
+        <option>RX 7600</option>
+      </select>
+    </div>
 
-      <select id="cpu">
+    <div class="form-card">
+      <label>CPU</label>
+      <select id="pcCPU">
         <option>Ryzen 5 5600</option>
-        <option>Ryzen 5 7600</option>
+        <option selected>Ryzen 5 7600</option>
         <option>Core i5-12400F</option>
         <option>Core i7-13700K</option>
       </select>
     </div>
 
     <div class="form-card">
-      <label>🎮 GPU</label>
-
-      <select id="gpu">
-        <option>RTX 3060</option>
-        <option>RTX 4060</option>
-        <option>RTX 4070</option>
-        <option>RX 7600</option>
-      </select>
-    </div>
-
-    <div class="form-card">
-      <label>🧠 RAM</label>
-
-      <select id="ram">
+      <label>RAM</label>
+      <select id="pcRAM">
         <option>8 GB</option>
         <option selected>16 GB</option>
         <option>32 GB</option>
@@ -374,103 +304,128 @@
     </div>
 
     <div class="form-card">
-      <label>🎯 GAME</label>
-
-      <select id="game">
-        <option>Minecraft</option>
-        <option>Fortnite</option>
-        <option>Valorant</option>
-        <option>GTA V</option>
-        <option>GTA VI</option>
-        <option>CS2</option>
-        <option>Roblox</option>
-        <option>Apex Legends</option>
-        <option>Call of Duty</option>
-        <option>PUBG</option>
-        <option>Rocket League</option>
-        <option>Overwatch 2</option>
-        <option>Rainbow Six Siege</option>
-        <option>League of Legends</option>
-        <option>EA FC 26</option>
-        <option>Elden Ring</option>
-        <option>Cyberpunk 2077</option>
-        <option>Red Dead Redemption 2</option>
-      </select>
+      <label>GAME</label>
+      <select id="pcGame"></select>
     </div>
 
   </div>
 
-  <button class="primary start-btn" onclick="checkPC()">
-    🔍 RUN FULL ANALYSIS
+  <button class="primary-btn analyze-btn" onclick="checkPC()">
+    🔍 ANALYZE MY PC
   </button>
 
-  <div id="pcResult" class="result"></div>
+  <div id="pcResult" class="pc-result"></div>
 
 </section>
 
 
 <!-- LEADERBOARD -->
+<section id="leaderboard" class="section reveal">
 
-<section id="leaderboard" class="section">
+  <div class="section-heading center">
+    <span class="eyebrow">GLOBAL RANKING</span>
+    <h2>PC LEADERBOARD</h2>
+  </div>
 
-  <p class="tag">🏆 GLOBAL RANKING</p>
-  <h2>PC <span>LEADERBOARD</span></h2>
-
-  <div class="leaderboard" id="leaderboardList"></div>
+  <div id="leaderboardList" class="leaderboard-list"></div>
 
 </section>
 
 
 <!-- FRIENDS -->
+<section id="friends" class="section reveal">
 
-<section id="friends" class="section">
-
-  <p class="tag">👥 SOCIAL SYSTEM</p>
-  <h2>Your <span>Friends</span></h2>
-
-  <div class="friend-add">
-    <input id="friendName" placeholder="Enter username">
-    <button class="primary" onclick="addFriend()">+ ADD FRIEND</button>
+  <div class="section-heading center">
+    <span class="eyebrow">SOCIAL</span>
+    <h2>FRIENDS</h2>
   </div>
 
-  <div id="friendsList"></div>
+  <div class="friend-add">
+    <input id="friendInput" placeholder="Enter friend's username">
+    <button onclick="addFriend()">ADD FRIEND</button>
+  </div>
+
+  <div id="friendsList" class="friends-list"></div>
 
 </section>
 
-</main>
 
-
+<!-- FOOTER -->
 <footer>
-  <div class="footer-logo">GAME<span>CHECK</span></div>
-  <p>CHECK • COMPARE • COMPETE</p>
+  <div class="footer-logo">GAMECHECK</div>
+  <p>Check. Compare. Compete.</p>
   <strong>Made by AUK</strong>
 </footer>
 
 
+<!-- THEME MODAL -->
+<div id="themeModal" class="modal">
+  <div class="theme-box">
+
+    <button class="close" onclick="closeThemes()">×</button>
+
+    <span class="eyebrow">PERSONALIZE</span>
+    <h2>CHOOSE YOUR THEME</h2>
+
+    <div class="themes">
+
+      <button onclick="setTheme('cyber')">
+        <span class="theme-preview cyber-preview"></span>
+        🌌 Cyber Neon
+      </button>
+
+      <button onclick="setTheme('inferno')">
+        <span class="theme-preview inferno-preview"></span>
+        🔥 Inferno
+      </button>
+
+      <button onclick="setTheme('toxic')">
+        <span class="theme-preview toxic-preview"></span>
+        ☢️ Toxic
+      </button>
+
+      <button onclick="setTheme('aqua')">
+        <span class="theme-preview aqua-preview"></span>
+        🌊 Aqua
+      </button>
+
+      <button onclick="setTheme('midnight')">
+        <span class="theme-preview midnight-preview"></span>
+        🌑 Midnight
+      </button>
+
+      <button onclick="setTheme('electric')">
+        <span class="theme-preview electric-preview"></span>
+        ⚡ Electric
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
+
 <!-- LOGIN -->
+<div id="loginModal" class="modal">
 
-<div id="loginBox" class="login-box">
-
-  <div class="login-card">
+  <div class="login-box">
 
     <button class="close" onclick="closeLogin()">×</button>
 
-    <div class="login-controller">🎮</div>
+    <div class="brand-icon">GC</div>
 
-    <h2>GAME<span>CHECK</span></h2>
+    <h2>WELCOME BACK</h2>
+    <p>Login UI prototype</p>
 
-    <p>ENTER THE ARENA</p>
+    <input id="loginUser" placeholder="Username">
+    <input id="loginPassword" type="password" placeholder="Password">
 
-    <input placeholder="Username">
-    <input type="password" placeholder="Password">
+    <button class="primary-btn" onclick="demoLogin()">LOGIN</button>
+    <button class="secondary-btn" onclick="demoLogin()">CREATE ACCOUNT</button>
 
-    <button class="primary login-submit">
-      LOGIN
-    </button>
-
-    <button class="signup-btn">
-      CREATE ACCOUNT
-    </button>
+    <small>
+      Prototype only — don't enter a real password.
+    </small>
 
   </div>
 
