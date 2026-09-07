@@ -3,31 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GameCheck</title>
+  <title>GameCheck — Gaming Performance Hub</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
+<div id="pageLoader">
+  <div class="loader-logo">GAME<span>CHECK</span></div>
+  <div class="loader-bar"><i></i></div>
+  <p>INITIALIZING GAMING SYSTEM...</p>
+</div>
 
 <header>
   <div class="logo">GAME<span>CHECK</span></div>
 
   <nav>
     <a href="#home">Home</a>
+    <a href="#games">Games</a>
     <a href="#vs">VS</a>
     <a href="#pc">PC Check</a>
     <a href="#leaderboard">Leaderboard</a>
     <a href="#friends">Friends</a>
   </nav>
 
-  <button class="login-btn" onclick="showLogin()">Login</button>
+  <button class="login-btn" onclick="showLogin()">LOGIN</button>
 </header>
 
 <main>
 
 <section id="home" class="hero">
-  <div class="hero-text">
-    <p class="tag">THE GAMING PERFORMANCE HUB</p>
+
+  <div class="hero-text reveal">
+    <p class="tag">⚡ THE GAMING PERFORMANCE HUB</p>
 
     <h1>
       CHECK.<br>
@@ -36,52 +44,106 @@
     </h1>
 
     <p class="description">
-      Compare gaming PCs, check performance,
-      challenge your friends and climb the leaderboard.
+      Check your gaming performance, compare your PC
+      against friends and climb the GameCheck leaderboard.
     </p>
 
     <div class="buttons">
-      <button class="primary" onclick="location.href='#vs'">
-        ⚡ Start VS
+      <button class="primary pulse" onclick="location.href='#vs'">
+        ⚔️ START VS
       </button>
 
       <button class="secondary" onclick="location.href='#pc'">
-        Check My PC
+        🖥️ CHECK MY PC
       </button>
     </div>
   </div>
 
-  <div class="vs-card">
-    <div class="player">
-      <div class="avatar">A</div>
-      <b>ShadowAUK</b>
-      <small>PC Score</small>
-      <strong>9,240</strong>
+  <div class="hero-battle reveal">
+    <div class="battle-glow"></div>
+
+    <div class="hero-player">
+      <div class="hero-avatar">A</div>
+      <strong>ShadowAUK</strong>
+      <small>PC POWER</small>
+      <b>9,240</b>
     </div>
 
-    <div class="vs">VS</div>
+    <div class="hero-vs">
+      <span>VS</span>
+    </div>
 
-    <div class="player">
-      <div class="avatar red">N</div>
-      <b>NightFox</b>
-      <small>PC Score</small>
-      <strong>8,870</strong>
+    <div class="hero-player">
+      <div class="hero-avatar red">N</div>
+      <strong>NightFox</strong>
+      <small>PC POWER</small>
+      <b>8,870</b>
     </div>
   </div>
+
 </section>
 
 
+<!-- GAMES -->
+
+<section id="games" class="section">
+
+  <p class="tag">🎮 GAME CENTER</p>
+  <h2>Choose Your <span>Game</span></h2>
+
+  <div class="game-grid">
+
+    <button class="game-card active" onclick="selectGame('Minecraft', this)">
+      <div class="game-logo minecraft">M</div>
+      <strong>Minecraft</strong>
+      <small>FPS • Performance</small>
+    </button>
+
+    <button class="game-card" onclick="selectGame('Fortnite', this)">
+      <div class="game-logo fortnite">F</div>
+      <strong>Fortnite</strong>
+      <small>FPS • Performance</small>
+    </button>
+
+    <button class="game-card" onclick="selectGame('Valorant', this)">
+      <div class="game-logo valorant">V</div>
+      <strong>Valorant</strong>
+      <small>FPS • Performance</small>
+    </button>
+
+    <button class="game-card" onclick="selectGame('GTA V', this)">
+      <div class="game-logo gta">V</div>
+      <strong>GTA V</strong>
+      <small>FPS • Performance</small>
+    </button>
+
+  </div>
+
+  <div class="selected-game">
+    <span>SELECTED GAME</span>
+    <strong id="selectedGame">Minecraft</strong>
+  </div>
+
+</section>
+
+
+<!-- VS -->
+
 <section id="vs" class="section">
-  <p class="tag">PLAYER BATTLE</p>
-  <h2>VS <span>Comparison</span></h2>
+
+  <p class="tag">⚔️ PLAYER BATTLE</p>
+  <h2>VS <span>ARENA</span></h2>
 
   <div class="comparison">
 
-    <div class="form-card">
-      <h3>PLAYER 1</h3>
+    <div class="form-card player-form">
+      <div class="form-title">
+        <span class="side-blue">PLAYER 1</span>
+      </div>
 
       <input id="player1" placeholder="Username" value="ShadowAUK">
 
+      <label>GPU</label>
       <select id="gpu1">
         <option>RTX 3060</option>
         <option>RTX 4060</option>
@@ -89,6 +151,7 @@
         <option>RX 7600</option>
       </select>
 
+      <label>CPU</label>
       <select id="cpu1">
         <option>Ryzen 5 5600</option>
         <option>Ryzen 5 7600</option>
@@ -97,13 +160,20 @@
       </select>
     </div>
 
-    <div class="big-vs">VS</div>
+    <div class="arena-vs">
+      <div class="vs-ring">
+        <span>VS</span>
+      </div>
+    </div>
 
-    <div class="form-card">
-      <h3>PLAYER 2</h3>
+    <div class="form-card player-form">
+      <div class="form-title">
+        <span class="side-red">PLAYER 2</span>
+      </div>
 
       <input id="player2" placeholder="Username" value="NightFox">
 
+      <label>GPU</label>
       <select id="gpu2">
         <option>RTX 3060</option>
         <option>RTX 4060</option>
@@ -111,6 +181,7 @@
         <option>RX 7600</option>
       </select>
 
+      <label>CPU</label>
       <select id="cpu2">
         <option>Ryzen 5 5600</option>
         <option>Ryzen 5 7600</option>
@@ -121,23 +192,26 @@
 
   </div>
 
-  <button class="primary start" onclick="comparePlayers()">
-    ⚡ START COMPARISON
+  <button class="primary start pulse" onclick="comparePlayers()">
+    ⚡ START BATTLE
   </button>
 
-  <div id="vsResult" class="result"></div>
+  <div id="vsResult" class="result battle-result"></div>
+
 </section>
 
 
+<!-- PC CHECK -->
+
 <section id="pc" class="section">
-  <p class="tag">PC ANALYZER</p>
-  <h2>Check Your <span>PC</span></h2>
+
+  <p class="tag">🖥️ PC ANALYZER</p>
+  <h2>Analyze Your <span>PC</span></h2>
 
   <div class="pc-form">
 
     <div class="form-card">
       <label>CPU</label>
-
       <select id="cpu">
         <option>Ryzen 5 5600</option>
         <option>Ryzen 5 7600</option>
@@ -148,7 +222,6 @@
 
     <div class="form-card">
       <label>GPU</label>
-
       <select id="gpu">
         <option>RTX 3060</option>
         <option>RTX 4060</option>
@@ -159,7 +232,6 @@
 
     <div class="form-card">
       <label>RAM</label>
-
       <select id="ram">
         <option>8 GB</option>
         <option selected>16 GB</option>
@@ -169,7 +241,6 @@
 
     <div class="form-card">
       <label>GAME</label>
-
       <select id="game">
         <option>Minecraft</option>
         <option>Fortnite</option>
@@ -180,60 +251,79 @@
 
   </div>
 
-  <button class="primary start" onclick="checkPC()">
-    CALCULATE PERFORMANCE
+  <button class="primary start pulse" onclick="checkPC()">
+    🔍 ANALYZE MY PC
   </button>
 
-  <div id="pcResult" class="result"></div>
+  <div id="pcResult" class="result analysis-result"></div>
 
-  <p class="note">
-    FPS values are estimates and can vary depending on settings and other hardware.
-  </p>
 </section>
 
+
+<!-- LEADERBOARD -->
 
 <section id="leaderboard" class="section">
-  <p class="tag">GLOBAL RANKING</p>
-  <h2>PC <span>Leaderboard</span></h2>
+
+  <p class="tag">🏆 GLOBAL RANKING</p>
+  <h2>PC <span>LEADERBOARD</span></h2>
+
+  <div class="leaderboard-tabs">
+    <button class="tab active">GLOBAL</button>
+    <button class="tab">FRIENDS</button>
+  </div>
 
   <div id="leaderboardList"></div>
+
 </section>
 
 
+<!-- FRIENDS -->
+
 <section id="friends" class="section">
-  <p class="tag">SOCIAL</p>
+
+  <p class="tag">👥 SOCIAL</p>
   <h2>Your <span>Friends</span></h2>
 
   <div class="friend-add">
     <input id="friendName" placeholder="Enter username">
-    <button class="primary" onclick="addFriend()">Add Friend</button>
+    <button class="primary" onclick="addFriend()">+ ADD</button>
   </div>
 
   <div id="friendsList"></div>
+
 </section>
 
 </main>
 
 
 <footer>
-  GameCheck • <b>Made by AUK</b>
+  <div class="footer-logo">GAME<span>CHECK</span></div>
+  <p>Check • Compare • Compete</p>
+  <b>Made by AUK</b>
 </footer>
 
 
+<!-- LOGIN -->
+
 <div id="loginBox" class="login-box">
+
   <div class="login-card">
+
     <button class="close" onclick="closeLogin()">×</button>
+
+    <div class="login-icon">🎮</div>
 
     <h2>Welcome to <span>GameCheck</span></h2>
 
     <input placeholder="Username">
-
     <input type="password" placeholder="Password">
 
-    <button class="primary">LOGIN</button>
+    <button class="primary login-submit">LOGIN</button>
 
-    <p>Don't have an account? <b>Sign Up</b></p>
+    <p>New player? <b>SIGN UP</b></p>
+
   </div>
+
 </div>
 
 
