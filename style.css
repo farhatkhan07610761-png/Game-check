@@ -1421,3 +1421,787 @@ body.theme-electric {
     display: none;
   }
 }
+/* =========================================================
+   GAMECHECK V4 — SOUND + CINEMATIC VS
+   ========================================================= */
+
+#soundToggle {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 9999;
+
+  width: 48px;
+  height: 48px;
+
+  border: 1px solid var(--border);
+  border-radius: 50%;
+
+  background: rgba(10, 14, 25, .88);
+  color: var(--text);
+
+  font-size: 20px;
+  cursor: pointer;
+
+  backdrop-filter: blur(12px);
+
+  box-shadow:
+    0 0 25px rgba(0, 229, 255, .15);
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+#soundToggle:hover {
+  transform: scale(1.1);
+
+  box-shadow:
+    0 0 30px rgba(0, 229, 255, .4);
+}
+
+
+/* =========================================================
+   LOADER FIX
+   ========================================================= */
+
+#loader.loaded {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity .6s ease,
+    visibility .6s ease;
+}
+
+
+/* =========================================================
+   VS ARENA
+   ========================================================= */
+
+#battleArena {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+#battleArena::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(0,229,255,.12),
+      transparent 42%
+    );
+
+  pointer-events: none;
+}
+
+#battleArena::after {
+  content: "";
+
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 12%;
+
+  height: 2px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent),
+    var(--accent2),
+    transparent
+  );
+
+  box-shadow:
+    0 0 20px var(--accent);
+
+  opacity: .6;
+}
+
+
+/* =========================================================
+   FIGHTER MOVEMENT
+   ========================================================= */
+
+.fighter-one,
+.fighter-two {
+  position: absolute;
+
+  z-index: 8;
+
+  transition:
+    transform .3s ease,
+    filter .3s ease;
+}
+
+.fighter-one {
+  left: 12%;
+}
+
+.fighter-two {
+  right: 12%;
+}
+
+.fighter-jump-left {
+  animation: fighterJumpLeft .7s cubic-bezier(.2,.8,.2,1);
+}
+
+.fighter-jump-right {
+  animation: fighterJumpRight .7s cubic-bezier(.2,.8,.2,1);
+}
+
+.fighter-charge {
+  animation: fighterCharge .5s ease;
+}
+
+.fighter-hit {
+  animation: fighterHit .45s ease;
+}
+
+.fighter-winner {
+  animation:
+    winnerFloat 1s ease-in-out infinite,
+    winnerGlow 1.2s ease-in-out infinite alternate;
+}
+
+.fighter-loser {
+  filter: grayscale(.8) brightness(.45);
+  transform: translateY(18px) scale(.94);
+  opacity: .65;
+}
+
+
+/* =========================================================
+   SWORD
+   ========================================================= */
+
+.battle-slash {
+  position: absolute;
+
+  top: 42%;
+
+  width: 160px;
+  height: 12px;
+
+  z-index: 15;
+
+  border-radius: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      white,
+      var(--accent),
+      transparent
+    );
+
+  box-shadow:
+    0 0 12px white,
+    0 0 30px var(--accent);
+
+  opacity: 0;
+}
+
+.slash-left {
+  left: 20%;
+  transform: rotate(-25deg);
+  animation: slashLeft .5s ease-out;
+}
+
+.slash-right {
+  right: 20%;
+  transform: rotate(25deg);
+  animation: slashRight .5s ease-out;
+}
+
+
+/* =========================================================
+   PROJECTILES
+   ========================================================= */
+
+.battle-projectile {
+  position: absolute;
+
+  width: 30px;
+  height: 8px;
+
+  z-index: 20;
+
+  border-radius: 999px;
+
+  background: white;
+
+  box-shadow:
+    0 0 8px white,
+    0 0 22px var(--accent);
+}
+
+.projectile-left {
+  left: 25%;
+  top: 48%;
+  animation: projectileLeft .65s linear;
+}
+
+.projectile-right {
+  right: 25%;
+  top: 48%;
+  animation: projectileRight .65s linear;
+}
+
+.rocket-left,
+.rocket-right {
+  width: 48px;
+  height: 10px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ffb000,
+      #fff,
+      #ff4d00
+    );
+
+  box-shadow:
+    0 0 10px #ffb000,
+    0 0 30px #ff4d00;
+}
+
+
+/* =========================================================
+   BUILD WALL
+   ========================================================= */
+
+.battle-wall {
+  position: absolute;
+
+  top: 25%;
+
+  width: 115px;
+  height: 145px;
+
+  z-index: 12;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 5px;
+
+  padding: 7px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(0,229,255,.2),
+      rgba(255,255,255,.05)
+    );
+
+  border: 2px solid var(--accent);
+
+  box-shadow:
+    0 0 25px rgba(0,229,255,.3);
+
+  animation: wallBuild .35s ease-out;
+}
+
+.wall-left {
+  left: 28%;
+}
+
+.wall-right {
+  right: 28%;
+}
+
+.battle-wall span {
+  border: 1px solid var(--accent);
+  background: rgba(0,229,255,.12);
+}
+
+.wall-break {
+  animation: wallBreak .4s ease forwards;
+}
+
+
+/* =========================================================
+   IMPACT
+   ========================================================= */
+
+.battle-flash {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 40px;
+  height: 40px;
+
+  z-index: 30;
+
+  border-radius: 50%;
+
+  background: white;
+
+  transform:
+    translate(-50%, -50%)
+    scale(.2);
+
+  animation: impactFlash .35s ease-out;
+
+  pointer-events: none;
+}
+
+.arena-shake {
+  animation: arenaShake .45s ease;
+}
+
+.battle-spark {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: white;
+
+  box-shadow:
+    0 0 8px var(--accent);
+
+  z-index: 35;
+
+  animation: sparkFly .65s ease-out forwards;
+}
+
+
+/* =========================================================
+   COUNTDOWN
+   ========================================================= */
+
+#countdown.count-pop {
+  animation: countPop .55s cubic-bezier(.2,1.4,.4,1);
+}
+
+
+/* =========================================================
+   BATTLE RESULT
+   ========================================================= */
+
+#battleResult {
+  opacity: 0;
+  transform: translateY(20px) scale(.9);
+
+  transition:
+    opacity .5s ease,
+    transform .5s ease;
+}
+
+#battleResult.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.victory-title {
+  font-size: clamp(28px, 6vw, 55px);
+  font-weight: 1000;
+  letter-spacing: 4px;
+
+  animation: victoryPulse 1s ease-in-out infinite alternate;
+}
+
+#battleResult strong {
+  display: block;
+
+  margin-top: 8px;
+
+  font-size: 25px;
+}
+
+#battleResult span {
+  display: block;
+
+  margin-top: 6px;
+
+  color: var(--muted);
+  letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   LOW HP
+   ========================================================= */
+
+body.low-hp {
+  animation: lowHpFlash .3s ease;
+}
+
+
+/* =========================================================
+   GAME LOGOS
+   ========================================================= */
+
+.game-logo-img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  display: block;
+}
+
+.game-fallback {
+  display: grid;
+  place-items: center;
+
+  width: 100%;
+  height: 100%;
+
+  font-size: 25px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+  #soundToggle {
+    width: 44px;
+    height: 44px;
+
+    right: 14px;
+    bottom: 14px;
+  }
+
+  .battle-wall {
+    width: 75px;
+    height: 105px;
+  }
+
+  .wall-left {
+    left: 25%;
+  }
+
+  .wall-right {
+    right: 25%;
+  }
+
+  .battle-slash {
+    width: 100px;
+  }
+
+  .fighter-one {
+    left: 5%;
+  }
+
+  .fighter-two {
+    right: 5%;
+  }
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes fighterJumpLeft {
+  0% {
+    transform: translate(0,0) rotate(0);
+  }
+
+  45% {
+    transform:
+      translate(125px,-70px)
+      rotate(-12deg)
+      scale(1.08);
+  }
+
+  100% {
+    transform:
+      translate(20px,0)
+      rotate(0);
+  }
+}
+
+@keyframes fighterJumpRight {
+  0% {
+    transform: translate(0,0) rotate(0);
+  }
+
+  45% {
+    transform:
+      translate(-125px,-70px)
+      rotate(12deg)
+      scale(1.08);
+  }
+
+  100% {
+    transform:
+      translate(-20px,0)
+      rotate(0);
+  }
+}
+
+@keyframes fighterCharge {
+  0%,100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.12);
+    filter: brightness(1.5);
+  }
+}
+
+@keyframes fighterHit {
+  0% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-12px);
+  }
+
+  40% {
+    transform: translateX(12px);
+  }
+
+  60% {
+    transform: translateX(-8px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slashLeft {
+  0% {
+    opacity: 0;
+    transform:
+      translateX(-80px)
+      rotate(-25deg)
+      scale(.3);
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translateX(180px)
+      rotate(-25deg)
+      scale(1.4);
+  }
+}
+
+@keyframes slashRight {
+  0% {
+    opacity: 0;
+    transform:
+      translateX(80px)
+      rotate(25deg)
+      scale(.3);
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translateX(-180px)
+      rotate(25deg)
+      scale(1.4);
+  }
+}
+
+@keyframes projectileLeft {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(430px);
+  }
+}
+
+@keyframes projectileRight {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-430px);
+  }
+}
+
+@keyframes wallBuild {
+  from {
+    opacity: 0;
+    transform:
+      translateY(60px)
+      scaleY(.2);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scaleY(1);
+  }
+}
+
+@keyframes wallBreak {
+  to {
+    opacity: 0;
+    transform:
+      scale(1.3)
+      rotate(8deg);
+  }
+}
+
+@keyframes impactFlash {
+  0% {
+    opacity: 1;
+    transform:
+      translate(-50%,-50%)
+      scale(.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translate(-50%,-50%)
+      scale(8);
+  }
+}
+
+@keyframes arenaShake {
+  0%,100% {
+    transform: translate(0);
+  }
+
+  20% {
+    transform: translate(-8px,4px);
+  }
+
+  40% {
+    transform: translate(8px,-4px);
+  }
+
+  60% {
+    transform: translate(-6px,-3px);
+  }
+
+  80% {
+    transform: translate(5px,3px);
+  }
+}
+
+@keyframes sparkFly {
+  from {
+    opacity: 1;
+    transform:
+      translate(-50%,-50%)
+      translate(0,0)
+      scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform:
+      translate(-50%,-50%)
+      translate(var(--x),var(--y))
+      scale(.2);
+  }
+}
+
+@keyframes countPop {
+  0% {
+    opacity: 0;
+    transform: scale(.2);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes victoryPulse {
+  from {
+    transform: scale(1);
+    text-shadow: 0 0 10px var(--accent);
+  }
+
+  to {
+    transform: scale(1.05);
+    text-shadow:
+      0 0 15px var(--accent),
+      0 0 35px var(--accent2);
+  }
+}
+
+@keyframes winnerFloat {
+  0%,100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes winnerGlow {
+  from {
+    filter: brightness(1);
+  }
+
+  to {
+    filter: brightness(1.35);
+  }
+}
+
+@keyframes lowHpFlash {
+  0%,100% {
+    filter: none;
+  }
+
+  50% {
+    filter: brightness(1.25);
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
