@@ -1,10 +1,25 @@
 /* =========================================================
-   GAMECHECK V2
+   GAMECHECK V3
    Made by AUK
    ========================================================= */
 
+"use strict";
 
-/* ---------- GAME DATABASE ---------- */
+/* ---------- HELPERS ---------- */
+
+const $ = id => document.getElementById(id);
+
+const safeOn = (id, event, handler) => {
+  const el = $(id);
+  if (el) el.addEventListener(event, handler);
+};
+
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+
+/* =========================================================
+   GAME DATABASE
+   ========================================================= */
 
 const games = [
   ["Minecraft","survival","⛏️"],
@@ -110,7 +125,6 @@ const games = [
   ["Risk of Rain 2","battle","🌧️"],
   ["Dead Cells","rpg","⚔️"],
   ["Cuphead","battle","☕"],
-  ["Terraria","survival","⛏️"],
   ["Portal 2","rpg","🌀"],
   ["Half-Life 2","fps","🔬"],
   ["Garry's Mod","rpg","🔧"],
@@ -137,7 +151,6 @@ const games = [
   ["Escape from Tarkov","fps","🎒"],
   ["BattleBit Remastered","fps","🪖"],
   ["Splitgate 2","fps","🌀"],
-  ["XDefiant","fps","🎯"],
   ["Titanfall 2","fps","🤖"],
   ["Quake Champions","fps","⚡"],
   ["Unreal Tournament","fps","💥"],
@@ -182,7 +195,6 @@ const games = [
   ["Teardown","rpg","💥"],
   ["PowerWash Simulator","rpg","💦"],
   ["House Flipper 2","rpg","🏠"],
-  ["Lies of P","rpg","🤖"],
   ["Remnant II","rpg","👹"],
   ["Warhammer Vermintide 2","battle","⚔️"],
   ["Deep Rock Galactic","survival","⛏️"],
@@ -220,7 +232,6 @@ const games = [
   ["It Takes Two","rpg","👫"],
   ["A Way Out","rpg","🔓"],
   ["Sea of Stars","rpg","⭐"],
-  ["Baldur's Gate 3","rpg","🐉"],
   ["Divinity Original Sin 2","rpg","🐲"],
   ["Civilization VI","rpg","🌎"],
   ["Age of Empires IV","rpg","🏰"],
@@ -234,21 +245,14 @@ const games = [
 ];
 
 
-/* ---------- STATE ---------- */
+/* =========================================================
+   GAME DATABASE
+   ========================================================= */
 
 let visibleGames = 24;
 let currentCategory = "all";
 let currentSearch = "";
 
-const $ = id => document.getElementById(id);
-
-
-/* ---------- LOGOS ---------- */
-
-/*
-  Some remote game-logo URLs can disappear.
-  GameCheck therefore ALWAYS has an emoji fallback.
-*/
 
 const logoMap = {
   "Minecraft": "https://cdn.simpleicons.org/minecraft",
@@ -265,26 +269,19 @@ const logoMap = {
   "League of Legends": "https://cdn.simpleicons.org/leagueoflegends",
   "Warframe": "https://cdn.simpleicons.org/warframe",
   "The Witcher 3": "https://cdn.simpleicons.org/thewitcher",
-  "Cyberpunk 2077": "https://cdn.simpleicons.org/cyberdefenders",
-  "Forza Horizon 5": "https://cdn.simpleicons.org/forza",
-  "EA Sports FC 26": "https://cdn.simpleicons.org/easports"
+  "Forza Horizon 5": "https://cdn.simpleicons.org/forza"
 };
 
 
-/* ---------- GAME RENDER ---------- */
-
 function filteredGames() {
   return games.filter(game => {
-
-    const name = game[0];
-    const category = game[1];
-
     const categoryMatch =
       currentCategory === "all" ||
-      category === currentCategory;
+      game[1] === currentCategory;
 
     const searchMatch =
-      name.toLowerCase().includes(currentSearch.toLowerCase());
+      game[0].toLowerCase()
+        .includes(currentSearch.toLowerCase());
 
     return categoryMatch && searchMatch;
   });
@@ -297,123 +294,190 @@ function renderGames() {
 
   if (!grid) return;
 
-  const list = filteredGames().slice(0, visibleGames);
+  const all = filteredGames();
+  const list = all.slice(0, visibleGames);
 
   grid.innerHTML = "";
 
   if (!list.length) {
+
     grid.innerHTML = `
-      <div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--muted)">
-        No games found.
+      <div style="
+        grid-column:1/-1;
+        text-align:center;
+        padding:50px;
+        color:var(--muted)
+      ">
+        NO GAMES FOUND
       </div>
     `;
+
     return;
   }
 
-  list.forEach((game, index) => {
+  list.forEach((game,index) => {
 
-    const [name, category, emoji] = game;
+    const [name,category,emoji] = game;
 
     const card = document.createElement("article");
 
     card.className = "game-card";
-    card.style.animation = `gameIn .45s ease ${Math.min(index,10) * .025}s both`;
+
+    card.style.animation =
+      `gameIn .45s ease ${Math.min(index,10)*.025}s both`;
 
     const logo = logoMap[name];
 
     card.innerHTML = `
-      <div class="game-category">${category.toUpperCase()}</div>
+      <div class="game-category">
+        ${category.toUpperCase()}
+      </div>
 
       <div class="game-logo">
         ${
           logo
-          ? `<img src="${logo}" alt="${name}" loading="lazy">`
+          ? `<img src="${logo}" alt="" loading="lazy">`
           : emoji
         }
       </div>
 
       <h3>${name}</h3>
-      <small>Check estimated performance →</small>
+
+      <small>
+        CHECK ESTIMATED PERFORMANCE →
+      </small>
     `;
 
     const img = card.querySelector("img");
 
     if (img) {
-      img.addEventListener("error", () => {
+
+      img.addEventListener("error",() => {
+
         img.remove();
-        card.querySelector(".game-logo").textContent = emoji;
+
+        const logoBox =
+          card.querySelector(".game-logo");
+
+        if (logoBox)
+          logoBox.textContent = emoji;
+
       });
     }
 
-    card.addEventListener("click", () => {
+    card.addEventListener("click",() => {
 
-      $("checkGame").value = name;
+      const gameSelect = $("checkGame");
 
-      document.querySelector("#pc").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
+      if (!gameSelect) return;
 
-      setTimeout(() => {
-        $("checkPcBtn").focus();
-      }, 500);
+      gameSelect.value = name;
+
+      /*
+        IMPORTANT:
+        We intentionally do NOT auto-scroll here.
+        This prevents the unwanted page movement.
+      */
+
+      const pcSection = $("pc");
+
+      if (pcSection) {
+
+        pcSection.classList.add("game-selected");
+
+        setTimeout(() => {
+          pcSection.classList.remove("game-selected");
+        },1200);
+      }
     });
 
     grid.appendChild(card);
   });
 
-  $("loadMore").style.display =
-    list.length < filteredGames().length ? "block" : "none";
+  const loadMore = $("loadMore");
+
+  if (loadMore) {
+
+    loadMore.style.display =
+      list.length < all.length
+      ? "block"
+      : "none";
+  }
 }
 
 
-const gameStyle = document.createElement("style");
+const gameAnimationStyle =
+document.createElement("style");
 
-gameStyle.textContent = `
+gameAnimationStyle.textContent = `
 @keyframes gameIn {
   from {
     opacity:0;
     transform:translateY(15px);
   }
+
   to {
     opacity:1;
     transform:none;
   }
-}`;
+}
 
-document.head.appendChild(gameStyle);
+.game-selected {
+  animation:gameSelected .7s ease;
+}
+
+@keyframes gameSelected {
+  0% { filter:none; }
+  50% { filter:brightness(1.5); }
+  100% { filter:none; }
+}
+`;
+
+document.head.appendChild(gameAnimationStyle);
 
 
-/* ---------- GAME FILTER ---------- */
+/* ---------- GAME SEARCH ---------- */
 
-$("gameSearch").addEventListener("input", e => {
+safeOn("gameSearch","input",event => {
 
-  currentSearch = e.target.value;
+  currentSearch = event.target.value;
+
   visibleGames = 24;
 
   renderGames();
-});
-
-
-document.querySelectorAll("#categories button").forEach(button => {
-
-  button.addEventListener("click", () => {
-
-    document.querySelectorAll("#categories button")
-      .forEach(b => b.classList.remove("active"));
-
-    button.classList.add("active");
-
-    currentCategory = button.dataset.category;
-    visibleGames = 24;
-
-    renderGames();
-  });
 
 });
 
 
-$("loadMore").addEventListener("click", () => {
+/* ---------- GAME CATEGORIES ---------- */
+
+document
+  .querySelectorAll("#categories button")
+  .forEach(button => {
+
+    button.addEventListener("click",() => {
+
+      document
+        .querySelectorAll("#categories button")
+        .forEach(b =>
+          b.classList.remove("active")
+        );
+
+      button.classList.add("active");
+
+      currentCategory =
+        button.dataset.category || "all";
+
+      visibleGames = 24;
+
+      renderGames();
+
+    });
+
+});
+
+
+safeOn("loadMore","click",() => {
 
   visibleGames += 24;
 
@@ -426,11 +490,18 @@ $("loadMore").addEventListener("click", () => {
 
 function fillGameSelect() {
 
-  $("checkGame").innerHTML = games
-    .map(g => `<option value="${g[0]}">${g[0]}</option>`)
+  const select = $("checkGame");
+
+  if (!select) return;
+
+  select.innerHTML = games
+    .map(game =>
+      `<option value="${game[0]}">${game[0]}</option>`
+    )
     .join("");
 
 }
+
 
 fillGameSelect();
 renderGames();
@@ -443,117 +514,176 @@ renderGames();
 let battleRunning = false;
 
 
-function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-
 function getPlayerStats(player) {
 
-  const gpu = Number($(player === 1 ? "gpu1" : "gpu2").value);
-  const ram = Number($(player === 1 ? "ram1" : "ram2").value);
-  const cpu = Number($(player === 1 ? "cpu1" : "cpu2").value);
+  const prefix = player === 1 ? 1 : 2;
 
-  return { gpu, ram, cpu };
+  return {
+    gpu: Number(
+      $(prefix === 1 ? "gpu1" : "gpu2")?.value || 0
+    ),
+
+    ram: Number(
+      $(prefix === 1 ? "ram1" : "ram2")?.value || 0
+    ),
+
+    cpu: Number(
+      $(prefix === 1 ? "cpu1" : "cpu2")?.value || 0
+    )
+  };
 }
 
 
-function setHP(player, value) {
+function setHP(player,value) {
 
-  value = Math.max(0, Math.round(value));
+  value = Math.max(
+    0,
+    Math.round(value)
+  );
 
-  const bar = $(player === 1 ? "hp1" : "hp2");
-  const number = $(player === 1 ? "hpNumber1" : "hpNumber2");
+  const bar =
+    $(player === 1 ? "hp1" : "hp2");
 
-  bar.style.width = `${value}%`;
-  number.textContent = value;
+  const number =
+    $(player === 1
+      ? "hpNumber1"
+      : "hpNumber2");
+
+  if (bar)
+    bar.style.width = `${value}%`;
+
+  if (number)
+    number.textContent = value;
 }
 
 
 async function countdown() {
 
-  for (const number of ["3", "2", "1"]) {
+  const count = $("countdown");
 
-    $("countdown").textContent = number;
+  if (!count) return;
 
-    await wait(650);
+  for (const number of ["3","2","1"]) {
+
+    count.textContent = number;
+
+    await wait(600);
+
   }
 
-  $("countdown").textContent = "GO!";
+  count.textContent = "GO!";
 
   await wait(500);
 }
 
 
-function attack(side, weapon, damage) {
+async function attack(side,weapon) {
 
   const effect = $("attackEffect");
   const impact = $("impact");
   const arena = $("battleArena");
+  const weaponBox = $("weapon");
 
-  $("weapon").textContent = weapon;
+  if (weaponBox)
+    weaponBox.textContent = weapon;
 
-  effect.className = "";
+  if (effect) {
 
-  void effect.offsetWidth;
+    effect.className = "";
 
-  effect.classList.add(side === 1 ? "attack-left" : "attack-right");
+    void effect.offsetWidth;
 
-  impact.className = "";
+    effect.classList.add(
+      side === 1
+      ? "attack-left"
+      : "attack-right"
+    );
+  }
 
-  void impact.offsetWidth;
+  if (impact) {
 
-  impact.classList.add("impact-animation");
+    impact.className = "";
 
-  arena.classList.remove("screen-shake");
+    void impact.offsetWidth;
 
-  void arena.offsetWidth;
+    impact.classList.add(
+      "impact-animation"
+    );
+  }
 
-  arena.classList.add("screen-shake");
+  if (arena) {
 
-  return wait(500);
+    arena.classList.remove(
+      "screen-shake"
+    );
+
+    void arena.offsetWidth;
+
+    arena.classList.add(
+      "screen-shake"
+    );
+  }
+
+  await wait(500);
 }
 
 
-async function doRound(round, stat1, stat2) {
+async function doRound(round,stat1,stat2) {
 
-  const roundNames = [
-    ["ROUND 1", "GPU CLASH", "⚔️"],
-    ["ROUND 2", "RAM RAID", "🔫"],
-    ["ROUND 3", "CPU OVERDRIVE", "🚀"]
+  const names = [
+    ["ROUND 1","GPU CLASH","⚔️"],
+    ["ROUND 2","RAM RAID","🔫"],
+    ["ROUND 3","CPU OVERDRIVE","🚀"]
   ];
 
-  const [roundName, title, weapon] = roundNames[round - 1];
+  const [roundName,title,weapon] =
+    names[round - 1];
 
-  $("roundText").textContent = `${roundName} • ${title}`;
-  $("arenaText").textContent = title;
-  $("weapon").textContent = weapon;
+  const roundText = $("roundText");
+  const arenaText = $("arenaText");
+
+  if (roundText)
+    roundText.textContent =
+      `${roundName} • ${title}`;
+
+  if (arenaText)
+    arenaText.textContent = title;
 
   await wait(700);
 
-  const first = stat1 >= stat2 ? 1 : 2;
+  const first =
+    stat1 >= stat2 ? 1 : 2;
 
-  const advantage = Math.abs(stat1 - stat2);
+  const difference =
+    Math.abs(stat1 - stat2);
 
-  let damage = 15 + Math.min(25, Math.round(advantage * .45));
+  const damage =
+    stat1 === stat2
+    ? 18
+    : 15 + Math.min(
+        25,
+        Math.round(difference * .45)
+      );
 
-  if (stat1 === stat2) {
-    damage = 18;
-  }
+  await attack(first,weapon);
 
   if (first === 1) {
 
-    await attack(1, weapon, damage);
+    const current =
+      Number(
+        $("hpNumber2")?.textContent || 100
+      );
 
-    const current = Number($("hpNumber2").textContent);
-    setHP(2, current - damage);
+    setHP(2,current-damage);
 
   } else {
 
-    await attack(2, weapon, damage);
+    const current =
+      Number(
+        $("hpNumber1")?.textContent || 100
+      );
 
-    const current = Number($("hpNumber1").textContent);
-    setHP(1, current - damage);
+    setHP(1,current-damage);
   }
 
   await wait(600);
@@ -568,142 +698,226 @@ async function startBattle() {
 
   battleRunning = true;
 
-  $("startBattle").disabled = true;
-  $("battleResult").innerHTML = "";
+  const startButton =
+    $("startBattle");
 
-  const name1 = $("player1").value.trim() || "Player 1";
-  const name2 = $("player2").value.trim() || "Player 2";
+  if (startButton)
+    startButton.disabled = true;
 
-  $("fighterName1").textContent = name1.toUpperCase();
-  $("fighterName2").textContent = name2.toUpperCase();
+  const result =
+    $("battleResult");
 
-  $("hpName1").textContent = name1;
-  $("hpName2").textContent = name2;
+  if (result)
+    result.innerHTML = "";
 
-  setHP(1, 100);
-  setHP(2, 100);
+  const name1 =
+    $("player1")?.value.trim()
+    || "Player 1";
 
-  $("arenaText").textContent = "ENTERING ARENA";
+  const name2 =
+    $("player2")?.value.trim()
+    || "Player 2";
+
+  $("fighterName1") &&
+    ($("fighterName1").textContent =
+      name1.toUpperCase());
+
+  $("fighterName2") &&
+    ($("fighterName2").textContent =
+      name2.toUpperCase());
+
+  $("hpName1") &&
+    ($("hpName1").textContent = name1);
+
+  $("hpName2") &&
+    ($("hpName2").textContent = name2);
+
+  setHP(1,100);
+  setHP(2,100);
+
+  $("arenaText") &&
+    ($("arenaText").textContent =
+      "ENTERING ARENA");
 
   await countdown();
 
   const p1 = getPlayerStats(1);
   const p2 = getPlayerStats(2);
 
-  /*
-    Round 1 = GPU
-    Round 2 = RAM
-    Round 3 = CPU
-  */
+  await doRound(1,p1.gpu,p2.gpu);
 
-  const results = [];
+  if (
+    Number($("hpNumber1")?.textContent || 0) <= 0 ||
+    Number($("hpNumber2")?.textContent || 0) <= 0
+  ) {
 
-  results.push(await doRound(1, p1.gpu, p2.gpu));
+    await finishBattle(
+      name1,
+      name2
+    );
 
-  if (Number($("hpNumber1").textContent) <= 0 ||
-      Number($("hpNumber2").textContent) <= 0) {
-    return finishBattle(name1, name2);
+    return;
   }
 
   await wait(400);
 
-  results.push(await doRound(2, p1.ram, p2.ram));
+  await doRound(2,p1.ram,p2.ram);
 
-  if (Number($("hpNumber1").textContent) <= 0 ||
-      Number($("hpNumber2").textContent) <= 0) {
-    return finishBattle(name1, name2);
+  if (
+    Number($("hpNumber1")?.textContent || 0) <= 0 ||
+    Number($("hpNumber2")?.textContent || 0) <= 0
+  ) {
+
+    await finishBattle(
+      name1,
+      name2
+    );
+
+    return;
   }
 
   await wait(400);
 
-  results.push(await doRound(3, p1.cpu, p2.cpu));
+  await doRound(3,p1.cpu,p2.cpu);
 
-  await wait(600);
+  await wait(500);
 
-  finishBattle(name1, name2);
+  await finishBattle(
+    name1,
+    name2
+  );
 }
 
 
-async function finishBattle(name1, name2) {
+async function finishBattle(name1,name2) {
 
-  let hp1 = Number($("hpNumber1").textContent);
-  let hp2 = Number($("hpNumber2").textContent);
+  let hp1 =
+    Number(
+      $("hpNumber1")?.textContent || 0
+    );
 
-  /*
-    If both survive, compare total component score.
-  */
+  let hp2 =
+    Number(
+      $("hpNumber2")?.textContent || 0
+    );
 
   if (hp1 > 0 && hp2 > 0) {
 
-    const p1 = getPlayerStats(1);
-    const p2 = getPlayerStats(2);
+    const p1 =
+      getPlayerStats(1);
 
-    const score1 = p1.gpu + p1.ram + p1.cpu;
-    const score2 = p2.gpu + p2.ram + p2.cpu;
+    const p2 =
+      getPlayerStats(2);
+
+    const score1 =
+      p1.gpu +
+      p1.ram +
+      p1.cpu;
+
+    const score2 =
+      p2.gpu +
+      p2.ram +
+      p2.cpu;
 
     if (score1 > score2) {
+
       hp2 = 0;
+
     } else if (score2 > score1) {
+
       hp1 = 0;
+
     } else {
+
       hp1 = 0;
       hp2 = 0;
     }
 
-    setHP(1, hp1);
-    setHP(2, hp2);
+    setHP(1,hp1);
+    setHP(2,hp2);
   }
 
-  $("roundText").textContent = "FINAL HIT";
+  $("roundText") &&
+    ($("roundText").textContent =
+      "FINAL HIT");
 
-  $("arenaText").textContent =
-    "OH NO… HERE WE GO!";
+  $("arenaText") &&
+    ($("arenaText").textContent =
+      "FINAL SHOWDOWN!");
 
-  $("weapon").textContent = "💥";
+  $("weapon") &&
+    ($("weapon").textContent = "💥");
 
-  $("impact").classList.remove("impact-animation");
+  const impact = $("impact");
 
-  void $("impact").offsetWidth;
+  if (impact) {
 
-  $("impact").classList.add("impact-animation");
+    impact.classList.remove(
+      "impact-animation"
+    );
 
-  $("battleArena").classList.add("screen-shake");
+    void impact.offsetWidth;
+
+    impact.classList.add(
+      "impact-animation"
+    );
+  }
+
+  const arena =
+    $("battleArena");
+
+  if (arena)
+    arena.classList.add(
+      "screen-shake"
+    );
 
   await wait(900);
 
-  let result;
+  let output = "";
 
   if (hp1 > hp2) {
 
-    result = `
+    output = `
       🏆 ${name1.toUpperCase()} WINS
       <small>ULTIMATE PC POWER</small>
     `;
 
   } else if (hp2 > hp1) {
 
-    result = `
+    output = `
       🏆 ${name2.toUpperCase()} WINS
       <small>ULTIMATE PC POWER</small>
     `;
 
   } else {
 
-    result = `
+    output = `
       🤝 DRAW
       <small>BOTH PCS ARE EVEN</small>
     `;
   }
 
-  $("battleResult").innerHTML = result;
+  const result =
+    $("battleResult");
 
-  $("startBattle").disabled = false;
+  if (result)
+    result.innerHTML = output;
+
+  const startButton =
+    $("startBattle");
+
+  if (startButton)
+    startButton.disabled = false;
 
   battleRunning = false;
 }
 
 
-$("startBattle").addEventListener("click", startBattle);
+safeOn(
+  "startBattle",
+  "click",
+  startBattle
+);
 
 
 /* =========================================================
@@ -712,47 +926,49 @@ $("startBattle").addEventListener("click", startBattle);
 
 const fpsMultiplier = {
 
-  "Minecraft": 2.1,
-  "Fortnite": 1.65,
-  "Valorant": 2.4,
-  "Counter-Strike 2": 2.0,
-  "Apex Legends": 1.5,
-  "PUBG": 1.45,
-  "Grand Theft Auto V": 1.7,
-  "Grand Theft Auto VI": .65,
-  "Cyberpunk 2077": .8,
-  "Red Dead Redemption 2": .9,
-  "Elden Ring": 1.0,
-  "Forza Horizon 5": 1.15,
-  "Call of Duty Warzone": 1.2,
-  "Hogwarts Legacy": .85,
-  "Black Myth Wukong": .65,
-  "Starfield": .7
+  "Minecraft":2.1,
+  "Fortnite":1.65,
+  "Valorant":2.4,
+  "Counter-Strike 2":2.0,
+  "Apex Legends":1.5,
+  "PUBG":1.45,
+  "Grand Theft Auto V":1.7,
+  "Grand Theft Auto VI":.65,
+  "Cyberpunk 2077":.8,
+  "Red Dead Redemption 2":.9,
+  "Elden Ring":1,
+  "Forza Horizon 5":1.15,
+  "Call of Duty Warzone":1.2,
+  "Hogwarts Legacy":.85,
+  "Black Myth Wukong":.65,
+  "Starfield":.7
 };
 
 
-function calculatePCScore(gpu, cpu, ram) {
-
-  /*
-    This is a GAMECHECK ESTIMATE,
-    not a real benchmark.
-  */
+function calculatePCScore(
+  gpu,
+  cpu,
+  ram
+) {
 
   return Math.round(
-    gpu * .48 +
-    cpu * .34 +
-    ram * .18
+    gpu*.48 +
+    cpu*.34 +
+    ram*.18
   );
 }
 
 
-function getFPS(game, score) {
+function getFPS(game,score) {
 
-  const multiplier = fpsMultiplier[game] || 1.15;
+  const multiplier =
+    fpsMultiplier[game] || 1.15;
 
   return Math.max(
     18,
-    Math.round(score * multiplier)
+    Math.round(
+      score * multiplier
+    )
   );
 }
 
@@ -760,64 +976,97 @@ function getFPS(game, score) {
 function performanceTier(score) {
 
   if (score >= 85) {
+
     return [
       "MONSTER PERFORMANCE",
-      "Excellent gaming performance. High settings should be comfortable for many games."
+      "Excellent gaming performance."
     ];
+
   }
 
   if (score >= 70) {
+
     return [
       "GREAT PERFORMANCE",
-      "A strong gaming setup suitable for demanding games."
+      "A strong gaming setup."
     ];
+
   }
 
   if (score >= 55) {
+
     return [
       "PLAYABLE",
-      "Good for gaming with sensible graphics settings."
+      "Good for gaming with sensible settings."
     ];
+
   }
 
   return [
     "ENTRY LEVEL",
-    "Lower graphics settings may be needed for demanding games."
+    "Lower graphics settings may be needed."
   ];
 }
 
 
-function bottleneck(gpu, cpu, ram) {
+function bottleneck(
+  gpu,
+  cpu,
+  ram
+) {
 
-  const lowest = Math.min(gpu, cpu, ram);
+  const lowest =
+    Math.min(gpu,cpu,ram);
 
-  if (lowest === gpu) return "GPU";
-  if (lowest === cpu) return "CPU";
+  if (lowest === gpu)
+    return "GPU";
+
+  if (lowest === cpu)
+    return "CPU";
 
   return "RAM";
 }
 
 
-async function animateNumber(element, target, duration = 1000) {
+async function animateNumber(
+  element,
+  target,
+  duration=1000
+) {
 
-  const start = performance.now();
+  if (!element) return;
+
+  const start =
+    performance.now();
 
   return new Promise(resolve => {
 
     function frame(now) {
 
       const progress =
-        Math.min(1, (now - start) / duration);
+        Math.min(
+          1,
+          (now-start)/duration
+        );
 
       const eased =
-        1 - Math.pow(1 - progress, 3);
+        1 -
+        Math.pow(
+          1-progress,
+          3
+        );
 
       element.textContent =
-        Math.round(target * eased);
+        Math.round(
+          target*eased
+        );
 
       if (progress < 1) {
+
         requestAnimationFrame(frame);
+
       } else {
+
         resolve();
       }
     }
@@ -827,31 +1076,57 @@ async function animateNumber(element, target, duration = 1000) {
 }
 
 
-async function analysisStage(id, label, message, start, end) {
+async function analysisStage(
+  id,
+  message,
+  start,
+  end
+) {
 
   const stage = $(id);
+
+  if (!stage) {
+
+    await wait(300);
+
+    return;
+  }
 
   stage.classList.remove("done");
   stage.classList.add("active");
 
-  $("scanStatus").textContent = message;
+  $("scanStatus") &&
+    ($("scanStatus").textContent =
+      message);
 
-  const duration = 850;
+  const duration = 700;
 
-  const startTime = performance.now();
+  const startTime =
+    performance.now();
 
   return new Promise(resolve => {
 
     function tick(now) {
 
       const progress =
-        Math.min(1,(now-startTime)/duration);
+        Math.min(
+          1,
+          (now-startTime)/duration
+        );
 
       const percent =
-        Math.round(start + (end-start)*progress);
+        Math.round(
+          start +
+          (end-start)*progress
+        );
 
-      $("scanProgress").style.width = `${percent}%`;
-      $("scanPercent").textContent = `${percent}%`;
+      $("scanProgress") &&
+        ($("scanProgress").style.width =
+          `${percent}%`);
+
+      $("scanPercent") &&
+        ($("scanPercent").textContent =
+          `${percent}%`);
 
       if (progress < 1) {
 
@@ -861,7 +1136,13 @@ async function analysisStage(id, label, message, start, end) {
 
         stage.classList.remove("active");
         stage.classList.add("done");
-        stage.querySelector("b").textContent = "COMPLETE";
+
+        const status =
+          stage.querySelector("b");
+
+        if (status)
+          status.textContent =
+            "COMPLETE";
 
         resolve();
       }
@@ -874,30 +1155,50 @@ async function analysisStage(id, label, message, start, end) {
 
 async function checkPC() {
 
-  const button = $("checkPcBtn");
+  const button =
+    $("checkPcBtn");
+
+  if (!button) return;
 
   button.disabled = true;
 
-  $("pcResult").classList.remove("show");
+  $("pcResult") &&
+    $("pcResult")
+      .classList.remove("show");
 
-  document.querySelectorAll(".scan-stage").forEach(stage => {
+  document
+    .querySelectorAll(".scan-stage")
+    .forEach(stage => {
 
-    stage.classList.remove("active","done");
+      stage.classList.remove(
+        "active",
+        "done"
+      );
 
-    stage.querySelector("b").textContent = "WAITING";
-  });
+      const status =
+        stage.querySelector("b");
 
-  $("scanProgress").style.width = "0%";
-  $("scanPercent").textContent = "0%";
+      if (status)
+        status.textContent =
+          "WAITING";
+    });
 
-  $("analysisMessages").textContent =
-    "Connecting to GameCheck diagnostics...";
+  $("scanProgress") &&
+    ($("scanProgress").style.width =
+      "0%");
 
-  await wait(500);
+  $("scanPercent") &&
+    ($("scanPercent").textContent =
+      "0%");
+
+  $("analysisMessages") &&
+    ($("analysisMessages").textContent =
+      "Connecting to GameCheck diagnostics...");
+
+  await wait(400);
 
   await analysisStage(
     "stageGpu",
-    "GPU",
     "SCANNING GRAPHICS PROCESSOR...",
     0,
     25
@@ -905,7 +1206,6 @@ async function checkPC() {
 
   await analysisStage(
     "stageCpu",
-    "CPU",
     "ANALYZING PROCESSOR POWER...",
     25,
     50
@@ -913,7 +1213,6 @@ async function checkPC() {
 
   await analysisStage(
     "stageRam",
-    "RAM",
     "CHECKING MEMORY CAPACITY...",
     50,
     72
@@ -921,62 +1220,116 @@ async function checkPC() {
 
   await analysisStage(
     "stageGame",
-    "GAME",
     "SIMULATING GAME LOAD...",
     72,
     100
   );
 
-  $("scanStatus").textContent =
-    "CALCULATING FINAL RESULT...";
+  $("scanStatus") &&
+    ($("scanStatus").textContent =
+      "CALCULATING FINAL RESULT...");
 
-  $("analysisMessages").textContent =
-    "Combining hardware scores and estimating performance...";
+  $("analysisMessages") &&
+    ($("analysisMessages").textContent =
+      "Combining hardware scores...");
 
-  await wait(800);
+  await wait(700);
 
-  const gpu = Number($("checkGpu").value);
-  const cpu = Number($("checkCpu").value);
-  const ram = Number($("checkRam").value);
+  const gpu =
+    Number(
+      $("checkGpu")?.value || 0
+    );
 
-  const game = $("checkGame").value;
+  const cpu =
+    Number(
+      $("checkCpu")?.value || 0
+    );
 
-  const score = calculatePCScore(gpu,cpu,ram);
-  const fps = getFPS(game,score);
+  const ram =
+    Number(
+      $("checkRam")?.value || 0
+    );
 
-  const [title,text] = performanceTier(score);
+  const game =
+    $("checkGame")?.value ||
+    "Minecraft";
 
-  const weak = bottleneck(gpu,cpu,ram);
+  const score =
+    calculatePCScore(
+      gpu,
+      cpu,
+      ram
+    );
 
-  $("pcResult").classList.add("show");
+  const fps =
+    getFPS(game,score);
 
-  $("performanceTitle").textContent = title;
-  $("performanceText").textContent =
-    `${text} Estimated for ${game}.`;
+  const [title,text] =
+    performanceTier(score);
 
-  $("fpsValue").textContent = `${fps}+`;
+  const weak =
+    bottleneck(
+      gpu,
+      cpu,
+      ram
+    );
 
-  $("gpuResult").textContent = `${gpu}/100`;
-  $("cpuResult").textContent = `${cpu}/100`;
-  $("ramResult").textContent = `${ram}/100`;
+  $("performanceTitle") &&
+    ($("performanceTitle").textContent =
+      title);
 
-  $("bottleneckValue").textContent =
-    weak === "RAM"
+  $("performanceText") &&
+    ($("performanceText").textContent =
+      `${text} Estimated for ${game}.`);
+
+  $("fpsValue") &&
+    ($("fpsValue").textContent =
+      `${fps}+`);
+
+  $("gpuResult") &&
+    ($("gpuResult").textContent =
+      `${gpu}/100`);
+
+  $("cpuResult") &&
+    ($("cpuResult").textContent =
+      `${cpu}/100`);
+
+  $("ramResult") &&
+    ($("ramResult").textContent =
+      `${ram}/100`);
+
+  $("bottleneckValue") &&
+    ($("bottleneckValue").textContent =
+      weak === "RAM"
       ? "RAM may limit multitasking / demanding games."
-      : `${weak} is currently your weakest component.`;
+      : `${weak} is currently your weakest component.`);
 
-  await animateNumber($("scoreValue"),score,1100);
+  const result =
+    $("pcResult");
+
+  if (result)
+    result.classList.add("show");
+
+  await animateNumber(
+    $("scoreValue"),
+    score,
+    1100
+  );
 
   button.disabled = false;
 
-  $("pcResult").scrollIntoView({
-    behavior: "smooth",
-    block: "center"
-  });
+  /*
+    No automatic scrolling here.
+    This fixes the annoying page movement.
+  */
 }
 
 
-$("checkPcBtn").addEventListener("click", checkPC);
+safeOn(
+  "checkPcBtn",
+  "click",
+  checkPC
+);
 
 
 /* =========================================================
@@ -984,35 +1337,54 @@ $("checkPcBtn").addEventListener("click", checkPC);
    ========================================================= */
 
 const defaultFriends = [
-  ["Shadow", "RTX 4070", true],
-  ["Nova", "RTX 4060", true],
-  ["Rex", "RX 7600", false]
+  ["Shadow","RTX 4070",true],
+  ["Nova","RTX 4060",true],
+  ["Rex","RX 7600",false]
 ];
 
 
 function getFriends() {
 
-  const saved = localStorage.getItem("gamecheckFriends");
+  try {
 
-  return saved
-    ? JSON.parse(saved)
-    : defaultFriends;
+    const saved =
+      localStorage.getItem(
+        "gamecheckFriends"
+      );
+
+    return saved
+      ? JSON.parse(saved)
+      : defaultFriends;
+
+  } catch {
+
+    return defaultFriends;
+  }
 }
 
 
 function renderFriends() {
 
-  const list = $("friendList");
+  const list =
+    $("friendList");
+
+  if (!list) return;
 
   list.innerHTML = "";
 
   getFriends().forEach(friend => {
 
-    const [name, gpu, online] = friend;
+    const [
+      name,
+      gpu,
+      online
+    ] = friend;
 
-    const card = document.createElement("div");
+    const card =
+      document.createElement("div");
 
-    card.className = "friend-card";
+    card.className =
+      "friend-card";
 
     card.innerHTML = `
       <strong>${name}</strong>
@@ -1028,27 +1400,39 @@ function renderFriends() {
 }
 
 
-$("addFriend").addEventListener("click", () => {
+safeOn(
+  "addFriend",
+  "click",
+  () => {
 
-  const name = prompt("Enter friend's username:");
+    const name =
+      prompt(
+        "Enter friend's username:"
+      );
 
-  if (!name) return;
+    if (!name) return;
 
-  const friends = getFriends();
+    const friends =
+      getFriends();
 
-  friends.push([
-    name.slice(0,18),
-    "PC not scanned",
-    false
-  ]);
+    friends.push([
+      name.slice(0,18),
+      "PC not scanned",
+      false
+    ]);
 
-  localStorage.setItem(
-    "gamecheckFriends",
-    JSON.stringify(friends)
-  );
+    try {
 
-  renderFriends();
-});
+      localStorage.setItem(
+        "gamecheckFriends",
+        JSON.stringify(friends)
+      );
+
+    } catch {}
+
+    renderFriends();
+  }
+);
 
 
 renderFriends();
@@ -1058,42 +1442,79 @@ renderFriends();
    LOGIN
    ========================================================= */
 
-$("loginBtn").addEventListener("click", () => {
+safeOn(
+  "loginBtn",
+  "click",
+  () => {
 
-  $("loginModal").classList.add("open");
+    $("loginModal") &&
+      $("loginModal")
+        .classList.add("open");
 
-});
+  }
+);
 
 
-$("loginSubmit").addEventListener("click", () => {
+safeOn(
+  "loginSubmit",
+  "click",
+  () => {
 
-  const name =
-    $("loginName").value.trim();
+    const input =
+      $("loginName");
 
-  if (!name) {
-    $("loginName").focus();
-    return;
+    const name =
+      input?.value.trim();
+
+    if (!name) {
+
+      input?.focus();
+
+      return;
+    }
+
+    try {
+
+      localStorage.setItem(
+        "gamecheckUser",
+        name
+      );
+
+    } catch {}
+
+    const button =
+      $("loginBtn");
+
+    if (button)
+      button.textContent =
+        name
+          .slice(0,10)
+          .toUpperCase();
+
+    $("loginModal") &&
+      $("loginModal")
+        .classList.remove("open");
+
+  }
+);
+
+
+try {
+
+  const savedUser =
+    localStorage.getItem(
+      "gamecheckUser"
+    );
+
+  if (savedUser && $("loginBtn")) {
+
+    $("loginBtn").textContent =
+      savedUser
+        .slice(0,10)
+        .toUpperCase();
   }
 
-  localStorage.setItem("gamecheckUser",name);
-
-  $("loginBtn").textContent =
-    name.slice(0,10).toUpperCase();
-
-  $("loginModal").classList.remove("open");
-
-});
-
-
-const savedUser =
-  localStorage.getItem("gamecheckUser");
-
-if (savedUser) {
-
-  $("loginBtn").textContent =
-    savedUser.slice(0,10).toUpperCase();
-
-}
+} catch {}
 
 
 /* =========================================================
@@ -1110,43 +1531,74 @@ function setTheme(theme) {
     "theme-electric"
   );
 
-  if (theme !== "cyber") {
+  if (
+    theme &&
+    theme !== "cyber"
+  ) {
 
     document.body.classList.add(
       `theme-${theme}`
     );
   }
 
-  localStorage.setItem(
-    "gamecheckTheme",
-    theme
-  );
+  try {
+
+    localStorage.setItem(
+      "gamecheckTheme",
+      theme
+    );
+
+  } catch {}
 }
 
 
-const savedTheme =
-  localStorage.getItem("gamecheckTheme");
+let savedTheme = null;
 
-if (savedTheme) {
+try {
+
+  savedTheme =
+    localStorage.getItem(
+      "gamecheckTheme"
+    );
+
+} catch {}
+
+
+if (savedTheme)
   setTheme(savedTheme);
-}
 
 
-$("themeBtn").addEventListener("click", () => {
+safeOn(
+  "themeBtn",
+  "click",
+  () => {
 
-  $("themeModal").classList.add("open");
+    $("themeModal") &&
+      $("themeModal")
+        .classList.add("open");
 
-});
+  }
+);
 
 
-document.querySelectorAll("[data-theme]").forEach(button => {
+document
+  .querySelectorAll("[data-theme]")
+  .forEach(button => {
 
-  button.addEventListener("click", () => {
+    button.addEventListener(
+      "click",
+      () => {
 
-    setTheme(button.dataset.theme);
+        setTheme(
+          button.dataset.theme
+        );
 
-    $("themeModal").classList.remove("open");
-  });
+        $("themeModal") &&
+          $("themeModal")
+            .classList.remove("open");
+
+      }
+    );
 
 });
 
@@ -1156,36 +1608,59 @@ document.querySelectorAll("[data-theme]").forEach(button => {
 if (!savedTheme) {
 
   setTimeout(() => {
-    $("themeModal").classList.add("open");
-  }, 1500);
+
+    $("themeModal") &&
+      $("themeModal")
+        .classList.add("open");
+
+  },1500);
 
 }
 
 
-/* Close modals */
+/* =========================================================
+   MODALS
+   ========================================================= */
 
-document.querySelectorAll("[data-close]").forEach(button => {
+document
+  .querySelectorAll("[data-close]")
+  .forEach(button => {
 
-  button.addEventListener("click", () => {
+    button.addEventListener(
+      "click",
+      () => {
 
-    const modal =
-      $(button.dataset.close);
+        const modal =
+          $(button.dataset.close);
 
-    modal.classList.remove("open");
-  });
+        if (modal)
+          modal.classList.remove(
+            "open"
+          );
+      }
+    );
 
 });
 
 
-document.querySelectorAll(".modal").forEach(modal => {
+document
+  .querySelectorAll(".modal")
+  .forEach(modal => {
 
-  modal.addEventListener("click", event => {
+    modal.addEventListener(
+      "click",
+      event => {
 
-    if (event.target === modal) {
-      modal.classList.remove("open");
-    }
+        if (
+          event.target === modal
+        ) {
 
-  });
+          modal.classList.remove(
+            "open"
+          );
+        }
+      }
+    );
 
 });
 
@@ -1194,57 +1669,94 @@ document.querySelectorAll(".modal").forEach(modal => {
    SCROLL REVEAL
    ========================================================= */
 
-const observer =
-  new IntersectionObserver(entries => {
+if (
+  "IntersectionObserver" in window
+) {
 
-    entries.forEach(entry => {
+  const observer =
+    new IntersectionObserver(
+      entries => {
 
-      if (entry.isIntersecting) {
+        entries.forEach(entry => {
 
-        entry.target.classList.add("visible");
+          if (
+            entry.isIntersecting
+          ) {
 
-        observer.unobserve(entry.target);
+            entry.target
+              .classList
+              .add("visible");
+
+            observer.unobserve(
+              entry.target
+            );
+          }
+
+        });
+
+      },
+      {
+        threshold:.08
       }
+    );
 
-    });
+  document
+    .querySelectorAll(".reveal")
+    .forEach(element =>
+      observer.observe(element)
+    );
 
-  }, {
-    threshold: .12
-  });
+} else {
 
-
-document.querySelectorAll(".reveal")
-  .forEach(element => observer.observe(element));
+  document
+    .querySelectorAll(".reveal")
+    .forEach(element =>
+      element.classList.add(
+        "visible"
+      )
+    );
+}
 
 
 /* =========================================================
    COUNTERS
    ========================================================= */
 
-document.querySelectorAll(".counter")
+document
+  .querySelectorAll(".counter")
   .forEach(counter => {
 
     const target =
-      Number(counter.dataset.target);
+      Number(
+        counter.dataset.target || 0
+      );
 
     let value = 0;
 
-    const interval = setInterval(() => {
+    const interval =
+      setInterval(() => {
 
-      value += Math.max(1,Math.ceil(target/35));
+        value +=
+          Math.max(
+            1,
+            Math.ceil(target / 35)
+          );
 
-      if (value >= target) {
+        if (value >= target) {
 
-        value = target;
+          value = target;
 
-        clearInterval(interval);
-      }
+          clearInterval(
+            interval
+          );
+        }
 
-      counter.textContent = value;
+        counter.textContent =
+          value;
 
-    },35);
+      },35);
 
-  });
+});
 
 
 /* =========================================================
@@ -1253,37 +1765,60 @@ document.querySelectorAll(".counter")
 
 function createParticles() {
 
-  const container = $("particles");
+  const container =
+    $("particles");
+
+  if (!container) return;
 
   const mobile =
     window.matchMedia(
       "(max-width:650px)"
     ).matches;
 
-  const count = mobile ? 12 : 28;
+  const reduced =
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
-  for (let i=0; i<count; i++) {
+  const count =
+    reduced
+    ? 0
+    : mobile
+      ? 10
+      : 24;
+
+  container.innerHTML = "";
+
+  for (
+    let i = 0;
+    i < count;
+    i++
+  ) {
 
     const particle =
       document.createElement("i");
 
-    particle.className = "particle";
+    particle.className =
+      "particle";
 
     particle.style.left =
       `${Math.random()*100}%`;
 
     particle.style.animationDuration =
-      `${8 + Math.random()*15}s`;
+      `${8+Math.random()*15}s`;
 
     particle.style.animationDelay =
       `${Math.random()*-15}s`;
 
     particle.style.opacity =
-      `${.1 + Math.random()*.3}`;
+      `${.1+Math.random()*.3}`;
 
-    container.appendChild(particle);
+    container.appendChild(
+      particle
+    );
   }
 }
+
 
 createParticles();
 
@@ -1296,7 +1831,7 @@ function updateDeviceClass() {
 
   const touch =
     window.matchMedia(
-      "(hover: none) and (pointer: coarse)"
+      "(hover:none) and (pointer:coarse)"
     ).matches;
 
   document.body.classList.toggle(
@@ -1310,11 +1845,27 @@ function updateDeviceClass() {
   );
 }
 
+
 updateDeviceClass();
+
+
+let resizeTimer;
 
 window.addEventListener(
   "resize",
-  updateDeviceClass
+  () => {
+
+    clearTimeout(
+      resizeTimer
+    );
+
+    resizeTimer =
+      setTimeout(
+        updateDeviceClass,
+        150
+      );
+
+  }
 );
 
 
@@ -1322,33 +1873,168 @@ window.addEventListener(
    MOBILE MENU
    ========================================================= */
 
-$("menuBtn").addEventListener("click", () => {
+safeOn(
+  "menuBtn",
+  "click",
+  () => {
 
-  const nav =
-    document.querySelector(".navbar nav");
+    const nav =
+      document.querySelector(
+        ".navbar nav"
+      );
 
-  const visible =
-    getComputedStyle(nav).display !== "none";
+    if (!nav) return;
 
-  if (visible) {
+    const hidden =
+      getComputedStyle(nav)
+        .display === "none";
 
-    nav.style.display = "none";
+    if (hidden) {
 
-  } else {
+      nav.style.display =
+        "flex";
 
-    nav.style.display = "flex";
-    nav.style.position = "absolute";
-    nav.style.top = "72px";
-    nav.style.left = "15px";
-    nav.style.right = "15px";
-    nav.style.padding = "18px";
-    nav.style.flexDirection = "column";
-    nav.style.background = "#0b1020";
-    nav.style.border = "1px solid var(--border)";
-    nav.style.borderRadius = "15px";
+      nav.style.position =
+        "absolute";
+
+      nav.style.top =
+        "72px";
+
+      nav.style.left =
+        "15px";
+
+      nav.style.right =
+        "15px";
+
+      nav.style.padding =
+        "18px";
+
+      nav.style.flexDirection =
+        "column";
+
+      nav.style.background =
+        "#0b1020";
+
+      nav.style.border =
+        "1px solid var(--border)";
+
+      nav.style.borderRadius =
+        "15px";
+
+    } else {
+
+      nav.style.display =
+        "none";
+    }
+
   }
+);
+
+
+/* Close mobile menu after navigation */
+
+document
+  .querySelectorAll(
+    ".navbar nav a"
+  )
+  .forEach(link => {
+
+    link.addEventListener(
+      "click",
+      () => {
+
+        if (
+          window.innerWidth <= 850
+        ) {
+
+          const nav =
+            document.querySelector(
+              ".navbar nav"
+            );
+
+          if (nav)
+            nav.style.display =
+              "none";
+        }
+      }
+    );
 
 });
+
+
+/* =========================================================
+   LOADER — FIXED
+   ========================================================= */
+
+function hideLoader() {
+
+  const loader =
+    $("loader");
+
+  if (!loader) return;
+
+  loader.classList.add(
+    "loaded"
+  );
+
+  setTimeout(() => {
+
+    if (
+      loader &&
+      loader.parentNode
+    ) {
+
+      loader.remove();
+    }
+
+  },700);
+}
+
+
+/*
+  The old V2 script never removed the loader.
+  This is the important fix.
+*/
+
+if (
+  document.readyState === "complete"
+) {
+
+  setTimeout(
+    hideLoader,
+    900
+  );
+
+} else {
+
+  window.addEventListener(
+    "load",
+    () => {
+
+      setTimeout(
+        hideLoader,
+        900
+      );
+
+    },
+    {once:true}
+  );
+}
+
+
+/* =========================================================
+   SAFETY FALLBACK
+   ========================================================= */
+
+/*
+  If a browser blocks something unexpected,
+  never leave the user trapped behind the loader.
+*/
+
+setTimeout(
+  hideLoader,
+  5000
+);
 
 
 /* =========================================================
@@ -1356,5 +2042,5 @@ $("menuBtn").addEventListener("click", () => {
    ========================================================= */
 
 console.log(
-  "GAMECHECK V2 ONLINE — Made by AUK"
+  "GAMECHECK V3 ONLINE — Made by AUK"
 );
