@@ -18,19 +18,31 @@ const ramScore = {
   "32 GB": 82
 };
 
-const fpsMultipliers = {
+const fpsMultiplier = {
   "Minecraft": 1.25,
   "Fortnite": 1.05,
   "Valorant": 1.55,
-  "GTA V": 0.95
+  "GTA V": 0.95,
+  "GTA VI": 0.55,
+  "CS2": 1.35,
+  "Roblox": 1.50,
+  "Apex Legends": 1.00,
+  "Call of Duty": 0.85,
+  "PUBG": 1.00,
+  "Rocket League": 1.45,
+  "Overwatch 2": 1.30,
+  "Rainbow Six Siege": 1.35,
+  "League of Legends": 1.65,
+  "EA FC 26": 1.20,
+  "Elden Ring": 0.65,
+  "Cyberpunk 2077": 0.55,
+  "Red Dead Redemption 2": 0.60
 };
 
 let selectedGame = "Minecraft";
 
 
-/* -------------------------
-   LOGIN
-------------------------- */
+/* LOGIN */
 
 function showLogin() {
   document.getElementById("loginBox").style.display = "grid";
@@ -41,9 +53,7 @@ function closeLogin() {
 }
 
 
-/* -------------------------
-   GAME SELECTION
-------------------------- */
+/* GAME SELECT */
 
 function selectGame(game, button) {
 
@@ -51,23 +61,45 @@ function selectGame(game, button) {
 
   document.getElementById("selectedGame").textContent = game;
 
-  document.querySelectorAll(".game-card").forEach(card => {
-    card.classList.remove("active");
-  });
+  document.querySelectorAll(".game-card")
+    .forEach(card => card.classList.remove("active"));
 
   button.classList.add("active");
 
-  const gameSelect = document.getElementById("game");
+  const select = document.getElementById("game");
 
-  if (gameSelect) {
-    gameSelect.value = game;
+  if (select) {
+    select.value = game;
   }
 }
 
 
-/* -------------------------
-   PC SCORE
-------------------------- */
+/* GAME SEARCH */
+
+function filterGames() {
+
+  const search =
+    document.getElementById("gameSearch")
+      .value
+      .toLowerCase();
+
+  document.querySelectorAll(".game-card")
+    .forEach(card => {
+
+      const name =
+        card.querySelector("strong")
+          .textContent
+          .toLowerCase();
+
+      card.style.display =
+        name.includes(search)
+          ? ""
+          : "none";
+    });
+}
+
+
+/* SCORE */
 
 function calculateScore(gpu, cpu, ram) {
 
@@ -82,29 +114,25 @@ function calculateScore(gpu, cpu, ram) {
 }
 
 
-/* -------------------------
-   NUMBER ANIMATION
-------------------------- */
+/* NUMBER ANIMATION */
 
-function animateNumber(element, target, duration = 1000) {
+function animateNumber(element, target, duration = 1200) {
 
-  let start = 0;
   const startTime = performance.now();
 
   function update(time) {
 
     const progress =
-      Math.min((time - startTime) / duration, 1);
+      Math.min(
+        (time - startTime) / duration,
+        1
+      );
 
-    const value =
+    element.textContent =
       Math.floor(progress * target);
-
-    element.textContent = value;
 
     if (progress < 1) {
       requestAnimationFrame(update);
-    } else {
-      element.textContent = target;
     }
   }
 
@@ -112,99 +140,106 @@ function animateNumber(element, target, duration = 1000) {
 }
 
 
-/* -------------------------
-   VS BATTLE
-------------------------- */
+/* VS BATTLE */
 
 function comparePlayers() {
 
-  const player1 =
-    document.getElementById("player1").value.trim() ||
-    "Player 1";
+  const p1 =
+    document.getElementById("player1")
+      .value.trim() || "Player 1";
 
-  const player2 =
-    document.getElementById("player2").value.trim() ||
-    "Player 2";
+  const p2 =
+    document.getElementById("player2")
+      .value.trim() || "Player 2";
 
-  const gpu1 = document.getElementById("gpu1").value;
-  const gpu2 = document.getElementById("gpu2").value;
+  const gpu1 =
+    document.getElementById("gpu1").value;
 
-  const cpu1 = document.getElementById("cpu1").value;
-  const cpu2 = document.getElementById("cpu2").value;
+  const gpu2 =
+    document.getElementById("gpu2").value;
+
+  const cpu1 =
+    document.getElementById("cpu1").value;
+
+  const cpu2 =
+    document.getElementById("cpu2").value;
 
   const score1 =
-    calculateScore(gpu1, cpu1, "16 GB");
+    calculateScore(gpu1,cpu1,"16 GB");
 
   const score2 =
-    calculateScore(gpu2, cpu2, "16 GB");
+    calculateScore(gpu2,cpu2,"16 GB");
 
   const result =
     document.getElementById("vsResult");
 
-  result.className = "result battle-result battle-start";
+  result.className =
+    "result battle-enter";
 
-  let winnerHTML = "";
+  let winner;
 
   if (score1 > score2) {
 
-    winnerHTML = `
-      <div class="winner">🏆 ${player1} WINS!</div>
-    `;
+    winner =
+      `🏆 ${p1} WINS!`;
 
   } else if (score2 > score1) {
 
-    winnerHTML = `
-      <div class="winner">🏆 ${player2} WINS!</div>
-    `;
+    winner =
+      `🏆 ${p2} WINS!`;
 
   } else {
 
-    winnerHTML = `
-      <div class="winner">⚔️ DRAW!</div>
-    `;
+    winner =
+      "⚔️ PERFECT DRAW!";
   }
 
   result.innerHTML = `
-    <p class="tag">⚡ BATTLE ANALYSIS COMPLETE</p>
 
-    ${winnerHTML}
+    <p class="tag">BATTLE ANALYSIS COMPLETE</p>
+
+    <div class="winner">
+      ${winner}
+    </div>
 
     <div class="battle-score">
+
       <span id="scoreA">0</span>
+
       <small> VS </small>
+
       <span id="scoreB">0</span>
+
     </div>
 
     <p>
-      ${player1} &nbsp; ⚡ &nbsp; ${player2}
+      ${p1} ⚡ ${p2}
     </p>
 
-    <p style="color:#737d94;margin-top:10px">
-      GPU + CPU performance comparison
+    <p style="color:#69738d;margin-top:8px">
+      GPU + CPU power comparison
     </p>
+
   `;
 
-  const scoreA =
-    document.getElementById("scoreA");
+  animateNumber(
+    document.getElementById("scoreA"),
+    score1
+  );
 
-  const scoreB =
-    document.getElementById("scoreB");
+  animateNumber(
+    document.getElementById("scoreB"),
+    score2
+  );
 
-  animateNumber(scoreA, score1, 1200);
-  animateNumber(scoreB, score2, 1200);
-
-  setTimeout(() => {
-    result.scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
-  }, 150);
+  result.scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
 }
 
 
-/* -------------------------
-   PC ANALYSIS
-------------------------- */
+/* PC ANALYSIS */
 
 function checkPC() {
 
@@ -221,30 +256,33 @@ function checkPC() {
     document.getElementById("game").value;
 
   const score =
-    calculateScore(gpu, cpu, ram);
+    calculateScore(gpu,cpu,ram);
 
   const fps =
-    Math.round(score * fpsMultipliers[game]);
+    Math.round(
+      score * (fpsMultiplier[game] || 1)
+    );
 
   let rating;
 
   if (score >= 85) {
-    rating = "🔥 Excellent Gaming PC";
+    rating = "🔥 ELITE GAMING PC";
   } else if (score >= 70) {
-    rating = "⚡ Very Good Gaming PC";
+    rating = "⚡ VERY GOOD";
   } else if (score >= 55) {
-    rating = "👍 Good Gaming PC";
+    rating = "👍 GOOD";
   } else {
-    rating = "💻 Entry Level Gaming PC";
+    rating = "💻 ENTRY LEVEL";
   }
 
   const result =
     document.getElementById("pcResult");
 
   result.innerHTML = `
+
     <div class="analysis-box">
 
-      <p class="tag">🔍 SYSTEM ANALYSIS</p>
+      <p class="tag">🔍 SYSTEM ANALYSIS COMPLETE</p>
 
       <div class="analysis-score">
         <span id="pcScore">0</span>/100
@@ -252,11 +290,16 @@ function checkPC() {
 
       <h3>${rating}</h3>
 
-      <p style="color:#737d94;margin:8px 0 20px">
+      <p style="
+        text-align:center;
+        color:#69738d;
+        margin:8px 0 25px
+      ">
         ${cpu} • ${gpu} • ${ram}
       </p>
 
       <div class="analysis-bar">
+
         <div class="analysis-label">
           <span>GPU POWER</span>
           <b>${gpuScore[gpu]}</b>
@@ -265,9 +308,11 @@ function checkPC() {
         <div class="bar">
           <i data-width="${gpuScore[gpu]}%"></i>
         </div>
+
       </div>
 
       <div class="analysis-bar">
+
         <div class="analysis-label">
           <span>CPU POWER</span>
           <b>${cpuScore[cpu]}</b>
@@ -276,27 +321,36 @@ function checkPC() {
         <div class="bar">
           <i data-width="${cpuScore[cpu]}%"></i>
         </div>
+
       </div>
 
       <div class="analysis-bar">
+
         <div class="analysis-label">
-          <span>RAM</span>
+          <span>RAM PERFORMANCE</span>
           <b>${ramScore[ram]}</b>
         </div>
 
         <div class="bar">
           <i data-width="${ramScore[ram]}%"></i>
         </div>
+
       </div>
 
-      <hr style="border-color:#ffffff0d;margin:22px 0">
+      <hr style="
+        border-color:#ffffff0d;
+        margin:25px 0
+      ">
 
-      <h2>
+      <h2 style="text-align:center">
         🎮 ${game}
       </h2>
 
-      <h3 style="margin-top:8px">
-        Estimated FPS: 
+      <h3 style="
+        text-align:center;
+        margin-top:10px
+      ">
+        Estimated FPS:
         <span style="color:#887cff">
           ~${fps}
         </span>
@@ -307,117 +361,131 @@ function checkPC() {
 
   animateNumber(
     document.getElementById("pcScore"),
-    score,
-    1200
+    score
   );
 
   setTimeout(() => {
 
-    document
-      .querySelectorAll(".bar i")
-      .forEach(bar => {
-        bar.style.width =
-          bar.dataset.width;
-      });
+    document.querySelectorAll(
+      ".analysis-bar .bar i"
+    ).forEach(bar => {
 
-  }, 150);
+      bar.style.width =
+        bar.dataset.width;
 
-  setTimeout(() => {
-
-    result.scrollIntoView({
-      behavior: "smooth",
-      block: "center"
     });
 
-  }, 200);
+  },100);
+
+  result.scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
 }
 
 
-/* -------------------------
-   LEADERBOARD
-------------------------- */
+/* LEADERBOARD */
 
 const leaderboard = [
+
   {
-    name: "ShadowAUK",
-    gpu: "RTX 4070",
-    cpu: "Ryzen 5 7600",
-    score: 9240
+    name:"ShadowAUK",
+    gpu:"RTX 4070",
+    cpu:"Ryzen 5 7600",
+    score:9240
   },
+
   {
-    name: "NightFox",
-    gpu: "RTX 4070",
-    cpu: "Core i7-13700K",
-    score: 9180
+    name:"NightFox",
+    gpu:"RTX 4070",
+    cpu:"Core i7-13700K",
+    score:9180
   },
+
   {
-    name: "PixelRush",
-    gpu: "RTX 4060",
-    cpu: "Ryzen 5 7600",
-    score: 8140
+    name:"PixelRush",
+    gpu:"RTX 4060",
+    cpu:"Ryzen 5 7600",
+    score:8140
   },
+
   {
-    name: "VoidX",
-    gpu: "RX 7600",
-    cpu: "Core i5-12400F",
-    score: 7820
+    name:"VoidX",
+    gpu:"RX 7600",
+    cpu:"Core i5-12400F",
+    score:7820
   },
+
   {
-    name: "CraftKing",
-    gpu: "RTX 3060",
-    cpu: "Ryzen 5 5600",
-    score: 7020
+    name:"CraftKing",
+    gpu:"RTX 3060",
+    cpu:"Ryzen 5 5600",
+    score:7020
   }
+
 ];
 
 function renderLeaderboard() {
 
   const list =
-    document.getElementById("leaderboardList");
+    document.getElementById(
+      "leaderboardList"
+    );
 
   list.innerHTML = "";
 
-  leaderboard.forEach((player, index) => {
+  leaderboard.forEach(
+    (player,index) => {
 
-    const item =
-      document.createElement("div");
+      const item =
+        document.createElement("div");
 
-    item.className = "lb";
+      item.className = "lb";
 
-    item.style.animationDelay =
-      `${index * 0.12}s`;
+      item.style.animationDelay =
+        `${index * .12}s`;
 
-    item.innerHTML = `
-      <div class="rank">
-        #${index + 1}
-      </div>
+      item.innerHTML = `
 
-      <div>
-        <strong>${player.name}</strong>
+        <div class="rank">
+          #${index + 1}
+        </div>
 
-        <p style="color:#737d94">
-          ${player.gpu} • ${player.cpu}
-        </p>
-      </div>
+        <div>
 
-      <div class="score">
-        ${player.score.toLocaleString()}
-      </div>
-    `;
+          <strong>
+            ${player.name}
+          </strong>
 
-    list.appendChild(item);
-  });
+          <p style="
+            color:#737d94;
+            margin-top:3px
+          ">
+            ${player.gpu} • ${player.cpu}
+          </p>
+
+        </div>
+
+        <div class="score">
+          ${player.score.toLocaleString()}
+        </div>
+
+      `;
+
+      list.appendChild(item);
+    }
+  );
 }
 
 
-/* -------------------------
-   FRIEND SYSTEM
-------------------------- */
+/* FRIENDS */
 
 function getFriends() {
 
   return JSON.parse(
-    localStorage.getItem("gamecheckFriends") ||
+    localStorage.getItem(
+      "gamecheckFriends"
+    ) ||
     '["NightFox","PixelRush"]'
   );
 }
@@ -425,42 +493,55 @@ function getFriends() {
 function renderFriends() {
 
   const list =
-    document.getElementById("friendsList");
+    document.getElementById(
+      "friendsList"
+    );
 
   const friends =
     getFriends();
 
   list.innerHTML = "";
 
-  friends.forEach((friend, index) => {
+  friends.forEach(
+    (friend,index) => {
 
-    const div =
-      document.createElement("div");
+      const div =
+        document.createElement("div");
 
-    div.className = "friend";
+      div.className = "friend";
 
-    div.innerHTML = `
-      <div class="avatar">
-        ${friend.charAt(0).toUpperCase()}
-      </div>
+      div.innerHTML = `
 
-      <div>
-        <strong>${friend}</strong>
+        <div class="avatar">
+          ${friend.charAt(0).toUpperCase()}
+        </div>
 
-        <p style="color:#737d94">
-          🟢 Online • PC Score ${9000 - index * 350}
-        </p>
-      </div>
-    `;
+        <div>
 
-    list.appendChild(div);
-  });
+          <strong>
+            ${friend}
+          </strong>
+
+          <p style="color:#737d94">
+            🟢 Online • PC Score
+            ${9000 - index * 350}
+          </p>
+
+        </div>
+
+      `;
+
+      list.appendChild(div);
+    }
+  );
 }
 
 function addFriend() {
 
   const input =
-    document.getElementById("friendName");
+    document.getElementById(
+      "friendName"
+    );
 
   const name =
     input.value.trim();
@@ -474,7 +555,7 @@ function addFriend() {
     getFriends();
 
   if (friends.includes(name)) {
-    alert("This user is already your friend.");
+    alert("Already your friend!");
     return;
   }
 
@@ -491,9 +572,7 @@ function addFriend() {
 }
 
 
-/* -------------------------
-   STARTUP
-------------------------- */
+/* START */
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -501,10 +580,6 @@ document.addEventListener(
 
     renderLeaderboard();
     renderFriends();
-
-    setTimeout(() => {
-      document.body.classList.add("loaded");
-    }, 2000);
 
   }
 );
