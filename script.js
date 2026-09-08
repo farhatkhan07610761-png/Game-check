@@ -3,7 +3,7 @@
    FULL FIXED / MATCHED VERSION
    ========================================================= */
 
-"use strict";
+"use strict"
 
 /* =========================================================
    HELPERS
@@ -404,67 +404,39 @@ if (checkGame) {
   });
 }
 
-/* =========================================================
-   VS BATTLE
+
+  /* =========================================================
+   VS BATTLE — FINAL ANIMATION FIX
    ========================================================= */
 
 function getStat(id) {
   const element = $("#" + id);
-
-  return element
-    ? Number(element.value) || 0
-    : 0;
+  return element ? Number(element.value) || 0 : 0;
 }
 
 function setHP(id, value) {
   const bar = $("#" + id);
-
   if (!bar) return;
 
-  value = Math.max(
-    0,
-    Math.min(100, value)
-  );
-
+  value = Math.max(0, Math.min(100, value));
   bar.style.width = value + "%";
 
-  const parent = bar.closest(".hp-side");
+  const number =
+    id === "hp1"
+      ? $("#hpNumber1")
+      : $("#hpNumber2");
 
-  if (parent) {
-    const number =
-      parent.querySelector(".hp-number");
-
-    if (number) {
-      number.textContent = Math.round(value);
-    }
-  }
-
-  /* Fallback for the current HTML IDs */
-  if (id === "hp1") {
-    const number1 = $("#hpNumber1");
-
-    if (number1) {
-      number1.textContent = Math.round(value);
-    }
-  }
-
-  if (id === "hp2") {
-    const number2 = $("#hpNumber2");
-
-    if (number2) {
-      number2.textContent = Math.round(value);
-    }
+  if (number) {
+    number.textContent = Math.round(value);
   }
 }
 
 function fighterNames() {
   const name1 =
-    $("#player1")?.value.trim() ||
-    "PLAYER 1";
+    $("#player1")?.value.trim() || "PLAYER 1";
 
   const name2 =
-    $("#player2")?.value.trim() ||
-    "PLAYER 2";
+    $("#player2")?.value.trim() || "PLAYER 2";
 
   if ($("#fighterName1")) {
     $("#fighterName1").textContent = name1;
@@ -479,26 +451,23 @@ function fighterNames() {
 
 function battleMessage(text) {
   const weapon = $("#weapon");
+  if (weapon) weapon.textContent = text;
+}
 
-  if (weapon) {
-    weapon.textContent = text;
-  }
+function arenaMessage(text) {
+  const arenaText = $("#arenaText");
+  if (arenaText) arenaText.textContent = text;
 }
 
 function flashArena() {
   const arena = $("#battleArena");
-
   if (!arena) return;
 
   arena.classList.remove("arena-shake");
-
   void arena.offsetWidth;
-
   arena.classList.add("arena-shake");
 
-  const flash =
-    document.createElement("div");
-
+  const flash = document.createElement("div");
   flash.className = "battle-flash";
 
   arena.appendChild(flash);
@@ -508,12 +477,10 @@ function flashArena() {
 
 function createSparks() {
   const arena = $("#battleArena");
-
   if (!arena) return;
 
   for (let i = 0; i < 10; i++) {
-    const spark =
-      document.createElement("div");
+    const spark = document.createElement("div");
 
     spark.className = "battle-spark";
 
@@ -529,25 +496,30 @@ function createSparks() {
 
     arena.appendChild(spark);
 
-    setTimeout(
-      () => spark.remove(),
-      700
-    );
+    setTimeout(() => spark.remove(), 700);
   }
 }
+
+/* ---------- COUNTDOWN ---------- */
 
 async function countdown() {
   const element = $("#countdown");
 
-  if (!element) return;
+  arenaMessage("GET READY...");
 
-  for (const number of [
-    "3",
-    "2",
-    "1",
-    "GO!"
-  ]) {
+  if (!element) {
+    await wait(500);
+    return;
+  }
+
+  for (const number of ["3", "2", "1", "GO!"]) {
     element.textContent = number;
+
+    arenaMessage(
+      number === "GO!"
+        ? "FIGHT!"
+        : `BATTLE STARTING... ${number}`
+    );
 
     element.classList.remove("count-pop");
 
@@ -555,36 +527,28 @@ async function countdown() {
 
     element.classList.add("count-pop");
 
-    await wait(
-      number === "GO!"
-        ? 600
-        : 700
-    );
+    await wait(number === "GO!" ? 600 : 700);
   }
 
   element.textContent = "";
+  arenaMessage("FIGHT!");
 }
+
+/* ---------- ATTACK EFFECT ---------- */
 
 function attackEffect(side, weapon) {
   const arena = $("#battleArena");
-
   if (!arena) return;
 
-  let effect;
+  const effect = document.createElement("div");
 
   if (weapon === "SWORD") {
-    effect =
-      document.createElement("div");
-
     effect.className =
       "battle-slash " +
       (side === 1
         ? "slash-left"
         : "slash-right");
   } else {
-    effect =
-      document.createElement("div");
-
     effect.className =
       "battle-projectile " +
       (side === 1
@@ -594,55 +558,136 @@ function attackEffect(side, weapon) {
 
   arena.appendChild(effect);
 
-  setTimeout(
-    () => effect.remove(),
-    800
-  );
+  setTimeout(() => effect.remove(), 800);
 
   flashArena();
   createSparks();
 }
+
+/* =========================================================
+   REAL FIGHTER MOVEMENT
+   Uses Web Animations API so existing CSS
+   cannot permanently lock the fighter position.
+   ========================================================= */
+
+async function moveFighterToAttack(fighter, side) {
+  if (!fighter) {
+    await wait(300);
+    return;
+  }
+
+  const distance =
+    side === 1 ? 55 : -55;
+
+  const animation = fighter.animate(
+    [
+      {
+        transform: "translateX(0)"
+      },
+      {
+        transform: `translateX(${distance}px)`
+      }
+    ],
+    {
+      duration: 320,
+      easing: "cubic-bezier(.2,.8,.2,1)",
+      fill: "forwards"
+    }
+  );
+
+  try {
+    await animation.finished;
+  } catch {
+    await wait(320);
+  }
+}
+
+async function returnFighter(fighter, side) {
+  if (!fighter) {
+    await wait(300);
+    return;
+  }
+
+  const distance =
+    side === 1 ? 55 : -55;
+
+  const animation = fighter.animate(
+    [
+      {
+        transform: `translateX(${distance}px)`
+      },
+      {
+        transform: "translateX(0)"
+      }
+    ],
+    {
+      duration: 340,
+      easing: "cubic-bezier(.2,.8,.2,1)",
+      fill: "forwards"
+    }
+  );
+
+  try {
+    await animation.finished;
+  } catch {
+    await wait(340);
+  }
+
+  /* Completely remove the temporary animation */
+  animation.cancel();
+
+  fighter.style.transform = "";
+}
+
+/* ---------- HP ---------- */
 
 let hp1 = 100;
 let hp2 = 100;
 
 function damagePlayer(player, amount) {
   if (player === 1) {
-    hp1 = Math.max(
-      0,
-      hp1 - amount
-    );
-
+    hp1 = Math.max(0, hp1 - amount);
     setHP("hp1", hp1);
   } else {
-    hp2 = Math.max(
-      0,
-      hp2 - amount
-    );
-
+    hp2 = Math.max(0, hp2 - amount);
     setHP("hp2", hp2);
   }
 }
 
-async function battleRound(
-  round,
-  stats1,
-  stats2
-) {
-  const fighter1 =
-    $(".fighter-one");
+/* =========================================================
+   ONE ROUND
+   ========================================================= */
 
-  const fighter2 =
-    $(".fighter-two");
+async function battleRound(round, stats1, stats2) {
+  const fighter1 = $(".fighter-one");
+  const fighter2 = $(".fighter-two");
 
-  const types = [
+  const weapons = [
     "SWORD",
     "BLASTER",
     "ROCKET"
   ];
 
-  const weapon =
-    types[round - 1];
+  const weapon = weapons[round - 1];
+
+  const attacker =
+    stats1 >= stats2 ? 1 : 2;
+
+  const attackingFighter =
+    attacker === 1
+      ? fighter1
+      : fighter2;
+
+  const defendingFighter =
+    attacker === 1
+      ? fighter2
+      : fighter1;
+
+  const damage = [
+    30,
+    35,
+    40
+  ][round - 1];
 
   battleMessage(
     weapon === "SWORD"
@@ -652,105 +697,110 @@ async function battleRound(
       : "🚀"
   );
 
-  if (fighter1) {
-    fighter1.classList.add(
-      "fighter-charge"
+  arenaMessage(
+    `ROUND ${round} — ${
+      attacker === 1
+        ? "PLAYER 1"
+        : "PLAYER 2"
+    } ATTACKS`
+  );
+
+  await wait(350);
+
+  /* =========================
+     1. MOVE FORWARD
+     ========================= */
+
+  await moveFighterToAttack(
+    attackingFighter,
+    attacker
+  );
+
+  /* =========================
+     2. ATTACK
+     ========================= */
+
+  arenaMessage(
+    weapon === "SWORD"
+      ? "⚔️ SLASH!"
+      : weapon === "BLASTER"
+      ? "🔫 FIRE!"
+      : "🚀 LAUNCH!"
+  );
+
+  attackEffect(
+    attacker,
+    weapon
+  );
+
+  /* =========================
+     3. DEFENDER HIT
+     ========================= */
+
+  if (defendingFighter) {
+    defendingFighter.classList.remove(
+      "fighter-hit"
     );
 
-    setTimeout(
-      () =>
-        fighter1.classList.remove(
-          "fighter-charge"
-        ),
-      600
-    );
-  }
+    void defendingFighter.offsetWidth;
 
-  if (fighter2) {
-    fighter2.classList.add(
-      "fighter-charge"
+    defendingFighter.classList.add(
+      "fighter-hit"
     );
 
-    setTimeout(
-      () =>
-        fighter2.classList.remove(
-          "fighter-charge"
-        ),
-      600
-    );
-  }
-
-  await wait(450);
-
-  const damage = [
-    30,
-    35,
-    40
-  ][round - 1];
-
-  if (stats1 >= stats2) {
-    attackEffect(
-      1,
-      weapon
-    );
-
-    if (fighter2) {
-      fighter2.classList.add(
+    setTimeout(() => {
+      defendingFighter.classList.remove(
         "fighter-hit"
       );
-
-      setTimeout(
-        () =>
-          fighter2.classList.remove(
-            "fighter-hit"
-          ),
-        500
-      );
-    }
-
-    await wait(250);
-
-    damagePlayer(
-      2,
-      damage
-    );
-  } else {
-    attackEffect(
-      2,
-      weapon
-    );
-
-    if (fighter1) {
-      fighter1.classList.add(
-        "fighter-hit"
-      );
-
-      setTimeout(
-        () =>
-          fighter1.classList.remove(
-            "fighter-hit"
-          ),
-        500
-      );
-    }
-
-    await wait(250);
-
-    damagePlayer(
-      1,
-      damage
-    );
+    }, 450);
   }
 
-  await wait(750);
+  /* =========================
+     4. DAMAGE
+     ========================= */
+
+  await wait(300);
+
+  damagePlayer(
+    attacker === 1 ? 2 : 1,
+    damage
+  );
+
+  arenaMessage(
+    `${
+      attacker === 1
+        ? "PLAYER 1"
+        : "PLAYER 2"
+    } DEALS ${damage} DAMAGE`
+  );
+
+  /* =========================
+     5. RETURN
+     ========================= */
+
+  await wait(180);
+
+  await returnFighter(
+    attackingFighter,
+    attacker
+  );
+
+  await wait(250);
+
+  arenaMessage(
+    `ROUND ${round} COMPLETE`
+  );
+
+  await wait(400);
 }
 
-async function startBattle() {
-  const button =
-    $("#startBattle");
+/* =========================================================
+   START BATTLE
+   ========================================================= */
 
-  const result =
-    $("#battleResult");
+async function startBattle() {
+  const button = $("#startBattle");
+  const result = $("#battleResult");
 
   if (button) {
     button.disabled = true;
@@ -762,67 +812,61 @@ async function startBattle() {
     result.innerHTML = "";
   }
 
+  /* Reset HP */
   hp1 = 100;
   hp2 = 100;
 
   setHP("hp1", 100);
   setHP("hp2", 100);
 
+  /* Reset fighters */
   $$(".fighter-one,.fighter-two")
     .forEach(fighter => {
       fighter.classList.remove(
         "fighter-winner",
-        "fighter-loser"
+        "fighter-loser",
+        "fighter-hit",
+        "fighter-charge"
       );
+
+      fighter.style.transform = "";
     });
 
-  const [
-    name1,
-    name2
-  ] = fighterNames();
-
-  const gpu1 =
-    getStat("gpu1");
-
-  const cpu1 =
-    getStat("cpu1");
-
-  const ram1 =
-    getStat("ram1");
-
-  const gpu2 =
-    getStat("gpu2");
-
-  const cpu2 =
-    getStat("cpu2");
-
-  const ram2 =
-    getStat("ram2");
+  const [name1, name2] =
+    fighterNames();
 
   const stats1 = [
-    gpu1,
-    cpu1,
-    ram1
+    getStat("gpu1"),
+    getStat("cpu1"),
+    getStat("ram1")
   ];
 
   const stats2 = [
-    gpu2,
-    cpu2,
-    ram2
+    getStat("gpu2"),
+    getStat("cpu2"),
+    getStat("ram2")
   ];
+
+  arenaMessage("GET READY...");
 
   await countdown();
 
   let wins1 = 0;
   let wins2 = 0;
 
+  /* =========================
+     THREE ROUNDS
+     ========================= */
+
   for (
     let round = 1;
     round <= 3;
     round++
   ) {
-    if ($("#roundText")) {
-      $("#roundText").textContent =
+    const roundText = $("#roundText");
+
+    if (roundText) {
+      roundText.textContent =
         `ROUND ${round} / 3`;
     }
 
@@ -848,6 +892,10 @@ async function startBattle() {
       break;
     }
   }
+
+  /* =========================
+     FIND WINNER
+     ========================= */
 
   const winner =
     wins1 === wins2
@@ -878,6 +926,19 @@ async function startBattle() {
       ? $(".fighter-two")
       : $(".fighter-one");
 
+  /* Reset animation state */
+  [winnerFighter, loserFighter]
+    .filter(Boolean)
+    .forEach(fighter => {
+      fighter.classList.remove(
+        "fighter-hit",
+        "fighter-charge"
+      );
+
+      fighter.style.transform = "";
+    });
+
+  /* Winner / loser animation */
   if (winnerFighter) {
     winnerFighter.classList.add(
       "fighter-winner"
@@ -891,6 +952,10 @@ async function startBattle() {
   }
 
   battleMessage("🏆");
+
+  arenaMessage(
+    `🏆 ${winnerName.toUpperCase()} WINS!`
+  );
 
   if (result) {
     result.innerHTML = `
@@ -920,6 +985,8 @@ on(
   "click",
   startBattle
 );
+
+
 
 /* =========================================================
    PC ANALYSIS
