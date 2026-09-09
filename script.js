@@ -463,14 +463,17 @@ function battleMessage(text) {
   if (weapon) weapon.textContent = text;
 }
 
+/*
+  IMPORTANT:
+  Bottom battle narration is intentionally disabled.
+  Round banners, HP, weapon display and victory card remain.
+*/
 function arenaMessage(text) {
-  const arenaText = $("#arenaText");
-  if (arenaText) arenaText.textContent = text;
+  return;
 }
 
 /* =========================================================
    CINEMATIC STYLE INJECTION
-   No CSS file changes required for the new effects.
    ========================================================= */
 
 function installBattleFX() {
@@ -483,6 +486,7 @@ function installBattleFX() {
   style.textContent = `
     #battleArena {
       isolation:isolate;
+      overflow:hidden;
     }
 
     #battleArena .fighter {
@@ -494,8 +498,300 @@ function installBattleFX() {
     #battleArena .fighter-body {
       position:relative;
       z-index:21;
+      width:76px;
+      height:116px;
       will-change:transform,filter;
+      transform-origin:50% 90%;
     }
+
+    /* =====================================================
+       NEW GAME-STYLE PIXEL CHARACTERS
+       ===================================================== */
+
+    .gc-character {
+      position:relative;
+      width:76px;
+      height:116px;
+      image-rendering:pixelated;
+      filter:
+        drop-shadow(0 7px 5px rgba(0,0,0,.45))
+        drop-shadow(0 0 10px rgba(0,229,255,.18));
+    }
+
+    .gc-character .gc-head {
+      position:absolute;
+      left:24px;
+      top:4px;
+      width:30px;
+      height:30px;
+      background:#d9a477;
+      border:3px solid #111;
+      border-radius:5px;
+      box-shadow:inset -5px -5px 0 rgba(0,0,0,.13);
+    }
+
+    .gc-character .gc-hair {
+      position:absolute;
+      left:22px;
+      top:0;
+      width:34px;
+      height:12px;
+      background:#171717;
+      border:3px solid #111;
+      border-bottom:0;
+      border-radius:7px 7px 2px 2px;
+      z-index:2;
+    }
+
+    .gc-character .gc-eye {
+      position:absolute;
+      top:15px;
+      width:4px;
+      height:4px;
+      background:#111;
+      z-index:4;
+    }
+
+    .gc-character .gc-eye.one {
+      left:7px;
+    }
+
+    .gc-character .gc-eye.two {
+      right:7px;
+    }
+
+    .gc-character .gc-body {
+      position:absolute;
+      left:20px;
+      top:36px;
+      width:36px;
+      height:42px;
+      background:#222;
+      border:3px solid #111;
+      border-radius:5px;
+      box-shadow:
+        inset 7px 0 rgba(255,255,255,.07),
+        inset -7px 0 rgba(0,0,0,.2);
+    }
+
+    .gc-character .gc-chest {
+      position:absolute;
+      left:8px;
+      top:8px;
+      width:14px;
+      height:20px;
+      border:2px solid rgba(255,255,255,.4);
+      background:rgba(0,229,255,.22);
+      border-radius:2px;
+    }
+
+    .gc-character .gc-arm {
+      position:absolute;
+      top:39px;
+      width:12px;
+      height:36px;
+      background:#d9a477;
+      border:3px solid #111;
+      border-radius:4px;
+      transform-origin:50% 8px;
+      z-index:3;
+    }
+
+    .gc-character .gc-arm.left {
+      left:7px;
+      transform:rotate(10deg);
+    }
+
+    .gc-character .gc-arm.right {
+      right:7px;
+      transform:rotate(-10deg);
+    }
+
+    .gc-character .gc-leg {
+      position:absolute;
+      top:75px;
+      width:14px;
+      height:36px;
+      background:#191919;
+      border:3px solid #111;
+      border-radius:3px;
+      z-index:2;
+    }
+
+    .gc-character .gc-leg.left {
+      left:21px;
+    }
+
+    .gc-character .gc-leg.right {
+      right:21px;
+    }
+
+    .gc-character .gc-boot {
+      position:absolute;
+      bottom:-3px;
+      width:19px;
+      height:9px;
+      background:#090909;
+      border:2px solid #111;
+      border-radius:3px;
+    }
+
+    .gc-character .gc-boot.left {
+      left:-3px;
+    }
+
+    .gc-character .gc-boot.right {
+      right:-3px;
+    }
+
+    .fighter-two .gc-character {
+      transform:scaleX(-1);
+      filter:
+        drop-shadow(0 7px 5px rgba(0,0,0,.45))
+        drop-shadow(0 0 12px rgba(124,92,255,.22));
+    }
+
+    /* =====================================================
+       HELD WEAPONS
+       ===================================================== */
+
+    .gc-held-weapon {
+      position:absolute;
+      pointer-events:none;
+      z-index:8;
+      transform-origin:10% 50%;
+    }
+
+    .gc-sword {
+      right:-39px;
+      top:28px;
+      width:48px;
+      height:9px;
+      transform:rotate(-35deg);
+    }
+
+    .gc-sword .blade {
+      position:absolute;
+      right:0;
+      top:0;
+      width:36px;
+      height:8px;
+      background:
+        linear-gradient(
+          135deg,
+          #dfffff 0%,
+          #5ff8ff 45%,
+          #12bcd0 46%,
+          #bfffff 100%
+        );
+      border:2px solid #0c6975;
+      clip-path:polygon(0 0,88% 0,100% 50%,88% 100%,0 100%,12% 50%);
+      box-shadow:
+        0 0 7px #00e5ff,
+        0 0 15px rgba(0,229,255,.75);
+    }
+
+    .gc-sword .guard {
+      position:absolute;
+      left:8px;
+      top:-7px;
+      width:6px;
+      height:23px;
+      background:#69f7ff;
+      border:2px solid #075e68;
+      border-radius:2px;
+      box-shadow:0 0 7px #00e5ff;
+    }
+
+    .gc-sword .handle {
+      position:absolute;
+      left:-4px;
+      top:2px;
+      width:14px;
+      height:7px;
+      background:#25313a;
+      border:2px solid #111;
+    }
+
+    .gc-mace {
+      right:-34px;
+      top:28px;
+      width:44px;
+      height:8px;
+      transform:rotate(-42deg);
+    }
+
+    .gc-mace .handle {
+      position:absolute;
+      left:0;
+      top:2px;
+      width:34px;
+      height:6px;
+      background:#493b31;
+      border:2px solid #17110d;
+      border-radius:2px;
+    }
+
+    .gc-mace .head {
+      position:absolute;
+      right:0;
+      top:-7px;
+      width:15px;
+      height:20px;
+      background:#b8c0c8;
+      border:3px solid #20252a;
+      border-radius:4px;
+      box-shadow:0 0 7px rgba(255,255,255,.4);
+    }
+
+    .gc-cannon {
+      right:-46px;
+      top:27px;
+      width:54px;
+      height:22px;
+      transform:rotate(-8deg);
+    }
+
+    .gc-cannon .body {
+      position:absolute;
+      left:8px;
+      top:3px;
+      width:38px;
+      height:16px;
+      background:linear-gradient(180deg,#b9ffff,#303a46);
+      border:3px solid #111;
+      border-radius:5px;
+      box-shadow:
+        0 0 8px #00e5ff,
+        0 0 18px rgba(124,92,255,.7);
+    }
+
+    .gc-cannon .core {
+      position:absolute;
+      left:19px;
+      top:7px;
+      width:13px;
+      height:8px;
+      border-radius:50%;
+      background:white;
+      box-shadow:
+        0 0 6px white,
+        0 0 15px #00e5ff;
+    }
+
+    .gc-cannon .barrel {
+      position:absolute;
+      right:-7px;
+      top:7px;
+      width:12px;
+      height:9px;
+      background:#111;
+      border:2px solid #00e5ff;
+    }
+
+    /* =====================================================
+       EFFECTS
+       ===================================================== */
 
     .gc-effect {
       position:absolute;
@@ -517,10 +813,10 @@ function installBattleFX() {
     .gc-energy::after {
       content:"";
       position:absolute;
-      width:65px;
+      width:75px;
       height:7px;
       top:50%;
-      left:-55px;
+      left:-62px;
       transform:translateY(-50%);
       border-radius:999px;
       background:linear-gradient(
@@ -532,15 +828,22 @@ function installBattleFX() {
       box-shadow:0 0 15px #00e5ff;
     }
 
+    /*
+      Sword slash is deliberately shaped like a blade arc,
+      not an energy ball.
+    */
     .gc-slash {
-      width:110px;
-      height:18px;
-      border-radius:50%;
-      border-top:5px solid white;
-      border-bottom:3px solid #7c5cff;
+      width:92px;
+      height:58px;
+      border:0;
+      border-top:7px solid #cfffff;
+      border-right:7px solid #48efff;
+      border-radius:0 80% 0 0;
       box-shadow:
+        4px -3px 0 #0b8494,
         0 0 10px white,
-        0 0 25px #7c5cff;
+        0 0 24px #00e5ff;
+      transform-origin:center;
     }
 
     .gc-wind {
@@ -553,24 +856,142 @@ function installBattleFX() {
       box-shadow:0 0 30px #00e5ff;
     }
 
+    /* =====================================================
+       CSS PLANE — NO EMOJI
+       ===================================================== */
+
     .gc-plane {
       position:absolute;
       z-index:45;
-      font-size:52px;
+      width:86px;
+      height:42px;
       pointer-events:none;
       filter:
         drop-shadow(0 0 8px white)
-        drop-shadow(0 0 20px #00e5ff);
+        drop-shadow(0 0 18px #00e5ff);
       will-change:transform;
     }
+
+    .gc-plane .nose {
+      position:absolute;
+      right:0;
+      top:15px;
+      width:22px;
+      height:13px;
+      background:#e7faff;
+      border:3px solid #111;
+      border-left:0;
+      border-radius:0 12px 12px 0;
+    }
+
+    .gc-plane .fuselage {
+      position:absolute;
+      left:12px;
+      top:13px;
+      width:60px;
+      height:15px;
+      background:linear-gradient(
+        180deg,
+        #ffffff,
+        #7c8994
+      );
+      border:3px solid #111;
+      border-radius:8px;
+    }
+
+    .gc-plane .wing {
+      position:absolute;
+      left:28px;
+      top:20px;
+      width:42px;
+      height:8px;
+      background:#d9f9ff;
+      border:3px solid #111;
+      transform:rotate(-22deg);
+      transform-origin:left center;
+    }
+
+    .gc-plane .tail {
+      position:absolute;
+      left:12px;
+      top:6px;
+      width:18px;
+      height:20px;
+      background:#aeefff;
+      border:3px solid #111;
+      clip-path:polygon(0 100%,45% 0,100% 100%);
+    }
+
+    .gc-plane .window {
+      position:absolute;
+      left:46px;
+      top:17px;
+      width:8px;
+      height:6px;
+      border-radius:2px;
+      background:#00e5ff;
+      box-shadow:0 0 7px #00e5ff;
+    }
+
+    /* =====================================================
+       CSS PARACHUTE — NO EMOJI
+       ===================================================== */
 
     .gc-parachute {
       position:absolute;
       z-index:44;
-      font-size:40px;
+      width:66px;
+      height:76px;
       pointer-events:none;
       filter:
-        drop-shadow(0 0 10px #7c5cff);
+        drop-shadow(0 0 8px #7c5cff)
+        drop-shadow(0 0 15px rgba(0,229,255,.5));
+    }
+
+    .gc-parachute .canopy {
+      position:absolute;
+      left:3px;
+      top:0;
+      width:60px;
+      height:35px;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #7c5cff 0 10px,
+          #00e5ff 10px 20px
+        );
+      border:3px solid #111;
+      border-radius:60px 60px 12px 12px;
+    }
+
+    .gc-parachute .line {
+      position:absolute;
+      top:30px;
+      width:2px;
+      height:30px;
+      background:white;
+      box-shadow:0 0 4px #00e5ff;
+    }
+
+    .gc-parachute .line.one {
+      left:16px;
+      transform:rotate(10deg);
+    }
+
+    .gc-parachute .line.two {
+      right:16px;
+      transform:rotate(-10deg);
+    }
+
+    .gc-parachute .player {
+      position:absolute;
+      left:26px;
+      top:55px;
+      width:14px;
+      height:18px;
+      background:#202020;
+      border:3px solid #111;
+      border-radius:3px;
     }
 
     .gc-build {
@@ -580,9 +1001,11 @@ function installBattleFX() {
       height:34px;
       border:2px solid rgba(255,255,255,.35);
       background:
-        linear-gradient(135deg,
-        rgba(124,92,255,.65),
-        rgba(0,229,255,.28));
+        linear-gradient(
+          135deg,
+          rgba(124,92,255,.65),
+          rgba(0,229,255,.28)
+        );
       box-shadow:0 0 15px rgba(124,92,255,.5);
       border-radius:5px;
       pointer-events:none;
@@ -736,12 +1159,28 @@ function installBattleFX() {
     }
 
     @media(max-width:650px) {
+      #battleArena .fighter-body {
+        width:62px;
+        height:100px;
+        transform-origin:50% 90%;
+      }
+
+      .gc-character {
+        transform:scale(.82);
+        transform-origin:top left;
+      }
+
+      .fighter-two .gc-character {
+        transform:scaleX(-1) scale(.82);
+        transform-origin:top left;
+      }
+
       .gc-plane {
-        font-size:38px;
+        transform:scale(.78);
       }
 
       .gc-parachute {
-        font-size:30px;
+        transform:scale(.78);
       }
 
       .gc-round-banner {
@@ -754,7 +1193,108 @@ function installBattleFX() {
   document.head.appendChild(style);
 }
 
+/* =========================================================
+   INSTALL NEW CHARACTERS
+   ========================================================= */
+
+function installBattleCharacters() {
+  $$(".fighter-one .fighter-body,.fighter-two .fighter-body")
+    .forEach((body, index) => {
+      body.innerHTML = `
+        <div class="gc-character">
+          <div class="gc-hair"></div>
+
+          <div class="gc-head">
+            <span class="gc-eye one"></span>
+            <span class="gc-eye two"></span>
+          </div>
+
+          <div class="gc-body">
+            <div class="gc-chest"></div>
+          </div>
+
+          <div class="gc-arm left"></div>
+          <div class="gc-arm right"></div>
+
+          <div class="gc-leg left">
+            <div class="gc-boot left"></div>
+          </div>
+
+          <div class="gc-leg right">
+            <div class="gc-boot right"></div>
+          </div>
+        </div>
+      `;
+    });
+}
+
 installBattleFX();
+installBattleCharacters();
+
+/* =========================================================
+   WEAPON HELPERS
+   ========================================================= */
+
+function removeHeldWeapon(fighter) {
+  if (!fighter) return;
+
+  fighter
+    .querySelectorAll(".gc-held-weapon")
+    .forEach(weapon => weapon.remove());
+}
+
+function equipWeapon(fighter, weapon) {
+  if (!fighter) return;
+
+  removeHeldWeapon(fighter);
+
+  const body = fighter.querySelector(".fighter-body");
+  if (!body) return;
+
+  let weaponElement = null;
+
+  if (weapon === "SWORD") {
+    weaponElement = document.createElement("div");
+
+    weaponElement.className =
+      "gc-held-weapon gc-sword";
+
+    weaponElement.innerHTML = `
+      <div class="blade"></div>
+      <div class="guard"></div>
+      <div class="handle"></div>
+    `;
+  }
+
+  if (weapon === "WIND") {
+    weaponElement = document.createElement("div");
+
+    weaponElement.className =
+      "gc-held-weapon gc-mace";
+
+    weaponElement.innerHTML = `
+      <div class="handle"></div>
+      <div class="head"></div>
+    `;
+  }
+
+  if (weapon === "ENERGY") {
+    weaponElement = document.createElement("div");
+
+    weaponElement.className =
+      "gc-held-weapon gc-cannon";
+
+    weaponElement.innerHTML = `
+      <div class="body"></div>
+      <div class="core"></div>
+      <div class="barrel"></div>
+    `;
+  }
+
+  if (weaponElement) {
+    body.appendChild(weaponElement);
+  }
+}
 
 /* =========================================================
    ARENA EFFECTS
@@ -904,8 +1444,6 @@ function showRoundBanner(text) {
 async function countdown() {
   const element = $("#countdown");
 
-  arenaMessage("GET READY...");
-
   if (!element) {
     await wait(500);
     return;
@@ -913,12 +1451,6 @@ async function countdown() {
 
   for (const number of ["3", "2", "1", "GO!"]) {
     element.textContent = number;
-
-    arenaMessage(
-      number === "GO!"
-        ? "FIGHT!"
-        : `BATTLE STARTING... ${number}`
-    );
 
     element.classList.remove("count-pop");
 
@@ -934,8 +1466,6 @@ async function countdown() {
   }
 
   element.textContent = "";
-
-  arenaMessage("FIGHT!");
 }
 
 /* =========================================================
@@ -958,12 +1488,7 @@ function getFighterPoint(fighter) {
   };
 }
 
-async function moveFighterToAttack(fighter, side) {
-  if (!fighter) {
-    await wait(300);
-    return;
-  }
-
+function calculateAttackDistance(fighter, side) {
   const arena = $("#battleArena");
 
   const opponent =
@@ -971,9 +1496,8 @@ async function moveFighterToAttack(fighter, side) {
       ? $(".fighter-two")
       : $(".fighter-one");
 
-  if (!arena || !opponent) {
-    await wait(300);
-    return;
+  if (!arena || !fighter || !opponent) {
+    return 120;
   }
 
   const fighterRect =
@@ -1026,6 +1550,21 @@ async function moveFighterToAttack(fighter, side) {
       )
     );
 
+  return distance;
+}
+
+async function moveFighterToAttack(fighter, side) {
+  if (!fighter) {
+    await wait(300);
+    return;
+  }
+
+  const distance =
+    calculateAttackDistance(
+      fighter,
+      side
+    );
+
   fighter._gcAttackDistance =
     distance;
 
@@ -1056,6 +1595,86 @@ async function moveFighterToAttack(fighter, side) {
           ),
         easing:
           "cubic-bezier(.16,.84,.24,1)",
+        fill:"forwards"
+      }
+    );
+
+  try {
+    await animation.finished;
+  } catch {}
+
+  fighter.classList.remove(
+    "fighter-charge"
+  );
+}
+
+/* =========================================================
+   REAL RAM JUMP + FORWARD MOVEMENT
+   ========================================================= */
+
+async function jumpFighterToAttack(
+  fighter,
+  side
+) {
+  if (!fighter) {
+    await wait(300);
+    return;
+  }
+
+  const distance =
+    calculateAttackDistance(
+      fighter,
+      side
+    );
+
+  fighter._gcAttackDistance =
+    distance;
+
+  fighter.classList.add(
+    "fighter-charge"
+  );
+
+  const travelTime =
+    Math.min(
+      1050,
+      Math.max(
+        650,
+        Math.abs(distance) * 2
+      )
+    );
+
+  const animation =
+    fighter.animate(
+      [
+        {
+          transform:
+            "translateX(0) translateY(0) scale(1)",
+          offset:0
+        },
+        {
+          transform:
+            `translateX(${distance * .22}px) translateY(-55px) scale(1.04)`,
+          offset:.22
+        },
+        {
+          transform:
+            `translateX(${distance * .62}px) translateY(-88px) scale(1.06)`,
+          offset:.50
+        },
+        {
+          transform:
+            `translateX(${distance}px) translateY(-35px) scale(1.05)`,
+          offset:.78
+        },
+        {
+          transform:
+            `translateX(${distance}px) translateY(0) scale(1.04)`,
+          offset:1
+        }
+      ],
+      {
+        duration:travelTime,
+        easing:"cubic-bezier(.16,.84,.24,1)",
         fill:"forwards"
       }
     );
@@ -1176,7 +1795,7 @@ async function buildBridge(fighter, side) {
     );
   }
 
-  await wait(800);
+  await wait(1000);
 
   blocks.forEach(block => {
     block.animate(
@@ -1203,8 +1822,43 @@ async function buildBridge(fighter, side) {
 }
 
 /* =========================================================
-   PLANE + PARACHUTE — CPU ROUND
+   CSS PLANE + PARACHUTE — CPU ROUND
    ========================================================= */
+
+function createPlaneElement() {
+  const plane =
+    document.createElement("div");
+
+  plane.className =
+    "gc-plane";
+
+  plane.innerHTML = `
+    <div class="nose"></div>
+    <div class="fuselage"></div>
+    <div class="wing"></div>
+    <div class="tail"></div>
+    <div class="window"></div>
+  `;
+
+  return plane;
+}
+
+function createParachuteElement() {
+  const parachute =
+    document.createElement("div");
+
+  parachute.className =
+    "gc-parachute";
+
+  parachute.innerHTML = `
+    <div class="canopy"></div>
+    <div class="line one"></div>
+    <div class="line two"></div>
+    <div class="player"></div>
+  `;
+
+  return parachute;
+}
 
 async function planeEntrance(fighter, side) {
   const arena = $("#battleArena");
@@ -1218,22 +1872,17 @@ async function planeEntrance(fighter, side) {
     arena.getBoundingClientRect();
 
   const plane =
-    document.createElement("div");
-
-  plane.className =
-    "gc-plane";
-
-  plane.textContent = "✈️";
+    createPlaneElement();
 
   const fromX =
     side === 1
-      ? -90
-      : arenaRect.width + 90;
+      ? -100
+      : arenaRect.width + 100;
 
   const toX =
     side === 1
-      ? arenaRect.width + 90
-      : -90;
+      ? arenaRect.width + 100
+      : -100;
 
   const y =
     Math.max(
@@ -1269,16 +1918,8 @@ async function planeEntrance(fighter, side) {
 
   await wait(650);
 
-  /* Parachute entrance */
-
   const parachute =
-    document.createElement("div");
-
-  parachute.className =
-    "gc-parachute";
-
-  parachute.textContent =
-    "🪂";
+    createParachuteElement();
 
   const centerX =
     arenaRect.width *
@@ -1299,13 +1940,13 @@ async function planeEntrance(fighter, side) {
 
   const targetY =
     fighterPoint
-      ? fighterPoint.y - 35
+      ? fighterPoint.y - 55
       : arenaRect.height * .55;
 
   await parachute.animate(
     [
       {
-        transform:"translateY(0) scale(.8)",
+        transform:"translateY(0) scale(.65)",
         opacity:0
       },
       {
@@ -1315,7 +1956,7 @@ async function planeEntrance(fighter, side) {
       }
     ],
     {
-      duration:900,
+      duration:950,
       easing:"cubic-bezier(.2,.8,.2,1)"
     }
   ).finished.catch(() => {});
@@ -1326,8 +1967,6 @@ async function planeEntrance(fighter, side) {
     .catch(() => {});
 
   plane.remove();
-
-  /* Small landing effect */
 
   const point =
     getFighterPoint(fighter);
@@ -1386,10 +2025,17 @@ async function attackEffect(
     end.y - start.y;
 
   /* -------------------------
-     SWORD
+     DIAMOND SWORD
      ------------------------- */
 
   if (weapon === "SWORD") {
+    equipWeapon(
+      attacker,
+      "SWORD"
+    );
+
+    await wait(180);
+
     const slash =
       document.createElement("div");
 
@@ -1416,17 +2062,22 @@ async function attackEffect(
       [
         {
           transform:
-            `translate(-50%,-50%) translate(0,0) rotate(${angle}deg) scale(.5)`,
+            `translate(-50%,-50%) rotate(${angle - 35}deg) scale(.25)`,
           opacity:0
         },
         {
           transform:
-            `translate(-50%,-50%) translate(${dx}px,${dy}px) rotate(${angle}deg) scale(1.1)`,
+            `translate(-50%,-50%) translate(${dx * .5}px,${dy * .5}px) rotate(${angle}deg) scale(1)`,
+          opacity:1
+        },
+        {
+          transform:
+            `translate(-50%,-50%) translate(${dx}px,${dy}px) rotate(${angle + 18}deg) scale(1.12)`,
           opacity:1
         }
       ],
       {
-        duration:500,
+        duration:560,
         easing:
           "cubic-bezier(.2,.7,.2,1)"
       }
@@ -1443,10 +2094,17 @@ async function attackEffect(
   }
 
   /* -------------------------
-     WIND / MACE
+     MACE + WIND
      ------------------------- */
 
   if (weapon === "WIND") {
+    equipWeapon(
+      attacker,
+      "WIND"
+    );
+
+    await wait(220);
+
     const wind =
       document.createElement("div");
 
@@ -1494,6 +2152,13 @@ async function attackEffect(
   /* -------------------------
      ENERGY CANNON
      ------------------------- */
+
+  equipWeapon(
+    attacker,
+    "ENERGY"
+  );
+
+  await wait(350);
 
   const energy =
     document.createElement("div");
@@ -1623,35 +2288,30 @@ async function battleRound(
       weapon:"SWORD",
       icon:"⚔️",
       title:"DIAMOND SWORD",
-      intro:"⚔️ GPU CLASH",
-      attack:"⚔️ DIAMOND SLASH!",
+      intro:"GPU CLASH",
+      attack:"DIAMOND SLASH!",
       damage:30
     },
     {
       weapon:"WIND",
       icon:"🔨",
       title:"MACE + WIND BURST",
-      intro:"🔨 RAM BRIDGE ASSAULT",
-      attack:"🌪️ MACE WIND BURST!",
+      intro:"RAM BRIDGE ASSAULT",
+      attack:"MACE WIND BURST!",
       damage:35
     },
     {
       weapon:"ENERGY",
       icon:"⚡",
       title:"ENERGY CANNON",
-      intro:"✈️ CPU SKY ASSAULT",
-      attack:"⚡ ENERGY BLAST!",
+      intro:"CPU SKY ASSAULT",
+      attack:"ENERGY BLAST!",
       damage:40
     }
   ];
 
   const config =
     configs[round - 1];
-
-  const attackerName =
-    attacker === 1
-      ? "PLAYER 1"
-      : "PLAYER 2";
 
   battleMessage(
     config.icon
@@ -1661,10 +2321,6 @@ async function battleRound(
     `ROUND ${round} — ${config.title}`
   );
 
-  arenaMessage(
-    `ROUND ${round} — ${attackerName} HAS THE ADVANTAGE`
-  );
-
   await wait(600);
 
   /* =====================================================
@@ -1672,23 +2328,9 @@ async function battleRound(
      ===================================================== */
 
   if (round === 1) {
-    arenaMessage(
-      `${attackerName} DRAWS THE DIAMOND SWORD ⚔️`
-    );
-
-    await wait(450);
-
-    arenaMessage(
-      `${attackerName} RUNS FORWARD!`
-    );
-
     await moveFighterToAttack(
       attackingFighter,
       attacker
-    );
-
-    arenaMessage(
-      config.attack
     );
 
     await attackEffect(
@@ -1702,50 +2344,19 @@ async function battleRound(
      ===================================================== */
 
   if (round === 2) {
-    arenaMessage(
-      `${attackerName} STARTS BUILDING!`
-    );
-
     await buildBridge(
       attackingFighter,
       attacker
     );
 
-    arenaMessage(
-      `${attackerName} JUMPS FROM THE BRIDGE!`
-    );
-
-    if (attackingFighter) {
-      await attackingFighter.animate(
-        [
-          {
-            transform:
-              "translateY(0) scale(1)"
-          },
-          {
-            transform:
-              "translateY(-65px) scale(1.03)"
-          },
-          {
-            transform:
-              "translateY(0) scale(1)"
-          }
-        ],
-        {
-          duration:650,
-          easing:
-            "cubic-bezier(.2,.8,.2,1)"
-        }
-      ).finished.catch(() => {});
-    }
-
-    await moveFighterToAttack(
+    /*
+      Real combined forward + vertical movement.
+      The fighter actually jumps from the bridge
+      toward the opponent.
+    */
+    await jumpFighterToAttack(
       attackingFighter,
       attacker
-    );
-
-    arenaMessage(
-      config.attack
     );
 
     await attackEffect(
@@ -1759,17 +2370,9 @@ async function battleRound(
      ===================================================== */
 
   if (round === 3) {
-    arenaMessage(
-      `${attackerName} IS ENTERING FROM THE SKY! ✈️`
-    );
-
     await planeEntrance(
       attackingFighter,
       attacker
-    );
-
-    arenaMessage(
-      `${attackerName} LANDS AND CHARGES THE ENERGY CANNON ⚡`
     );
 
     if (attackingFighter) {
@@ -1785,10 +2388,6 @@ async function battleRound(
         "fighter-charge"
       );
     }
-
-    arenaMessage(
-      config.attack
-    );
 
     await attackEffect(
       attacker,
@@ -1834,7 +2433,7 @@ async function battleRound(
   }
 
   /* =====================================================
-     DAMAGE ONLY TO THE PLAYER HIT
+     DAMAGE ONLY AFTER ATTACK CONNECTS
      ===================================================== */
 
   await wait(120);
@@ -1846,9 +2445,7 @@ async function battleRound(
     config.damage
   );
 
-  arenaMessage(
-    `${attackerName} DEALS ${config.damage} DAMAGE`
-  );
+  flashArena();
 
   await wait(450);
 
@@ -1856,21 +2453,15 @@ async function battleRound(
      ATTACKER RETURNS HOME
      ===================================================== */
 
-  arenaMessage(
-    `${attackerName} RETURNS TO THEIR SIDE!`
-  );
-
   await returnFighter(
     attackingFighter
   );
 
-  await wait(350);
-
-  arenaMessage(
-    `ROUND ${round} COMPLETE`
+  removeHeldWeapon(
+    attackingFighter
   );
 
-  await wait(650);
+  await wait(350);
 }
 
 /* =========================================================
@@ -1939,7 +2530,15 @@ async function startBattle() {
       fighter.style.transform = "";
 
       fighter._gcAttackDistance = 0;
+
+      removeHeldWeapon(
+        fighter
+      );
     });
+
+  /* Reinstall characters if another script changed them */
+
+  installBattleCharacters();
 
   const [
     name1,
@@ -1957,10 +2556,6 @@ async function startBattle() {
     getStat("ram2"),
     getStat("cpu2")
   ];
-
-  arenaMessage(
-    `${name1} VS ${name2}`
-  );
 
   battleMessage(
     "⚔️"
@@ -2051,6 +2646,10 @@ async function startBattle() {
         );
 
       fighter.style.transform = "";
+
+      removeHeldWeapon(
+        fighter
+      );
     });
 
   if (winnerFighter) {
@@ -2071,10 +2670,6 @@ async function startBattle() {
 
   showRoundBanner(
     "🏆 FINAL VICTORY"
-  );
-
-  arenaMessage(
-    `🏆 ${winnerName.toUpperCase()} WINS THE BATTLE!`
   );
 
   /* Final victory sparks */
