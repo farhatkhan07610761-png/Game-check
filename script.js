@@ -1,9 +1,10 @@
 /* =========================================================
    GAMECHECK V4 — MADE BY AUK
    FULL FIXED / MATCHED VERSION
+   CINEMATIC VS BATTLE UPGRADE
    ========================================================= */
 
-"use strict"
+"use strict";
 
 /* =========================================================
    HELPERS
@@ -405,191 +406,7 @@ if (checkGame) {
 }
 
 /* =========================================================
-   VS BATTLE — GOAT ANIMATION SYSTEM
-   ========================================================= */
-
-/*
-   This section intentionally uses Web Animations API.
-   That means the fighter movement is calculated from
-   the REAL positions of the two fighters instead of
-   using a tiny hard-coded 55px movement.
-*/
-
-function installBattleAnimationStyles() {
-  if (document.getElementById("gamecheckBattleFX")) {
-    return;
-  }
-
-  const style = document.createElement("style");
-
-  style.id = "gamecheckBattleFX";
-
-  style.textContent = `
-    .battle-arena .fighter {
-      position: relative;
-      z-index: 10;
-      will-change: transform, filter;
-    }
-
-    .battle-arena .fighter-body {
-      will-change: transform, filter;
-    }
-
-    .battle-arena .battle-slash,
-    .battle-arena .battle-projectile {
-      pointer-events: none;
-      opacity: 1;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      will-change: transform, opacity;
-    }
-
-    .battle-arena .battle-energy {
-      position: absolute;
-      pointer-events: none;
-      z-index: 25;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: white;
-      box-shadow:
-        0 0 8px white,
-        0 0 20px #00e5ff,
-        0 0 45px #7c5cff,
-        0 0 75px #00e5ff;
-      will-change: transform, opacity;
-    }
-
-    @keyframes gcSpark {
-      from {
-        transform:
-          translate(-50%, -50%)
-          translate(0, 0)
-          scale(1);
-        opacity: 1;
-      }
-
-      to {
-        transform:
-          translate(-50%, -50%)
-          translate(var(--x), var(--y))
-          scale(.1);
-        opacity: 0;
-      }
-    }
-
-    .battle-spark {
-      animation:
-        gcSpark .65s
-        cubic-bezier(.2,.8,.2,1)
-        forwards;
-    }
-
-    @keyframes gcFighterHit {
-      0%,
-      100% {
-        transform:
-          translateX(0)
-          rotate(0)
-          scale(1);
-        filter: none;
-      }
-
-      18% {
-        transform:
-          translateX(var(--gc-hit-x, -10px))
-          rotate(-5deg)
-          scale(.94);
-        filter: brightness(1.9);
-      }
-
-      38% {
-        transform:
-          translateX(var(--gc-hit-x, 10px))
-          rotate(5deg)
-          scale(1.04);
-      }
-
-      58% {
-        transform:
-          translateX(var(--gc-hit-x, -6px))
-          rotate(-2deg)
-          scale(1);
-      }
-    }
-
-    .fighter-hit {
-      animation:
-        gcFighterHit .45s ease-out;
-    }
-
-    @keyframes gcWinner {
-      0%,
-      100% {
-        transform: translateY(0) scale(1);
-      }
-
-      50% {
-        transform: translateY(-12px) scale(1.08);
-      }
-    }
-
-    .fighter-winner {
-      animation:
-        gcWinner .7s ease-in-out infinite;
-    }
-
-    .fighter-loser {
-      opacity: .45;
-      filter: grayscale(.8);
-      transform: translateY(8px) scale(.92);
-    }
-
-    @keyframes gcSkyDrop {
-      0% {
-        transform:
-          translateY(-180px)
-          scale(.65);
-        opacity: 0;
-      }
-
-      55% {
-        transform:
-          translateY(-55px)
-          scale(.9);
-        opacity: 1;
-      }
-
-      100% {
-        transform:
-          translateY(0)
-          scale(1);
-        opacity: 1;
-      }
-    }
-
-    .gc-sky {
-      animation:
-        gcSkyDrop .75s
-        cubic-bezier(.2,.8,.2,1);
-    }
-
-    .gc-energy-charge {
-      filter:
-        brightness(1.7)
-        drop-shadow(0 0 18px #00e5ff)
-        drop-shadow(0 0 35px #7c5cff);
-    }
-  `;
-
-  document.head.appendChild(style);
-}
-
-installBattleAnimationStyles();
-
-/* =========================================================
-   STAT HELPERS
+   VS BATTLE — CINEMATIC ENGINE
    ========================================================= */
 
 function getStat(id) {
@@ -599,13 +416,9 @@ function getStat(id) {
 
 function setHP(id, value) {
   const bar = $("#" + id);
-
   if (!bar) return;
 
-  value = Math.max(
-    0,
-    Math.min(100, value)
-  );
+  value = Math.max(0, Math.min(100, value));
 
   bar.style.width = value + "%";
 
@@ -615,38 +428,31 @@ function setHP(id, value) {
       : $("#hpNumber2");
 
   if (number) {
-    number.textContent =
-      Math.round(value);
+    number.textContent = Math.round(value);
   }
 }
 
 function fighterNames() {
   const name1 =
-    $("#player1")?.value.trim() ||
-    "PLAYER 1";
+    $("#player1")?.value.trim() || "PLAYER 1";
 
   const name2 =
-    $("#player2")?.value.trim() ||
-    "PLAYER 2";
+    $("#player2")?.value.trim() || "PLAYER 2";
 
   if ($("#fighterName1")) {
-    $("#fighterName1").textContent =
-      name1;
+    $("#fighterName1").textContent = name1;
   }
 
   if ($("#fighterName2")) {
-    $("#fighterName2").textContent =
-      name2;
+    $("#fighterName2").textContent = name2;
   }
 
   if ($("#hpName1")) {
-    $("#hpName1").textContent =
-      name1;
+    $("#hpName1").textContent = name1;
   }
 
   if ($("#hpName2")) {
-    $("#hpName2").textContent =
-      name2;
+    $("#hpName2").textContent = name2;
   }
 
   return [name1, name2];
@@ -654,136 +460,441 @@ function fighterNames() {
 
 function battleMessage(text) {
   const weapon = $("#weapon");
-
-  if (weapon) {
-    weapon.textContent = text;
-  }
+  if (weapon) weapon.textContent = text;
 }
 
 function arenaMessage(text) {
-  const arenaText =
-    $("#arenaText");
-
-  if (arenaText) {
-    arenaText.textContent =
-      text;
-  }
+  const arenaText = $("#arenaText");
+  if (arenaText) arenaText.textContent = text;
 }
+
+/* =========================================================
+   CINEMATIC STYLE INJECTION
+   No CSS file changes required for the new effects.
+   ========================================================= */
+
+function installBattleFX() {
+  if ($("#gamecheckBattleFX")) return;
+
+  const style = document.createElement("style");
+
+  style.id = "gamecheckBattleFX";
+
+  style.textContent = `
+    #battleArena {
+      isolation:isolate;
+    }
+
+    #battleArena .fighter {
+      position:relative;
+      z-index:20;
+      will-change:transform;
+    }
+
+    #battleArena .fighter-body {
+      position:relative;
+      z-index:21;
+      will-change:transform,filter;
+    }
+
+    .gc-effect {
+      position:absolute;
+      pointer-events:none;
+      z-index:40;
+    }
+
+    .gc-energy {
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      background:white;
+      box-shadow:
+        0 0 8px white,
+        0 0 20px #00e5ff,
+        0 0 45px #7c5cff;
+    }
+
+    .gc-energy::after {
+      content:"";
+      position:absolute;
+      width:65px;
+      height:7px;
+      top:50%;
+      left:-55px;
+      transform:translateY(-50%);
+      border-radius:999px;
+      background:linear-gradient(
+        90deg,
+        transparent,
+        #00e5ff,
+        white
+      );
+      box-shadow:0 0 15px #00e5ff;
+    }
+
+    .gc-slash {
+      width:110px;
+      height:18px;
+      border-radius:50%;
+      border-top:5px solid white;
+      border-bottom:3px solid #7c5cff;
+      box-shadow:
+        0 0 10px white,
+        0 0 25px #7c5cff;
+    }
+
+    .gc-wind {
+      width:100px;
+      height:100px;
+      border:7px solid rgba(0,229,255,.75);
+      border-left-color:transparent;
+      border-bottom-color:transparent;
+      border-radius:50%;
+      box-shadow:0 0 30px #00e5ff;
+    }
+
+    .gc-plane {
+      position:absolute;
+      z-index:45;
+      font-size:52px;
+      pointer-events:none;
+      filter:
+        drop-shadow(0 0 8px white)
+        drop-shadow(0 0 20px #00e5ff);
+      will-change:transform;
+    }
+
+    .gc-parachute {
+      position:absolute;
+      z-index:44;
+      font-size:40px;
+      pointer-events:none;
+      filter:
+        drop-shadow(0 0 10px #7c5cff);
+    }
+
+    .gc-build {
+      position:absolute;
+      z-index:8;
+      width:34px;
+      height:34px;
+      border:2px solid rgba(255,255,255,.35);
+      background:
+        linear-gradient(135deg,
+        rgba(124,92,255,.65),
+        rgba(0,229,255,.28));
+      box-shadow:0 0 15px rgba(124,92,255,.5);
+      border-radius:5px;
+      pointer-events:none;
+    }
+
+    .gc-hit-ring {
+      position:absolute;
+      width:20px;
+      height:20px;
+      border:5px solid white;
+      border-radius:50%;
+      box-shadow:
+        0 0 15px white,
+        0 0 35px #00e5ff;
+      pointer-events:none;
+      z-index:50;
+    }
+
+    .gc-impact {
+      position:absolute;
+      width:90px;
+      height:90px;
+      border-radius:50%;
+      border:5px solid white;
+      box-shadow:
+        0 0 15px white,
+        0 0 35px #7c5cff,
+        0 0 70px #00e5ff;
+      pointer-events:none;
+      z-index:48;
+    }
+
+    .gc-spark {
+      position:absolute;
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:white;
+      box-shadow:
+        0 0 8px white,
+        0 0 18px #00e5ff;
+      z-index:55;
+      pointer-events:none;
+      animation:gcSpark .7s ease-out forwards;
+    }
+
+    @keyframes gcSpark {
+      from {
+        opacity:1;
+        transform:translate(0,0) scale(1);
+      }
+      to {
+        opacity:0;
+        transform:
+          translate(var(--x),var(--y))
+          scale(.1);
+      }
+    }
+
+    @keyframes gcHit {
+      0%,100% {
+        transform:translateX(0) rotate(0) scale(1);
+        filter:none;
+      }
+      20% {
+        transform:translateX(-9px) rotate(-4deg) scale(.96);
+        filter:brightness(2);
+      }
+      40% {
+        transform:translateX(9px) rotate(4deg) scale(1.02);
+      }
+      60% {
+        transform:translateX(-5px) rotate(-2deg);
+      }
+    }
+
+    .fighter-hit .fighter-body {
+      animation:gcHit .45s ease-out;
+    }
+
+    @keyframes gcWinner {
+      0%,100% {
+        transform:translateY(0) scale(1);
+      }
+      50% {
+        transform:translateY(-12px) scale(1.08);
+      }
+    }
+
+    .fighter-winner .fighter-body {
+      animation:gcWinner .8s ease-in-out infinite;
+      filter:
+        drop-shadow(0 0 12px #00e5ff)
+        drop-shadow(0 0 30px #7c5cff);
+    }
+
+    .fighter-loser {
+      opacity:.5;
+      filter:grayscale(.5);
+    }
+
+    @keyframes gcCharge {
+      0%,100% {
+        transform:scale(1);
+      }
+      50% {
+        transform:scale(1.12);
+      }
+    }
+
+    .fighter-charge .fighter-body {
+      animation:gcCharge .35s ease-in-out infinite;
+    }
+
+    .gc-round-banner {
+      position:absolute;
+      left:50%;
+      top:12%;
+      transform:translateX(-50%) scale(.7);
+      z-index:60;
+      padding:10px 20px;
+      border:1px solid rgba(255,255,255,.25);
+      border-radius:999px;
+      background:rgba(0,0,0,.55);
+      backdrop-filter:blur(10px);
+      color:white;
+      font-weight:900;
+      letter-spacing:2px;
+      white-space:nowrap;
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .gc-round-banner.show {
+      animation:gcBanner .8s ease forwards;
+    }
+
+    @keyframes gcBanner {
+      0% {
+        opacity:0;
+        transform:translateX(-50%) scale(.6);
+      }
+      25%,75% {
+        opacity:1;
+        transform:translateX(-50%) scale(1);
+      }
+      100% {
+        opacity:0;
+        transform:translateX(-50%) scale(1.05);
+      }
+    }
+
+    @media(max-width:650px) {
+      .gc-plane {
+        font-size:38px;
+      }
+
+      .gc-parachute {
+        font-size:30px;
+      }
+
+      .gc-round-banner {
+        font-size:11px;
+        padding:8px 12px;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+}
+
+installBattleFX();
 
 /* =========================================================
    ARENA EFFECTS
    ========================================================= */
 
 function flashArena() {
-  const arena =
-    $("#battleArena");
-
+  const arena = $("#battleArena");
   if (!arena) return;
 
-  arena.classList.remove(
-    "arena-shake"
-  );
+  arena.classList.remove("arena-shake");
 
   void arena.offsetWidth;
 
-  arena.classList.add(
-    "arena-shake"
-  );
+  arena.classList.add("arena-shake");
 
-  const flash =
-    document.createElement("div");
+  const flash = document.createElement("div");
 
-  flash.className =
-    "battle-flash";
+  flash.className = "battle-flash";
 
-  arena.appendChild(
-    flash
-  );
+  arena.appendChild(flash);
 
-  setTimeout(
-    () => flash.remove(),
-    400
-  );
+  setTimeout(() => flash.remove(), 400);
 }
 
-function createSparksAt(x, y) {
-  const arena =
-    $("#battleArena");
-
+function createSparksAt(x, y, amount = 14) {
+  const arena = $("#battleArena");
   if (!arena) return;
 
-  for (
-    let i = 0;
-    i < 14;
-    i++
-  ) {
-    const spark =
-      document.createElement("div");
+  for (let i = 0; i < amount; i++) {
+    const spark = document.createElement("div");
 
-    spark.className =
-      "battle-spark";
+    spark.className = "gc-spark";
 
-    spark.style.position =
-      "absolute";
-
-    spark.style.left =
-      x + "px";
-
-    spark.style.top =
-      y + "px";
-
-    spark.style.width =
-      "7px";
-
-    spark.style.height =
-      "7px";
-
-    spark.style.borderRadius =
-      "50%";
-
-    spark.style.background =
-      "white";
-
-    spark.style.boxShadow =
-      "0 0 10px white";
-
-    spark.style.zIndex =
-      "30";
+    spark.style.left = `${x}px`;
+    spark.style.top = `${y}px`;
 
     spark.style.setProperty(
       "--x",
-      `${Math.random() * 220 - 110}px`
+      `${Math.random() * 180 - 90}px`
     );
 
     spark.style.setProperty(
       "--y",
-      `${Math.random() * 160 - 80}px`
+      `${Math.random() * 140 - 70}px`
     );
 
-    arena.appendChild(
-      spark
-    );
+    arena.appendChild(spark);
 
-    setTimeout(
-      () => spark.remove(),
-      700
-    );
+    setTimeout(() => spark.remove(), 750);
   }
 }
 
-function createSparks() {
-  const arena =
-    $("#battleArena");
-
+function createImpact(x, y) {
+  const arena = $("#battleArena");
   if (!arena) return;
 
-  const rect =
-    arena.getBoundingClientRect();
+  const impact = document.createElement("div");
 
-  createSparksAt(
-    rect.width / 2,
-    rect.height / 2
+  impact.className = "gc-impact";
+
+  impact.style.left = `${x - 45}px`;
+  impact.style.top = `${y - 45}px`;
+
+  arena.appendChild(impact);
+
+  impact.animate(
+    [
+      {
+        transform:"scale(.2)",
+        opacity:1
+      },
+      {
+        transform:"scale(1.7)",
+        opacity:0
+      }
+    ],
+    {
+      duration:500,
+      easing:"cubic-bezier(.2,.8,.2,1)"
+    }
   );
+
+  createSparksAt(x, y);
+
+  setTimeout(() => impact.remove(), 520);
+}
+
+function createHitRing(x, y) {
+  const arena = $("#battleArena");
+  if (!arena) return;
+
+  const ring = document.createElement("div");
+
+  ring.className = "gc-hit-ring";
+
+  ring.style.left = `${x - 10}px`;
+  ring.style.top = `${y - 10}px`;
+
+  arena.appendChild(ring);
+
+  ring.animate(
+    [
+      {
+        transform:"scale(.5)",
+        opacity:1
+      },
+      {
+        transform:"scale(4)",
+        opacity:0
+      }
+    ],
+    {
+      duration:450,
+      easing:"ease-out"
+    }
+  );
+
+  setTimeout(() => ring.remove(), 500);
+}
+
+function showRoundBanner(text) {
+  const arena = $("#battleArena");
+  if (!arena) return;
+
+  let banner =
+    arena.querySelector(".gc-round-banner");
+
+  if (!banner) {
+    banner = document.createElement("div");
+    banner.className = "gc-round-banner";
+    arena.appendChild(banner);
+  }
+
+  banner.textContent = text;
+
+  banner.classList.remove("show");
+
+  void banner.offsetWidth;
+
+  banner.classList.add("show");
 }
 
 /* =========================================================
@@ -791,28 +902,17 @@ function createSparks() {
    ========================================================= */
 
 async function countdown() {
-  const element =
-    $("#countdown");
+  const element = $("#countdown");
 
-  arenaMessage(
-    "GET READY..."
-  );
+  arenaMessage("GET READY...");
 
   if (!element) {
     await wait(500);
     return;
   }
 
-  for (
-    const number of [
-      "3",
-      "2",
-      "1",
-      "GO!"
-    ]
-  ) {
-    element.textContent =
-      number;
+  for (const number of ["3", "2", "1", "GO!"]) {
+    element.textContent = number;
 
     arenaMessage(
       number === "GO!"
@@ -820,15 +920,11 @@ async function countdown() {
         : `BATTLE STARTING... ${number}`
     );
 
-    element.classList.remove(
-      "count-pop"
-    );
+    element.classList.remove("count-pop");
 
     void element.offsetWidth;
 
-    element.classList.add(
-      "count-pop"
-    );
+    element.classList.add("count-pop");
 
     await wait(
       number === "GO!"
@@ -837,67 +933,417 @@ async function countdown() {
     );
   }
 
-  element.textContent =
-    "";
+  element.textContent = "";
 
-  arenaMessage(
-    "FIGHT!"
-  );
+  arenaMessage("FIGHT!");
 }
 
 /* =========================================================
-   FIND REAL ATTACK POSITIONS
+   FIGHTER POSITION HELPERS
    ========================================================= */
 
-function getBattlePositions(
-  attacker,
-  defender
-) {
-  const arena =
-    $("#battleArena");
+function getFighterPoint(fighter) {
+  const arena = $("#battleArena");
 
-  if (
-    !arena ||
-    !attacker ||
-    !defender
-  ) {
+  if (!arena || !fighter) {
     return null;
+  }
+
+  const ar = arena.getBoundingClientRect();
+  const fr = fighter.getBoundingClientRect();
+
+  return {
+    x: fr.left + fr.width / 2 - ar.left,
+    y: fr.top + fr.height * .42 - ar.top
+  };
+}
+
+async function moveFighterToAttack(fighter, side) {
+  if (!fighter) {
+    await wait(300);
+    return;
+  }
+
+  const arena = $("#battleArena");
+
+  const opponent =
+    side === 1
+      ? $(".fighter-two")
+      : $(".fighter-one");
+
+  if (!arena || !opponent) {
+    await wait(300);
+    return;
+  }
+
+  const fighterRect =
+    fighter.getBoundingClientRect();
+
+  const opponentRect =
+    opponent.getBoundingClientRect();
+
+  const arenaRect =
+    arena.getBoundingClientRect();
+
+  const fighterCenter =
+    fighterRect.left +
+    fighterRect.width / 2;
+
+  const opponentCenter =
+    opponentRect.left +
+    opponentRect.width / 2;
+
+  const desiredGap =
+    Math.max(
+      55,
+      Math.min(
+        90,
+        (fighterRect.width +
+          opponentRect.width) *
+          .32
+      )
+    );
+
+  let distance =
+    opponentCenter -
+    fighterCenter;
+
+  if (side === 1) {
+    distance -= desiredGap;
+  } else {
+    distance += desiredGap;
+  }
+
+  const maxTravel =
+    arenaRect.width * .40;
+
+  distance =
+    Math.max(
+      -maxTravel,
+      Math.min(
+        maxTravel,
+        distance
+      )
+    );
+
+  fighter._gcAttackDistance =
+    distance;
+
+  fighter.classList.add(
+    "fighter-charge"
+  );
+
+  const animation =
+    fighter.animate(
+      [
+        {
+          transform:
+            "translateX(0) scale(1)"
+        },
+        {
+          transform:
+            `translateX(${distance}px) scale(1.04)`
+        }
+      ],
+      {
+        duration:
+          Math.min(
+            850,
+            Math.max(
+              420,
+              Math.abs(distance) * 2.1
+            )
+          ),
+        easing:
+          "cubic-bezier(.16,.84,.24,1)",
+        fill:"forwards"
+      }
+    );
+
+  try {
+    await animation.finished;
+  } catch {}
+
+  fighter.classList.remove(
+    "fighter-charge"
+  );
+}
+
+async function returnFighter(fighter) {
+  if (!fighter) {
+    await wait(300);
+    return;
+  }
+
+  const distance =
+    Number(
+      fighter._gcAttackDistance
+    ) || 0;
+
+  const animation =
+    fighter.animate(
+      [
+        {
+          transform:
+            `translateX(${distance}px) scale(1.04)`
+        },
+        {
+          transform:
+            "translateX(0) scale(1)"
+        }
+      ],
+      {
+        duration:460,
+        easing:
+          "cubic-bezier(.2,.8,.2,1)",
+        fill:"forwards"
+      }
+    );
+
+  try {
+    await animation.finished;
+  } catch {}
+
+  animation.cancel();
+
+  fighter.style.transform = "";
+
+  fighter._gcAttackDistance = 0;
+}
+
+/* =========================================================
+   BUILD / BRIDGE EFFECT — RAM ROUND
+   ========================================================= */
+
+async function buildBridge(fighter, side) {
+  const arena = $("#battleArena");
+
+  if (!arena || !fighter) {
+    await wait(300);
+    return;
+  }
+
+  const start =
+    getFighterPoint(fighter);
+
+  if (!start) return;
+
+  const blocks = [];
+
+  for (let i = 0; i < 5; i++) {
+    const block =
+      document.createElement("div");
+
+    block.className =
+      "gc-build";
+
+    const direction =
+      side === 1 ? 1 : -1;
+
+    block.style.left =
+      `${start.x +
+        direction *
+        (i * 34 + 25)}px`;
+
+    block.style.top =
+      `${start.y +
+        45 -
+        i * 28}px`;
+
+    block.style.opacity = "0";
+
+    arena.appendChild(block);
+
+    blocks.push(block);
+
+    block.animate(
+      [
+        {
+          opacity:0,
+          transform:"translateY(30px) scale(.4)"
+        },
+        {
+          opacity:1,
+          transform:"translateY(0) scale(1)"
+        }
+      ],
+      {
+        duration:280,
+        delay:i * 100,
+        fill:"forwards",
+        easing:"cubic-bezier(.2,.8,.2,1)"
+      }
+    );
+  }
+
+  await wait(800);
+
+  blocks.forEach(block => {
+    block.animate(
+      [
+        {
+          transform:"translateY(0)"
+        },
+        {
+          transform:"translateY(15px)",
+          opacity:0
+        }
+      ],
+      {
+        duration:350,
+        fill:"forwards"
+      }
+    );
+
+    setTimeout(
+      () => block.remove(),
+      400
+    );
+  });
+}
+
+/* =========================================================
+   PLANE + PARACHUTE — CPU ROUND
+   ========================================================= */
+
+async function planeEntrance(fighter, side) {
+  const arena = $("#battleArena");
+
+  if (!arena || !fighter) {
+    await wait(300);
+    return;
   }
 
   const arenaRect =
     arena.getBoundingClientRect();
 
-  const attackerRect =
-    attacker.getBoundingClientRect();
+  const plane =
+    document.createElement("div");
 
-  const defenderRect =
-    defender.getBoundingClientRect();
+  plane.className =
+    "gc-plane";
 
-  return {
-    startX:
-      attackerRect.left +
-      attackerRect.width / 2 -
-      arenaRect.left,
+  plane.textContent = "✈️";
 
-    startY:
-      attackerRect.top +
-      attackerRect.height * .42 -
-      arenaRect.top,
+  const fromX =
+    side === 1
+      ? -90
+      : arenaRect.width + 90;
 
-    endX:
-      defenderRect.left +
-      defenderRect.width / 2 -
-      arenaRect.left,
+  const toX =
+    side === 1
+      ? arenaRect.width + 90
+      : -90;
 
-    endY:
-      defenderRect.top +
-      defenderRect.height * .42 -
-      arenaRect.top
-  };
+  const y =
+    Math.max(
+      25,
+      arenaRect.height * .18
+    );
+
+  plane.style.left =
+    `${fromX}px`;
+
+  plane.style.top =
+    `${y}px`;
+
+  arena.appendChild(plane);
+
+  const animation =
+    plane.animate(
+      [
+        {
+          transform:
+            `translateX(0) rotate(${side === 1 ? 0 : 180}deg)`
+        },
+        {
+          transform:
+            `translateX(${toX - fromX}px) rotate(${side === 1 ? 0 : 180}deg)`
+        }
+      ],
+      {
+        duration:1500,
+        easing:"linear"
+      }
+    );
+
+  await wait(650);
+
+  /* Parachute entrance */
+
+  const parachute =
+    document.createElement("div");
+
+  parachute.className =
+    "gc-parachute";
+
+  parachute.textContent =
+    "🪂";
+
+  const centerX =
+    arenaRect.width *
+    (side === 1 ? .28 : .72);
+
+  parachute.style.left =
+    `${centerX}px`;
+
+  parachute.style.top =
+    `${y + 25}px`;
+
+  arena.appendChild(
+    parachute
+  );
+
+  const fighterPoint =
+    getFighterPoint(fighter);
+
+  const targetY =
+    fighterPoint
+      ? fighterPoint.y - 35
+      : arenaRect.height * .55;
+
+  await parachute.animate(
+    [
+      {
+        transform:"translateY(0) scale(.8)",
+        opacity:0
+      },
+      {
+        transform:
+          `translateY(${targetY - y}px) scale(1)`,
+        opacity:1
+      }
+    ],
+    {
+      duration:900,
+      easing:"cubic-bezier(.2,.8,.2,1)"
+    }
+  ).finished.catch(() => {});
+
+  parachute.remove();
+
+  await animation.finished
+    .catch(() => {});
+
+  plane.remove();
+
+  /* Small landing effect */
+
+  const point =
+    getFighterPoint(fighter);
+
+  if (point) {
+    createImpact(
+      point.x,
+      point.y + 30
+    );
+  }
+
+  await wait(300);
 }
 
 /* =========================================================
-   ATTACK EFFECT
+   ATTACK EFFECTS
    ========================================================= */
 
 async function attackEffect(
@@ -922,91 +1368,41 @@ async function attackEffect(
     !attacker ||
     !defender
   ) {
-    await wait(250);
     return;
   }
 
-  const positions =
-    getBattlePositions(
-      attacker,
-      defender
-    );
+  const start =
+    getFighterPoint(attacker);
 
-  if (!positions) {
-    await wait(250);
-    return;
-  }
+  const end =
+    getFighterPoint(defender);
 
-  const {
-    startX,
-    startY,
-    endX,
-    endY
-  } = positions;
+  if (!start || !end) return;
 
   const dx =
-    endX - startX;
+    end.x - start.x;
 
   const dy =
-    endY - startY;
+    end.y - start.y;
 
-  const distance =
-    Math.hypot(
-      dx,
-      dy
-    );
-
-  /* =====================================================
+  /* -------------------------
      SWORD
-     ===================================================== */
+     ------------------------- */
 
-  if (
-    weapon === "SWORD"
-  ) {
+  if (weapon === "SWORD") {
     const slash =
-      document.createElement(
-        "div"
-      );
+      document.createElement("div");
 
     slash.className =
-      "battle-slash";
-
-    slash.style.position =
-      "absolute";
+      "gc-effect gc-slash";
 
     slash.style.left =
-      startX + "px";
+      `${start.x}px`;
 
     slash.style.top =
-      startY + "px";
+      `${start.y}px`;
 
-    slash.style.width =
-      Math.max(
-        100,
-        Math.min(
-          190,
-          distance * .45
-        )
-      ) + "px";
-
-    slash.style.height =
-      "12px";
-
-    slash.style.borderRadius =
-      "999px";
-
-    slash.style.background =
-      "linear-gradient(90deg,transparent,white,var(--accent),transparent)";
-
-    slash.style.boxShadow =
-      "0 0 12px white,0 0 30px var(--accent)";
-
-    slash.style.zIndex =
-      "25";
-
-    arena.appendChild(
-      slash
-    );
+    arena.appendChild(slash);
 
     const angle =
       Math.atan2(
@@ -1016,71 +1412,103 @@ async function attackEffect(
       180 /
       Math.PI;
 
-    const animation =
-      slash.animate(
-        [
-          {
-            transform:
-              `translate(-50%,-50%) rotate(${angle}deg) scale(.5)`,
-            opacity: 0
-          },
-
-          {
-            transform:
-              `translate(-50%,-50%) rotate(${angle}deg) scale(1.1)`,
-            opacity: 1
-          },
-
-          {
-            transform:
-              `translate(-50%,-50%) rotate(${angle}deg) scale(.9)`,
-            opacity: 0
-          }
-        ],
+    await slash.animate(
+      [
         {
-          duration: 360,
-          easing:
-            "cubic-bezier(.2,.8,.2,1)",
-          fill: "forwards"
+          transform:
+            `translate(-50%,-50%) translate(0,0) rotate(${angle}deg) scale(.5)`,
+          opacity:0
+        },
+        {
+          transform:
+            `translate(-50%,-50%) translate(${dx}px,${dy}px) rotate(${angle}deg) scale(1.1)`,
+          opacity:1
         }
-      );
-
-    try {
-      await animation.finished;
-    } catch {}
+      ],
+      {
+        duration:500,
+        easing:
+          "cubic-bezier(.2,.7,.2,1)"
+      }
+    ).finished.catch(() => {});
 
     slash.remove();
 
-    flashArena();
-
-    createSparksAt(
-      endX,
-      endY
+    createImpact(
+      end.x,
+      end.y
     );
 
     return;
   }
 
-  /* =====================================================
-     ENERGY ATTACK
-     ===================================================== */
+  /* -------------------------
+     WIND / MACE
+     ------------------------- */
 
-  const projectile =
-    document.createElement(
-      "div"
+  if (weapon === "WIND") {
+    const wind =
+      document.createElement("div");
+
+    wind.className =
+      "gc-effect gc-wind";
+
+    wind.style.left =
+      `${start.x}px`;
+
+    wind.style.top =
+      `${start.y}px`;
+
+    arena.appendChild(wind);
+
+    await wind.animate(
+      [
+        {
+          transform:
+            "translate(-50%,-50%) scale(.3) rotate(0deg)",
+          opacity:0
+        },
+        {
+          transform:
+            `translate(${dx - 50}px,${dy - 50}px) scale(1.25) rotate(540deg)`,
+          opacity:1
+        }
+      ],
+      {
+        duration:650,
+        easing:
+          "cubic-bezier(.2,.7,.2,1)"
+      }
+    ).finished.catch(() => {});
+
+    wind.remove();
+
+    createImpact(
+      end.x,
+      end.y
     );
 
-  projectile.className =
-    "battle-energy";
+    return;
+  }
 
-  projectile.style.left =
-    startX + "px";
+  /* -------------------------
+     ENERGY CANNON
+     ------------------------- */
 
-  projectile.style.top =
-    startY + "px";
+  const energy =
+    document.createElement("div");
+
+  energy.className =
+    "gc-effect gc-energy";
+
+  energy.style.left =
+    `${start.x}px`;
+
+  energy.style.top =
+    `${start.y}px`;
 
   arena.appendChild(
-    projectile
+    energy
   );
 
   const angle =
@@ -1091,241 +1519,37 @@ async function attackEffect(
     180 /
     Math.PI;
 
-  const duration =
-    Math.min(
-      650,
-      Math.max(
-        300,
-        distance * 1.5
-      )
-    );
-
-  const animation =
-    projectile.animate(
-      [
-        {
-          transform:
-            `translate(-50%,-50%) translate(0,0) rotate(${angle}deg) scale(.4)`,
-          opacity: 0
-        },
-
-        {
-          transform:
-            `translate(-50%,-50%) translate(${dx * .5}px,${dy * .5}px) rotate(${angle}deg) scale(1)`,
-          opacity: 1
-        },
-
-        {
-          transform:
-            `translate(-50%,-50%) translate(${dx}px,${dy}px) rotate(${angle}deg) scale(1.15)`,
-          opacity: 1
-        }
-      ],
+  await energy.animate(
+    [
       {
-        duration,
-        easing:
-          "cubic-bezier(.15,.75,.2,1)",
-        fill: "forwards"
+        transform:
+          `translate(-50%,-50%) rotate(${angle}deg) scale(.5)`,
+        opacity:0
+      },
+      {
+        transform:
+          `translate(-50%,-50%) translate(${dx * .55}px,${dy * .55}px) rotate(${angle}deg) scale(1.1)`,
+        opacity:1
+      },
+      {
+        transform:
+          `translate(-50%,-50%) translate(${dx}px,${dy}px) rotate(${angle}deg) scale(1.3)`,
+        opacity:1
       }
-    );
+    ],
+    {
+      duration:700,
+      easing:
+        "cubic-bezier(.2,.7,.2,1)"
+    }
+  ).finished.catch(() => {});
 
-  try {
-    await animation.finished;
-  } catch {}
+  energy.remove();
 
-  projectile.remove();
-
-  flashArena();
-
-  createSparksAt(
-    endX,
-    endY
+  createImpact(
+    end.x,
+    end.y
   );
-}
-
-/* =========================================================
-   REAL FIGHTER MOVEMENT
-   ========================================================= */
-
-async function moveFighterToAttack(
-  fighter,
-  side
-) {
-  if (!fighter) {
-    await wait(300);
-    return;
-  }
-
-  const arena =
-    $("#battleArena");
-
-  const opponent =
-    side === 1
-      ? $(".fighter-two")
-      : $(".fighter-one");
-
-  if (
-    !arena ||
-    !opponent
-  ) {
-    await wait(300);
-    return;
-  }
-
-  const fighterRect =
-    fighter.getBoundingClientRect();
-
-  const opponentRect =
-    opponent.getBoundingClientRect();
-
-  const arenaRect =
-    arena.getBoundingClientRect();
-
-  const fighterCenter =
-    fighterRect.left +
-    fighterRect.width / 2;
-
-  const opponentCenter =
-    opponentRect.left +
-    opponentRect.width / 2;
-
-  /*
-     Keep a visible fighting gap.
-     The distance is calculated from the actual
-     screen positions, so it works on phones too.
-  */
-
-  const fightingGap =
-    Math.max(
-      48,
-      Math.min(
-        78,
-        (
-          fighterRect.width +
-          opponentRect.width
-        ) * .30
-      )
-    );
-
-  let distance =
-    opponentCenter -
-    fighterCenter;
-
-  if (side === 1) {
-    distance -=
-      fightingGap;
-  } else {
-    distance +=
-      fightingGap;
-  }
-
-  const maxTravel =
-    arenaRect.width *
-    .42;
-
-  distance =
-    Math.max(
-      -maxTravel,
-      Math.min(
-        maxTravel,
-        distance
-      )
-    );
-
-  const duration =
-    Math.min(
-      850,
-      Math.max(
-        420,
-        Math.abs(distance) *
-          2
-      )
-    );
-
-  const animation =
-    fighter.animate(
-      [
-        {
-          transform:
-            "translateX(0) scale(1)"
-        },
-
-        {
-          transform:
-            `translateX(${distance}px) scale(1.05)`
-        }
-      ],
-      {
-        duration,
-        easing:
-          "cubic-bezier(.16,.84,.24,1)",
-        fill: "forwards"
-      }
-    );
-
-  fighter._gcAttackDistance =
-    distance;
-
-  try {
-    await animation.finished;
-  } catch {
-    await wait(
-      duration
-    );
-  }
-}
-
-/* =========================================================
-   RETURN FIGHTER
-   ========================================================= */
-
-async function returnFighter(
-  fighter
-) {
-  if (!fighter) {
-    await wait(300);
-    return;
-  }
-
-  const distance =
-    Number(
-      fighter._gcAttackDistance
-    ) || 0;
-
-  const animation =
-    fighter.animate(
-      [
-        {
-          transform:
-            `translateX(${distance}px) scale(1.05)`
-        },
-
-        {
-          transform:
-            "translateX(0) scale(1)"
-        }
-      ],
-      {
-        duration: 480,
-        easing:
-          "cubic-bezier(.2,.8,.2,1)",
-        fill: "forwards"
-      }
-    );
-
-  try {
-    await animation.finished;
-  } catch {
-    await wait(480);
-  }
-
-  animation.cancel();
-
-  fighter.style.transform =
-    "";
-
-  fighter._gcAttackDistance =
-    0;
 }
 
 /* =========================================================
@@ -1339,14 +1563,6 @@ function damagePlayer(
   player,
   amount
 ) {
-  /*
-     IMPORTANT:
-     This function is only called AFTER an attack
-     has successfully reached the defender.
-
-     No idle damage exists.
-  */
-
   if (player === 1) {
     hp1 =
       Math.max(
@@ -1373,7 +1589,7 @@ function damagePlayer(
 }
 
 /* =========================================================
-   ONE ROUND
+   ONE CINEMATIC ROUND
    ========================================================= */
 
 async function battleRound(
@@ -1386,11 +1602,6 @@ async function battleRound(
 
   const fighter2 =
     $(".fighter-two");
-
-  /*
-     Stronger component wins the round.
-     Tie = Player 1, matching the previous logic.
-  */
 
   const attacker =
     stats1 >= stats2
@@ -1409,144 +1620,187 @@ async function battleRound(
 
   const configs = [
     {
-      weapon: "SWORD",
-      icon: "⚔️",
-      title: "DIAMOND SWORD",
-      attack:
-        "⚔️ DIAMOND SWORD — SLASH!",
-      damage: 30
+      weapon:"SWORD",
+      icon:"⚔️",
+      title:"DIAMOND SWORD",
+      intro:"⚔️ GPU CLASH",
+      attack:"⚔️ DIAMOND SLASH!",
+      damage:30
     },
-
     {
-      weapon: "WIND",
-      icon: "🔨",
-      title: "MACE + WIND BURST",
-      attack:
-        "🌪️ MACE + WIND BURST!",
-      damage: 35
+      weapon:"WIND",
+      icon:"🔨",
+      title:"MACE + WIND BURST",
+      intro:"🔨 RAM BRIDGE ASSAULT",
+      attack:"🌪️ MACE WIND BURST!",
+      damage:35
     },
-
     {
-      weapon: "ENERGY",
-      icon: "⚡",
-      title: "ENERGY CANNON",
-      attack:
-        "⚡ ENERGY CANNON — BLAST!",
-      damage: 40
+      weapon:"ENERGY",
+      icon:"⚡",
+      title:"ENERGY CANNON",
+      intro:"✈️ CPU SKY ASSAULT",
+      attack:"⚡ ENERGY BLAST!",
+      damage:40
     }
   ];
 
   const config =
-    configs[
-      round - 1
-    ];
+    configs[round - 1];
+
+  const attackerName =
+    attacker === 1
+      ? "PLAYER 1"
+      : "PLAYER 2";
 
   battleMessage(
     config.icon
   );
 
-  arenaMessage(
-    `ROUND ${round} — ${
-      attacker === 1
-        ? "PLAYER 1"
-        : "PLAYER 2"
-    } ${config.title}`
+  showRoundBanner(
+    `ROUND ${round} — ${config.title}`
   );
 
-  await wait(450);
+  arenaMessage(
+    `ROUND ${round} — ${attackerName} HAS THE ADVANTAGE`
+  );
+
+  await wait(600);
 
   /* =====================================================
-     ROUND 3 — SKY ENTRY EFFECT
+     ROUND 1 — GPU / SWORD
      ===================================================== */
 
-  if (
-    round === 3 &&
-    attackingFighter
-  ) {
-    attackingFighter.classList.add(
-      "gc-sky"
+  if (round === 1) {
+    arenaMessage(
+      `${attackerName} DRAWS THE DIAMOND SWORD ⚔️`
     );
 
-    await wait(700);
+    await wait(450);
 
-    attackingFighter.classList.remove(
-      "gc-sky"
+    arenaMessage(
+      `${attackerName} RUNS FORWARD!`
     );
 
-    battleMessage(
-      "⚡"
+    await moveFighterToAttack(
+      attackingFighter,
+      attacker
     );
 
     arenaMessage(
-      `${
-        attacker === 1
-          ? "PLAYER 1"
-          : "PLAYER 2"
-      } CHARGES ENERGY CANNON`
+      config.attack
     );
 
-    if (
-      attackingFighter
-    ) {
-      attackingFighter.classList.add(
-        "gc-energy-charge"
-      );
-
-      await wait(450);
-
-      attackingFighter.classList.remove(
-        "gc-energy-charge"
-      );
-    }
+    await attackEffect(
+      attacker,
+      config.weapon
+    );
   }
 
   /* =====================================================
-     MOVE TOWARD OPPONENT
+     ROUND 2 — RAM / BRIDGE / MACE
      ===================================================== */
 
-  arenaMessage(
-    `${
-      attacker === 1
-        ? "PLAYER 1"
-        : "PLAYER 2"
-    } MOVES IN...`
-  );
-
-  await moveFighterToAttack(
-    attackingFighter,
-    attacker
-  );
-
-  /* =====================================================
-     ATTACK
-     ===================================================== */
-
-  arenaMessage(
-    config.attack
-  );
-
-  await attackEffect(
-    attacker,
-    config.weapon
-  );
-
-  /* =====================================================
-     DEFENDER HIT
-     ===================================================== */
-
-  if (
-    defendingFighter
-  ) {
-    const hitX =
-      attacker === 1
-        ? "10px"
-        : "-10px";
-
-    defendingFighter.style.setProperty(
-      "--gc-hit-x",
-      hitX
+  if (round === 2) {
+    arenaMessage(
+      `${attackerName} STARTS BUILDING!`
     );
 
+    await buildBridge(
+      attackingFighter,
+      attacker
+    );
+
+    arenaMessage(
+      `${attackerName} JUMPS FROM THE BRIDGE!`
+    );
+
+    if (attackingFighter) {
+      await attackingFighter.animate(
+        [
+          {
+            transform:
+              "translateY(0) scale(1)"
+          },
+          {
+            transform:
+              "translateY(-65px) scale(1.03)"
+          },
+          {
+            transform:
+              "translateY(0) scale(1)"
+          }
+        ],
+        {
+          duration:650,
+          easing:
+            "cubic-bezier(.2,.8,.2,1)"
+        }
+      ).finished.catch(() => {});
+    }
+
+    await moveFighterToAttack(
+      attackingFighter,
+      attacker
+    );
+
+    arenaMessage(
+      config.attack
+    );
+
+    await attackEffect(
+      attacker,
+      config.weapon
+    );
+  }
+
+  /* =====================================================
+     ROUND 3 — CPU / PLANE / PARACHUTE / ENERGY
+     ===================================================== */
+
+  if (round === 3) {
+    arenaMessage(
+      `${attackerName} IS ENTERING FROM THE SKY! ✈️`
+    );
+
+    await planeEntrance(
+      attackingFighter,
+      attacker
+    );
+
+    arenaMessage(
+      `${attackerName} LANDS AND CHARGES THE ENERGY CANNON ⚡`
+    );
+
+    if (attackingFighter) {
+      attackingFighter.classList.add(
+        "fighter-charge"
+      );
+    }
+
+    await wait(900);
+
+    if (attackingFighter) {
+      attackingFighter.classList.remove(
+        "fighter-charge"
+      );
+    }
+
+    arenaMessage(
+      config.attack
+    );
+
+    await attackEffect(
+      attacker,
+      config.weapon
+    );
+  }
+
+  /* =====================================================
+     DEFENDER GETS HIT
+     ===================================================== */
+
+  if (defendingFighter) {
     defendingFighter.classList.remove(
       "fighter-hit"
     );
@@ -1556,6 +1810,18 @@ async function battleRound(
     defendingFighter.classList.add(
       "fighter-hit"
     );
+
+    const point =
+      getFighterPoint(
+        defendingFighter
+      );
+
+    if (point) {
+      createHitRing(
+        point.x,
+        point.y
+      );
+    }
 
     setTimeout(
       () => {
@@ -1568,10 +1834,10 @@ async function battleRound(
   }
 
   /* =====================================================
-     DAMAGE ONLY THE PLAYER WHO WAS HIT
+     DAMAGE ONLY TO THE PLAYER HIT
      ===================================================== */
 
-  await wait(140);
+  await wait(120);
 
   damagePlayer(
     attacker === 1
@@ -1581,55 +1847,42 @@ async function battleRound(
   );
 
   arenaMessage(
-    `${
-      attacker === 1
-        ? "PLAYER 1"
-        : "PLAYER 2"
-    } DEALS ${config.damage} DAMAGE`
+    `${attackerName} DEALS ${config.damage} DAMAGE`
   );
 
-  await wait(300);
+  await wait(450);
 
   /* =====================================================
-     RETURN TO STARTING SIDE
+     ATTACKER RETURNS HOME
      ===================================================== */
 
   arenaMessage(
-    `${
-      attacker === 1
-        ? "PLAYER 1"
-        : "PLAYER 2"
-    } RETURNS`
+    `${attackerName} RETURNS TO THEIR SIDE!`
   );
 
   await returnFighter(
-    attackingFighter,
-    attacker
+    attackingFighter
   );
 
-  await wait(300);
+  await wait(350);
 
   arenaMessage(
     `ROUND ${round} COMPLETE`
   );
 
-  await wait(550);
+  await wait(650);
 }
 
 /* =========================================================
    START BATTLE
    ========================================================= */
 
-let battleRunning =
-  false;
+let battleRunning = false;
 
 async function startBattle() {
-  if (battleRunning) {
-    return;
-  }
+  if (battleRunning) return;
 
-  battleRunning =
-    true;
+  battleRunning = true;
 
   const button =
     $("#startBattle");
@@ -1638,8 +1891,7 @@ async function startBattle() {
     $("#battleResult");
 
   if (button) {
-    button.disabled =
-      true;
+    button.disabled = true;
 
     button.textContent =
       "⚔️ FIGHTING...";
@@ -1650,13 +1902,10 @@ async function startBattle() {
       "show"
     );
 
-    result.innerHTML =
-      "";
+    result.innerHTML = "";
   }
 
-  /* =====================================================
-     RESET HP
-     ===================================================== */
+  /* Reset HP */
 
   hp1 = 100;
   hp2 = 100;
@@ -1671,46 +1920,31 @@ async function startBattle() {
     100
   );
 
-  /* =====================================================
-     RESET FIGHTERS
-     ===================================================== */
+  /* Reset fighters */
 
   $$(".fighter-one,.fighter-two")
-    .forEach(
-      fighter => {
-        fighter
-          .getAnimations()
-          .forEach(
-            animation =>
-              animation.cancel()
-          );
+    .forEach(fighter => {
+      fighter.classList.remove(
+        "fighter-winner",
+        "fighter-loser",
+        "fighter-hit",
+        "fighter-charge"
+      );
 
-        fighter.classList.remove(
-          "fighter-winner",
-          "fighter-loser",
-          "fighter-hit",
-          "fighter-charge",
-          "gc-sky",
-          "gc-energy-charge"
+      fighter.getAnimations()
+        .forEach(animation =>
+          animation.cancel()
         );
 
-        fighter.style.transform =
-          "";
+      fighter.style.transform = "";
 
-        fighter._gcAttackDistance =
-          0;
-      }
-    );
+      fighter._gcAttackDistance = 0;
+    });
 
   const [
     name1,
     name2
-  ] =
-    fighterNames();
-
-  /* =====================================================
-     READ COMPONENT STATS
-     ===================================================== */
+  ] = fighterNames();
 
   const stats1 = [
     getStat("gpu1"),
@@ -1746,13 +1980,6 @@ async function startBattle() {
     round <= 3;
     round++
   ) {
-    if (
-      hp1 <= 0 ||
-      hp2 <= 0
-    ) {
-      break;
-    }
-
     const roundText =
       $("#roundText");
 
@@ -1761,33 +1988,24 @@ async function startBattle() {
         `ROUND ${round} / 3`;
     }
 
-    const stat1 =
-      stats1[
-        round - 1
-      ];
-
-    const stat2 =
-      stats2[
-        round - 1
-      ];
+    await battleRound(
+      round,
+      stats1[round - 1],
+      stats2[round - 1]
+    );
 
     if (
-      stat1 >= stat2
+      stats1[round - 1] >=
+      stats2[round - 1]
     ) {
       wins1++;
     } else {
       wins2++;
     }
-
-    await battleRound(
-      round,
-      stat1,
-      stat2
-    );
   }
 
   /* =====================================================
-     FIND OVERALL WINNER
+     OVERALL WINNER
      ===================================================== */
 
   const winner =
@@ -1819,27 +2037,21 @@ async function startBattle() {
       ? $(".fighter-two")
       : $(".fighter-one");
 
-  /* =====================================================
-     FINAL ANIMATION
-     ===================================================== */
-
-  [
-    winnerFighter,
-    loserFighter
-  ]
+  [winnerFighter, loserFighter]
     .filter(Boolean)
-    .forEach(
-      fighter => {
-        fighter.classList.remove(
-          "fighter-hit",
-          "fighter-charge",
-          "gc-energy-charge"
+    .forEach(fighter => {
+      fighter.classList.remove(
+        "fighter-hit",
+        "fighter-charge"
+      );
+
+      fighter.getAnimations()
+        .forEach(animation =>
+          animation.cancel()
         );
 
-        fighter.style.transform =
-          "";
-      }
-    );
+      fighter.style.transform = "";
+    });
 
   if (winnerFighter) {
     winnerFighter.classList.add(
@@ -1857,9 +2069,33 @@ async function startBattle() {
     "🏆"
   );
 
-  arenaMessage(
-    `🏆 ${winnerName.toUpperCase()} WINS!`
+  showRoundBanner(
+    "🏆 FINAL VICTORY"
   );
+
+  arenaMessage(
+    `🏆 ${winnerName.toUpperCase()} WINS THE BATTLE!`
+  );
+
+  /* Final victory sparks */
+
+  const point =
+    getFighterPoint(
+      winnerFighter
+    );
+
+  if (point) {
+    createImpact(
+      point.x,
+      point.y
+    );
+
+    createSparksAt(
+      point.x,
+      point.y,
+      28
+    );
+  }
 
   if (result) {
     result.innerHTML = `
@@ -1875,11 +2111,15 @@ async function startBattle() {
         ${winnerName} defeated ${loserName}
       </span>
 
-      <span>
-        ${name1}: ${wins1} round${wins1 === 1 ? "" : "s"}
-        &nbsp; • &nbsp;
-        ${name2}: ${wins2} round${wins2 === 1 ? "" : "s"}
-      </span>
+      <small style="
+        display:block;
+        margin-top:8px;
+        opacity:.75;
+      ">
+        ${name1}: ${wins1} rounds
+        &nbsp;•&nbsp;
+        ${name2}: ${wins2} rounds
+      </small>
     `;
 
     result.classList.add(
@@ -1887,18 +2127,14 @@ async function startBattle() {
     );
   }
 
-  await wait(1500);
-
   if (button) {
-    button.disabled =
-      false;
+    button.disabled = false;
 
     button.textContent =
       "⚔️ FIGHT AGAIN";
   }
 
-  battleRunning =
-    false;
+  battleRunning = false;
 }
 
 on(
@@ -1963,9 +2199,7 @@ function animateNumber(
         target * eased
       );
 
-    if (
-      progress < 1
-    ) {
+    if (progress < 1) {
       requestAnimationFrame(
         update
       );
@@ -2003,8 +2237,7 @@ async function checkPC() {
     $("#checkPcBtn");
 
   if (button) {
-    button.disabled =
-      true;
+    button.disabled = true;
 
     button.textContent =
       "SCANNING...";
@@ -2028,26 +2261,10 @@ async function checkPC() {
   }
 
   const stages = [
-    [
-      "stageGpu",
-      "GPU",
-      20
-    ],
-    [
-      "stageCpu",
-      "CPU",
-      45
-    ],
-    [
-      "stageRam",
-      "RAM",
-      70
-    ],
-    [
-      "stageGame",
-      "GAME",
-      100
-    ]
+    ["stageGpu", "GPU", 20],
+    ["stageCpu", "CPU", 45],
+    ["stageRam", "RAM", 70],
+    ["stageGame", "GAME", 100]
   ];
 
   const messages =
@@ -2094,19 +2311,13 @@ async function checkPC() {
         value + "%";
     }
 
-    await wait(
-      700
-    );
+    await wait(700);
 
     setStage(
       id,
       "done"
     );
   }
-
-  /* =====================================================
-     READ HARDWARE
-     ===================================================== */
 
   const gpu =
     getStat("checkGpu");
@@ -2120,10 +2331,6 @@ async function checkPC() {
   const game =
     $("#checkGame")?.value ||
     "Minecraft";
-
-  /* =====================================================
-     CALCULATE SCORE
-     ===================================================== */
 
   const score =
     Math.round(
@@ -2141,67 +2348,40 @@ async function checkPC() {
     Math.max(
       15,
       Math.round(
-        score *
-          multiplier
+        score * multiplier
       )
     );
-
-  /* =====================================================
-     PERFORMANCE TIER
-     ===================================================== */
 
   let tier;
   let title;
   let description;
 
-  if (
-    score >= 90
-  ) {
+  if (score >= 90) {
     tier = "S";
-    title =
-      "BEAST MODE";
-
+    title = "BEAST MODE";
     description =
       "Your PC is built for serious gaming.";
-  } else if (
-    score >= 78
-  ) {
+  } else if (score >= 78) {
     tier = "A";
-    title =
-      "HIGH PERFORMANCE";
-
+    title = "HIGH PERFORMANCE";
     description =
       "Excellent hardware for modern gaming.";
-  } else if (
-    score >= 65
-  ) {
+  } else if (score >= 65) {
     tier = "B";
-    title =
-      "SOLID GAMER";
-
+    title = "SOLID GAMER";
     description =
       "A strong setup for most games.";
-  } else if (
-    score >= 50
-  ) {
+  } else if (score >= 50) {
     tier = "C";
-    title =
-      "MID RANGE";
-
+    title = "MID RANGE";
     description =
       "Good for lighter and competitive games.";
   } else {
     tier = "D";
-    title =
-      "ENTRY GAMER";
-
+    title = "ENTRY GAMER";
     description =
       "Best suited for optimized or lighter games.";
   }
-
-  /* =====================================================
-     BOTTLENECK
-     ===================================================== */
 
   const lowest =
     Math.min(
@@ -2213,25 +2393,16 @@ async function checkPC() {
   let bottleneck =
     "Balanced";
 
-  if (
-    lowest === gpu
-  ) {
-    bottleneck =
-      "GPU";
+  if (lowest === gpu) {
+    bottleneck = "GPU";
   }
 
-  if (
-    lowest === cpu
-  ) {
-    bottleneck =
-      "CPU";
+  if (lowest === cpu) {
+    bottleneck = "CPU";
   }
 
-  if (
-    lowest === ram
-  ) {
-    bottleneck =
-      "RAM";
+  if (lowest === ram) {
+    bottleneck = "RAM";
   }
 
   if (status) {
@@ -2243,10 +2414,6 @@ async function checkPC() {
     messages.textContent =
       "> Analysis complete. Performance profile generated.";
   }
-
-  /* =====================================================
-     RESULT ELEMENTS
-     ===================================================== */
 
   const scoreElement =
     $("#scoreValue");
@@ -2272,10 +2439,6 @@ async function checkPC() {
   const bottleneckElement =
     $("#bottleneckValue");
 
-  /* =====================================================
-     WRITE RESULTS
-     ===================================================== */
-
   if (titleElement) {
     titleElement.textContent =
       `${tier} — ${title}`;
@@ -2290,10 +2453,6 @@ async function checkPC() {
     bottleneckElement.textContent =
       bottleneck;
   }
-
-  /* =====================================================
-     ANIMATE RESULTS
-     ===================================================== */
 
   animateNumber(
     scoreElement,
@@ -2327,8 +2486,7 @@ async function checkPC() {
   }
 
   if (button) {
-    button.disabled =
-      false;
+    button.disabled = false;
 
     button.textContent =
       "⚡ SCAN AGAIN";
@@ -2345,9 +2503,7 @@ on(
    THEMES
    ========================================================= */
 
-function applyTheme(
-  theme
-) {
+function applyTheme(theme) {
   document.body.classList.remove(
     "theme-inferno",
     "theme-toxic",
@@ -2356,9 +2512,7 @@ function applyTheme(
     "theme-electric"
   );
 
-  if (
-    theme !== "cyber"
-  ) {
+  if (theme !== "cyber") {
     document.body.classList.add(
       "theme-" + theme
     );
@@ -2544,8 +2698,7 @@ on(
       "open"
     );
 
-    input.value =
-      "";
+    input.value = "";
   }
 );
 
@@ -2624,9 +2777,7 @@ function renderFriends() {
 
   if (!list) return;
 
-  if (
-    !friends.length
-  ) {
+  if (!friends.length) {
     list.innerHTML = `
       <div class="friend-card">
         <strong>No friends yet</strong>
@@ -2639,14 +2790,10 @@ function renderFriends() {
     return;
   }
 
-  list.innerHTML =
-    "";
+  list.innerHTML = "";
 
   friends.forEach(
-    (
-      friend,
-      index
-    ) => {
+    (friend, index) => {
       const card =
         document.createElement(
           "div"
@@ -2685,34 +2832,32 @@ function renderFriends() {
   );
 
   $$("[data-remove-friend]")
-    .forEach(
-      button => {
-        button.addEventListener(
-          "click",
-          () => {
-            const index =
-              Number(
-                button.dataset
-                  .removeFriend
-              );
-
-            friends.splice(
-              index,
-              1
+    .forEach(button => {
+      button.addEventListener(
+        "click",
+        () => {
+          const index =
+            Number(
+              button.dataset
+                .removeFriend
             );
 
-            localStorage.setItem(
-              "gamecheckFriends",
-              JSON.stringify(
-                friends
-              )
-            );
+          friends.splice(
+            index,
+            1
+          );
 
-            renderFriends();
-          }
-        );
-      }
-    );
+          localStorage.setItem(
+            "gamecheckFriends",
+            JSON.stringify(
+              friends
+            )
+          );
+
+          renderFriends();
+        }
+      );
+    });
 }
 
 on(
@@ -2795,31 +2940,27 @@ if (
         );
       },
       {
-        threshold: 0.08
+        threshold:0.08
       }
     );
 
   $$(".section,.game-card")
-    .forEach(
-      element => {
-        element.classList.add(
-          "reveal"
-        );
+    .forEach(element => {
+      element.classList.add(
+        "reveal"
+      );
 
-        observer.observe(
-          element
-        );
-      }
-    );
+      observer.observe(
+        element
+      );
+    });
 } else {
   $$(".section,.game-card")
-    .forEach(
-      element => {
-        element.classList.add(
-          "visible"
-        );
-      }
-    );
+    .forEach(element => {
+      element.classList.add(
+        "visible"
+      );
+    });
 }
 
 /* =========================================================
@@ -2860,19 +3001,16 @@ function createParticles() {
       "particle";
 
     particle.style.left =
-      Math.random() *
-        100 +
+      Math.random() * 100 +
       "%";
 
     particle.style.animationDuration =
       8 +
-      Math.random() *
-        12 +
+      Math.random() * 12 +
       "s";
 
     particle.style.animationDelay =
-      -Math.random() *
-        12 +
+      -Math.random() * 12 +
       "s";
 
     container.appendChild(
@@ -2887,8 +3025,7 @@ createParticles();
    SOUND SYSTEM
    ========================================================= */
 
-let audioContext =
-  null;
+let audioContext = null;
 
 function initAudio() {
   if (!audioContext) {
@@ -2915,8 +3052,7 @@ function tone(
   frequency,
   duration = 0.1
 ) {
-  if (!audioContext)
-    return;
+  if (!audioContext) return;
 
   const oscillator =
     audioContext.createOscillator();
@@ -2969,9 +3105,7 @@ let soundEnabled =
   ) !== "off";
 
 function createSoundToggle() {
-  if (
-    $("#soundToggle")
-  ) {
+  if ($("#soundToggle")) {
     return;
   }
 
@@ -3013,14 +3147,9 @@ function createSoundToggle() {
           ? "🔊"
           : "🔇";
 
-      if (
-        soundEnabled
-      ) {
+      if (soundEnabled) {
         initAudio();
-        tone(
-          700,
-          0.12
-        );
+        tone(700, 0.12);
       }
     }
   );
@@ -3031,11 +3160,7 @@ createSoundToggle();
 document.addEventListener(
   "click",
   event => {
-    if (
-      !soundEnabled
-    ) {
-      return;
-    }
+    if (!soundEnabled) return;
 
     if (
       event.target.closest(
@@ -3043,11 +3168,7 @@ document.addEventListener(
       )
     ) {
       initAudio();
-
-      tone(
-        520,
-        0.06
-      );
+      tone(520, 0.06);
     }
   }
 );
@@ -3082,13 +3203,10 @@ function hideLoader() {
     "hidden"
   );
 
-  setTimeout(
-    () => {
-      loader.style.display =
-        "none";
-    },
-    700
-  );
+  setTimeout(() => {
+    loader.style.display =
+      "none";
+  }, 700);
 }
 
 window.addEventListener(
@@ -3115,6 +3233,11 @@ setTimeout(
 console.log(
   "%cGAMECHECK V4 ONLINE",
   "color:#00e5ff;font-size:20px;font-weight:bold"
+);
+
+console.log(
+  "%cCINEMATIC VS ENGINE ONLINE",
+  "color:#7c5cff;font-size:14px;font-weight:bold"
 );
 
 console.log(
