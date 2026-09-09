@@ -3839,3 +3839,927 @@ console.log(
   "%cMade by AUK",
   "color:#7c5cff;font-size:14px;font-weight:bold"
 );
+/* =========================================================
+   GAMECHECK — CINEMATIC MOTION ENGINE
+   FINAL DAY BUILD • MADE BY AUK
+   ========================================================= */
+
+(() => {
+  "use strict";
+
+  const q = selector =>
+    document.querySelector(selector);
+
+  /* ==========================================
+     PC SCORE DATABASE
+     ========================================== */
+
+  const GPU = {
+    "RTX 5090":100,
+    "RTX 5080":96,
+    "RTX 5070 Ti":91,
+    "RTX 5070":87,
+    "RTX 4090":99,
+    "RTX 4080 SUPER":94,
+    "RTX 4080":92,
+    "RTX 4070 Ti SUPER":89,
+    "RTX 4070 Ti":86,
+    "RTX 4070 SUPER":84,
+    "RTX 4070":80,
+    "RTX 4060 Ti":69,
+    "RTX 4060":63,
+    "RTX 3060 Ti":68,
+    "RTX 3060":59,
+    "RTX 3050":45,
+    "RTX 2060":43,
+    "GTX 1660 SUPER":40,
+    "GTX 1650":30,
+    "GTX 1050 Ti":23,
+    "RX 7900 XTX":96,
+    "RX 7900 XT":91,
+    "RX 7800 XT":82,
+    "RX 7700 XT":77,
+    "RX 7600 XT":68,
+    "RX 7600":63,
+    "RX 6700 XT":69,
+    "RX 6600 XT":62,
+    "RX 6600":55,
+    "RX 6500 XT":39,
+    "Intel Arc A770":65,
+    "Intel Arc A750":59
+  };
+
+  const CPU = {
+    "Ryzen 9 9950X":100,
+    "Ryzen 9 7950X3D":98,
+    "Ryzen 9 7950X":96,
+    "Ryzen 7 7800X3D":94,
+    "Ryzen 7 7700X":87,
+    "Ryzen 7 7700":84,
+    "Ryzen 5 7600X":79,
+    "Ryzen 5 7600":76,
+    "Ryzen 5 5600":68,
+    "Ryzen 5 3600":55,
+    "Core i9-14900K":100,
+    "Core i7-14700K":94,
+    "Core i5-14600K":89,
+    "Core i5-14400F":78,
+    "Core i5-13400F":74,
+    "Core i5-12400F":70,
+    "Core i7-10700K":70,
+    "Core i5-10400F":58,
+    "Core i3-12100F":55
+  };
+
+  const RAM = {
+    "4GB DDR4":25,
+    "8GB DDR4":45,
+    "8GB DDR5":52,
+    "16GB DDR4":70,
+    "16GB DDR5":78,
+    "24GB DDR5":84,
+    "32GB DDR4":85,
+    "32GB DDR5":92,
+    "64GB DDR5":100
+  };
+
+  /* ==========================================
+     PC ANALYSIS
+     ========================================== */
+
+  function readHardware(id, database, fallback) {
+
+    const element = q(id);
+
+    const name =
+      element?.value ||
+      fallback;
+
+    return {
+      name,
+      score: database[name] || 50
+    };
+  }
+
+  function totalScore(gpu, cpu, ram) {
+
+    return Math.round(
+      gpu * .45 +
+      cpu * .35 +
+      ram * .20
+    );
+  }
+
+  function fpsEstimate(gpu, cpu) {
+
+    return Math.max(
+      25,
+      Math.min(
+        300,
+        Math.round(
+          28 +
+          gpu * 2.15 +
+          cpu * .35
+        )
+      )
+    );
+  }
+
+  function balance(gpu, cpu, ram) {
+
+    const lowest =
+      Math.min(gpu, cpu, ram);
+
+    if (lowest >= 75)
+      return "Balanced";
+
+    if (lowest >= 55)
+      return "Moderate";
+
+    return "Needs upgrade";
+  }
+
+  function component(
+    title,
+    a,
+    b
+  ) {
+
+    const winner =
+      a.score === b.score
+        ? "TIE"
+        : a.score > b.score
+          ? "PC 1"
+          : "PC 2";
+
+    return `
+      <div class="gc-component">
+
+        <div class="gc-component-title">
+          ${title}
+        </div>
+
+        <div class="gc-component-name">
+          ${a.name}
+        </div>
+
+        <div class="gc-bar">
+          <div
+            class="gc-bar-fill ${
+              winner === "PC 1"
+                ? "winner"
+                : ""
+            }"
+            data-width="${a.score}">
+          </div>
+        </div>
+
+        <div class="gc-score">
+          ${a.score}
+        </div>
+
+        <div style="height:15px"></div>
+
+        <div class="gc-component-name">
+          ${b.name}
+        </div>
+
+        <div class="gc-bar">
+          <div
+            class="gc-bar-fill ${
+              winner === "PC 2"
+                ? "winner"
+                : ""
+            }"
+            data-width="${b.score}">
+          </div>
+        </div>
+
+        <div class="gc-score">
+          ${b.score}
+        </div>
+
+        <div style="
+          margin-top:9px;
+          font-size:.68rem;
+          letter-spacing:.12em;
+          opacity:.5;
+        ">
+          ${winner}
+          ${winner === "TIE"
+            ? ""
+            : " ADVANTAGE"}
+        </div>
+
+      </div>
+    `;
+  }
+
+  function analyzePCs() {
+
+    const gpu1 =
+      readHardware(
+        "#gpu1",
+        GPU,
+        "GPU 1"
+      );
+
+    const gpu2 =
+      readHardware(
+        "#gpu2",
+        GPU,
+        "GPU 2"
+      );
+
+    const cpu1 =
+      readHardware(
+        "#cpu1",
+        CPU,
+        "CPU 1"
+      );
+
+    const cpu2 =
+      readHardware(
+        "#cpu2",
+        CPU,
+        "CPU 2"
+      );
+
+    const ram1 =
+      readHardware(
+        "#ram1",
+        RAM,
+        "RAM 1"
+      );
+
+    const ram2 =
+      readHardware(
+        "#ram2",
+        RAM,
+        "RAM 2"
+      );
+
+    const score1 =
+      totalScore(
+        gpu1.score,
+        cpu1.score,
+        ram1.score
+      );
+
+    const score2 =
+      totalScore(
+        gpu2.score,
+        cpu2.score,
+        ram2.score
+      );
+
+    const fps1 =
+      fpsEstimate(
+        gpu1.score,
+        cpu1.score
+      );
+
+    const fps2 =
+      fpsEstimate(
+        gpu2.score,
+        cpu2.score
+      );
+
+    const winner =
+      score1 === score2
+        ? "DRAW"
+        : score1 > score2
+          ? "PC 1"
+          : "PC 2";
+
+    const result =
+      q("#battleResult");
+
+    if (!result)
+      return;
+
+    result.style.display =
+      "block";
+
+    result.innerHTML = `
+
+      <div class="gc-analysis">
+
+        <div class="gc-versus">
+
+          <div class="gc-machine">
+
+            <div class="gc-component-title">
+              PLAYER 01
+            </div>
+
+            <h3>PC 1</h3>
+
+            <div class="gc-total">
+              <span
+                class="gc-count"
+                data-value="${score1}">
+                0
+              </span>
+              <small style="
+                font-size:.8rem;
+                opacity:.5;
+              ">
+                / 100
+              </small>
+            </div>
+
+          </div>
+
+          <div class="gc-vs-badge">
+            VS
+          </div>
+
+          <div class="gc-machine">
+
+            <div class="gc-component-title">
+              PLAYER 02
+            </div>
+
+            <h3>PC 2</h3>
+
+            <div class="gc-total">
+              <span
+                class="gc-count"
+                data-value="${score2}">
+                0
+              </span>
+              <small style="
+                font-size:.8rem;
+                opacity:.5;
+              ">
+                / 100
+              </small>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="gc-score-grid">
+
+          ${component(
+            "GPU • 45%",
+            gpu1,
+            gpu2
+          )}
+
+          ${component(
+            "CPU • 35%",
+            cpu1,
+            cpu2
+          )}
+
+          ${component(
+            "RAM • 20%",
+            ram1,
+            ram2
+          )}
+
+        </div>
+
+        <div class="gc-winner">
+
+          <div class="gc-component-title">
+            FINAL VERDICT
+          </div>
+
+          <div class="gc-winner-name">
+            ${
+              winner === "DRAW"
+                ? "PERFECT TIE"
+                : winner + " WINS"
+            }
+          </div>
+
+          <div style="
+            margin-top:8px;
+            opacity:.55;
+          ">
+            ${Math.abs(score1-score2)}
+            point difference
+          </div>
+
+        </div>
+
+        <div class="gc-metrics">
+
+          <div class="gc-metric">
+            <strong>
+              ${fps1}
+            </strong>
+            <span>
+              PC 1 EST. FPS
+            </span>
+          </div>
+
+          <div class="gc-metric">
+            <strong>
+              ${fps2}
+            </strong>
+            <span>
+              PC 2 EST. FPS
+            </span>
+          </div>
+
+          <div class="gc-metric">
+            <strong>
+              ${Math.max(
+                score1,
+                score2
+              )}%
+            </strong>
+            <span>
+              BEST SCORE
+            </span>
+          </div>
+
+        </div>
+
+        <div class="gc-metrics">
+
+          <div class="gc-metric">
+            <strong>
+              ${balance(
+                gpu1.score,
+                cpu1.score,
+                ram1.score
+              )}
+            </strong>
+            <span>
+              PC 1 BALANCE
+            </span>
+          </div>
+
+          <div class="gc-metric">
+            <strong>
+              ${balance(
+                gpu2.score,
+                cpu2.score,
+                ram2.score
+              )}
+            </strong>
+            <span>
+              PC 2 BALANCE
+            </span>
+          </div>
+
+          <div class="gc-metric">
+            <strong>
+              ${winner}
+            </strong>
+            <span>
+              WINNER
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+
+    animateAnalysis(result);
+  }
+
+  function animateAnalysis(result) {
+
+    requestAnimationFrame(() => {
+
+      result
+        .querySelectorAll(
+          ".gc-bar-fill"
+        )
+        .forEach((bar,index) => {
+
+          setTimeout(() => {
+
+            bar.style.width =
+              `${bar.dataset.width}%`;
+
+          }, 120 + index * 80);
+        });
+
+      result
+        .querySelectorAll(
+          ".gc-count"
+        )
+        .forEach(counter => {
+
+          const target =
+            Number(
+              counter.dataset.value
+            );
+
+          const start =
+            performance.now();
+
+          const duration =
+            1000;
+
+          function tick(now) {
+
+            const progress =
+              Math.min(
+                1,
+                (now - start) /
+                duration
+              );
+
+            const eased =
+              1 -
+              Math.pow(
+                1 - progress,
+                3
+              );
+
+            counter.textContent =
+              Math.round(
+                target * eased
+              );
+
+            if (progress < 1)
+              requestAnimationFrame(
+                tick
+              );
+          }
+
+          requestAnimationFrame(tick);
+        });
+
+    });
+  }
+
+  /* ==========================================
+     REMOVE OLD BATTLE ENGINE
+     ========================================== */
+
+  function replaceBattleButton() {
+
+    const old =
+      q("#startBattle");
+
+    if (!old)
+      return;
+
+    const button =
+      old.cloneNode(true);
+
+    button.textContent =
+      "ANALYZE MATCH";
+
+    old.replaceWith(button);
+
+    button.addEventListener(
+      "click",
+      analyzePCs
+    );
+
+    const arena =
+      q("#battleArena");
+
+    if (arena) {
+      arena.innerHTML = "";
+      arena.style.display =
+        "none";
+    }
+
+    const middle =
+      q("#vs-middle");
+
+    if (middle) {
+      middle.style.display =
+        "none";
+    }
+
+    const result =
+      q("#battleResult");
+
+    if (result) {
+
+      result.innerHTML = `
+        <div style="
+          padding:28px;
+          text-align:center;
+          opacity:.55;
+        ">
+          Choose your hardware and
+          <strong>ANALYZE MATCH</strong>.
+        </div>
+      `;
+    }
+  }
+
+  /* ==========================================
+     PARTICLE FIELD
+     ========================================== */
+
+  function particles() {
+
+    if (
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches
+    )
+      return;
+
+    const fragment =
+      document.createDocumentFragment();
+
+    for (
+      let i = 0;
+      i < 28;
+      i++
+    ) {
+
+      const orb =
+        document.createElement(
+          "div"
+        );
+
+      orb.className =
+        "gc-orb";
+
+      if (
+        i % 7 === 0
+      )
+        orb.classList.add(
+          "large"
+        );
+
+      orb.style.left =
+        `${Math.random()*100}%`;
+
+      orb.style.setProperty(
+        "--gc-x",
+        `${(Math.random()-.5)*260}px`
+      );
+
+      orb.style.animationDuration =
+        `${10 + Math.random()*22}s`;
+
+      orb.style.animationDelay =
+        `${Math.random()*-25}s`;
+
+      fragment.appendChild(
+        orb
+      );
+    }
+
+    document.body.appendChild(
+      fragment
+    );
+
+    for (
+      let i = 0;
+      i < 3;
+      i++
+    ) {
+
+      const streak =
+        document.createElement(
+          "div"
+        );
+
+      streak.className =
+        "gc-light-streak";
+
+      streak.style.animationDelay =
+        `${i * -3}s`;
+
+      document.body.appendChild(
+        streak
+      );
+    }
+  }
+
+  /* ==========================================
+     POINTER DEPTH
+     ========================================== */
+
+  function pointerMotion() {
+
+    if (
+      window.matchMedia(
+        "(pointer: coarse)"
+      ).matches
+    )
+      return;
+
+    if (
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches
+    )
+      return;
+
+    let frame = false;
+
+    document.addEventListener(
+      "pointermove",
+      event => {
+
+        if (frame)
+          return;
+
+        frame = true;
+
+        requestAnimationFrame(() => {
+
+          const x =
+            (event.clientX /
+              window.innerWidth
+              - .5) * 2;
+
+          const y =
+            (event.clientY /
+              window.innerHeight
+              - .5) * 2;
+
+          document.documentElement
+            .style
+            .setProperty(
+              "--gc-mouse-x",
+              `${x*9}px`
+            );
+
+          document.documentElement
+            .style
+            .setProperty(
+              "--gc-mouse-y",
+              `${y*9}px`
+            );
+
+          frame = false;
+        });
+      },
+      {
+        passive:true
+      }
+    );
+  }
+
+  /* ==========================================
+     CARD TILT
+     ========================================== */
+
+  function cardTilt() {
+
+    if (
+      window.matchMedia(
+        "(pointer: coarse)"
+      ).matches
+    )
+      return;
+
+    const cards =
+      document.querySelectorAll(
+        ".game-card"
+      );
+
+    cards.forEach(card => {
+
+      card.addEventListener(
+        "pointermove",
+        event => {
+
+          const rect =
+            card.getBoundingClientRect();
+
+          const x =
+            (event.clientX -
+              rect.left) /
+            rect.width;
+
+          const y =
+            (event.clientY -
+              rect.top) /
+            rect.height;
+
+          const rotateY =
+            (x - .5) * 8;
+
+          const rotateX =
+            (y - .5) * -8;
+
+          card.style.transform =
+            `
+              translateY(-10px)
+              scale(1.025)
+              perspective(800px)
+              rotateX(${rotateX}deg)
+              rotateY(${rotateY}deg)
+            `;
+        }
+      );
+
+      card.addEventListener(
+        "pointerleave",
+        () => {
+          card.style.transform =
+            "";
+        }
+      );
+    });
+  }
+
+  /* ==========================================
+     SCROLL REVEAL
+     ========================================== */
+
+  function reveal() {
+
+    if (
+      !("IntersectionObserver"
+        in window)
+    )
+      return;
+
+    const observer =
+      new IntersectionObserver(
+        entries => {
+
+          entries.forEach(
+            entry => {
+
+              if (
+                !entry.isIntersecting
+              )
+                return;
+
+              entry.target
+                .classList
+                .add(
+                  "gc-visible"
+                );
+
+              observer.unobserve(
+                entry.target
+              );
+            }
+          );
+        },
+        {
+          threshold:.08
+        }
+      );
+
+    document
+      .querySelectorAll(
+        ".game-card, section, .player-card"
+      )
+      .forEach(
+        element =>
+          observer.observe(
+            element
+          )
+      );
+  }
+
+  /* ==========================================
+     FINAL INIT
+     ========================================== */
+
+  function init() {
+
+    replaceBattleButton();
+
+    particles();
+
+    pointerMotion();
+
+    cardTilt();
+
+    reveal();
+
+    console.log(
+      "%cGAMECHECK CINEMATIC ENGINE ONLINE",
+      "font-size:18px;font-weight:900"
+    );
+
+    console.log(
+      "PC VS PC ANALYSIS • MADE BY AUK"
+    );
+  }
+
+  if (
+    document.readyState ===
+    "loading"
+  ) {
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      init
+    );
+
+  } else {
+
+    init();
+
+  }
+
+})();
