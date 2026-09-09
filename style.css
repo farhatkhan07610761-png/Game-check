@@ -1343,3 +1343,993 @@ body.theme-electric{
 
   #particles{display:none}
 }
+/* =========================================================
+   GAMECHECK — CINEMATIC MOTION GRAPHICS
+   FINAL DAY BUILD • MADE BY AUK
+   ========================================================= */
+
+:root {
+  --gc-glow: var(--primary, #7c5cff);
+  --gc-glow-soft: color-mix(in srgb, var(--gc-glow) 18%, transparent);
+}
+
+/* =========================
+   ANIMATED ENVIRONMENT
+   ========================= */
+
+body {
+  overflow-x: hidden;
+  isolation: isolate;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 15% 15%,
+      color-mix(in srgb, var(--gc-glow) 17%, transparent),
+      transparent 27%
+    ),
+    radial-gradient(
+      circle at 85% 30%,
+      color-mix(in srgb, var(--gc-glow) 13%, transparent),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 50% 90%,
+      color-mix(in srgb, var(--gc-glow) 9%, transparent),
+      transparent 32%
+    );
+
+  animation: gcEnvironment 14s ease-in-out infinite alternate;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -4;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(
+      rgba(255,255,255,.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.025) 1px,
+      transparent 1px
+    );
+
+  background-size: 70px 70px;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 18%,
+    black 75%,
+    transparent
+  );
+
+  animation: gcGrid 22s linear infinite;
+}
+
+@keyframes gcEnvironment {
+  0% {
+    transform: scale(1) translate3d(0,0,0);
+  }
+
+  50% {
+    transform: scale(1.06) translate3d(
+      var(--gc-mouse-x, 0),
+      var(--gc-mouse-y, 0),
+      0
+    );
+  }
+
+  100% {
+    transform: scale(1.12) translate3d(
+      calc(var(--gc-mouse-x, 0) * -1),
+      calc(var(--gc-mouse-y, 0) * -1),
+      0
+    );
+  }
+}
+
+@keyframes gcGrid {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 70px 70px;
+  }
+}
+
+/* =========================
+   HERO CINEMATIC EFFECT
+   ========================= */
+
+.hero,
+#home {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before,
+#home::before {
+  content: "";
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      color-mix(in srgb, var(--gc-glow) 17%, transparent),
+      transparent 65%
+    );
+
+  filter: blur(20px);
+  animation: gcHeroGlow 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hero::after,
+#home::after {
+  content: "";
+  position: absolute;
+  width: 760px;
+  height: 760px;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+
+  border: 1px solid color-mix(
+    in srgb,
+    var(--gc-glow) 15%,
+    transparent
+  );
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 80px color-mix(
+      in srgb,
+      var(--gc-glow) 8%,
+      transparent
+    ),
+    inset 0 0 80px color-mix(
+      in srgb,
+      var(--gc-glow) 6%,
+      transparent
+    );
+
+  animation: gcOrbit 18s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes gcHeroGlow {
+  0%,100% {
+    transform: translate(-50%, -50%) scale(.9);
+    opacity: .55;
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes gcOrbit {
+  to {
+    transform:
+      translate(-50%, -50%)
+      rotate(360deg);
+  }
+}
+
+/* =========================
+   HERO CONTENT
+   ========================= */
+
+.hero > *,
+#home > * {
+  position: relative;
+  z-index: 2;
+}
+
+.hero h1,
+#home h1 {
+  animation:
+    gcTitleIn .9s cubic-bezier(.16,1,.3,1) both,
+    gcTitleFloat 5s ease-in-out 1s infinite;
+}
+
+@keyframes gcTitleIn {
+  from {
+    opacity: 0;
+    transform:
+      translateY(35px)
+      scale(.94);
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes gcTitleFloat {
+  0%,100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* =========================
+   FLOATING PARTICLES
+   ========================= */
+
+.gc-orb {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+
+  border-radius: 50%;
+
+  background: var(--gc-glow);
+
+  box-shadow:
+    0 0 8px var(--gc-glow),
+    0 0 22px color-mix(
+      in srgb,
+      var(--gc-glow) 55%,
+      transparent
+    );
+
+  pointer-events: none;
+  z-index: -1;
+
+  animation:
+    gcParticleFloat
+    linear infinite;
+}
+
+.gc-orb.large {
+  width: 7px;
+  height: 7px;
+}
+
+@keyframes gcParticleFloat {
+  0% {
+    transform:
+      translate3d(
+        0,
+        110vh,
+        0
+      )
+      scale(.3);
+
+    opacity: 0;
+  }
+
+  12% {
+    opacity: .75;
+  }
+
+  50% {
+    transform:
+      translate3d(
+        var(--gc-x),
+        50vh,
+        0
+      )
+      scale(1);
+  }
+
+  88% {
+    opacity: .65;
+  }
+
+  100% {
+    transform:
+      translate3d(
+        calc(var(--gc-x) * -1),
+        -15vh,
+        0
+      )
+      scale(.2);
+
+    opacity: 0;
+  }
+}
+
+/* =========================
+   MOTION LIGHT STREAK
+   ========================= */
+
+.gc-light-streak {
+  position: fixed;
+  width: 260px;
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gc-glow),
+    transparent
+  );
+
+  opacity: .35;
+  pointer-events: none;
+  z-index: -1;
+
+  transform: rotate(-25deg);
+
+  animation:
+    gcStreak
+    8s linear infinite;
+}
+
+@keyframes gcStreak {
+  from {
+    left: -300px;
+    top: 15%;
+  }
+
+  to {
+    left: 120%;
+    top: 75%;
+  }
+}
+
+/* =========================
+   CARD 3D MOTION
+   ========================= */
+
+.game-card,
+.player-card,
+.analysis-card,
+.stat-card,
+.gc-machine,
+.gc-component {
+  transform-style: preserve-3d;
+
+  transition:
+    transform .4s cubic-bezier(.2,.8,.2,1),
+    box-shadow .4s ease,
+    border-color .3s ease;
+}
+
+.game-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.game-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255,255,255,.10) 45%,
+      transparent 65%
+    );
+
+  transform:
+    translateX(-120%);
+
+  transition:
+    transform .7s ease;
+
+  pointer-events: none;
+}
+
+.game-card:hover::after {
+  transform:
+    translateX(120%);
+}
+
+.game-card:hover {
+  transform:
+    translateY(-10px)
+    scale(1.025);
+
+  box-shadow:
+    0 25px 60px rgba(0,0,0,.25),
+    0 0 35px color-mix(
+      in srgb,
+      var(--gc-glow) 18%,
+      transparent
+    );
+}
+
+/* =========================
+   GAME LOGO MOTION
+   ========================= */
+
+.game-logo {
+  transition:
+    transform .45s cubic-bezier(.2,.8,.2,1),
+    filter .45s ease;
+}
+
+.game-card:hover .game-logo {
+  transform:
+    translateY(-7px)
+    rotate(-4deg)
+    scale(1.1);
+
+  filter:
+    drop-shadow(
+      0 0 14px
+      color-mix(
+        in srgb,
+        var(--gc-glow) 45%,
+        transparent
+      )
+    );
+}
+
+/* =========================
+   BUTTON ENERGY
+   ========================= */
+
+button {
+  position: relative;
+  overflow: hidden;
+}
+
+button::after {
+  content: "";
+
+  position: absolute;
+  width: 20px;
+  height: 20px;
+
+  border-radius: 50%;
+
+  background: rgba(255,255,255,.35);
+
+  transform:
+    scale(0);
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+button:active::after {
+  animation: gcButtonRipple .45s ease-out;
+}
+
+@keyframes gcButtonRipple {
+  0% {
+    transform: scale(0);
+    opacity: .7;
+  }
+
+  100% {
+    transform: scale(12);
+    opacity: 0;
+  }
+}
+
+/* =========================
+   PC VS ANALYSIS
+   ========================= */
+
+.gc-analysis {
+  display: grid;
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.gc-versus {
+  display: grid;
+  grid-template-columns:
+    minmax(0,1fr)
+    auto
+    minmax(0,1fr);
+
+  align-items: center;
+  gap: 20px;
+}
+
+.gc-machine {
+  position: relative;
+  padding: 28px;
+
+  border-radius: 26px;
+
+  border:
+    1px solid
+    color-mix(
+      in srgb,
+      var(--gc-glow) 18%,
+      var(--border, rgba(255,255,255,.1))
+    );
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.07),
+      rgba(255,255,255,.015)
+    );
+
+  backdrop-filter: blur(18px);
+
+  overflow: hidden;
+}
+
+.gc-machine::before {
+  content: "";
+
+  position: absolute;
+  width: 170px;
+  height: 170px;
+
+  top: -100px;
+  right: -80px;
+
+  border-radius: 50%;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--gc-glow) 20%,
+      transparent
+    );
+
+  filter: blur(35px);
+
+  animation:
+    gcMachineGlow
+    5s ease-in-out infinite alternate;
+}
+
+@keyframes gcMachineGlow {
+  to {
+    transform: scale(1.5);
+    opacity: .45;
+  }
+}
+
+.gc-machine > * {
+  position: relative;
+  z-index: 2;
+}
+
+.gc-machine .gc-total {
+  font-size: 3rem;
+  font-weight: 950;
+}
+
+.gc-vs-badge {
+  width: 72px;
+  height: 72px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  font-weight: 950;
+
+  background:
+    radial-gradient(
+      circle,
+      var(--gc-glow),
+      color-mix(
+        in srgb,
+        var(--gc-glow) 55%,
+        black
+      )
+    );
+
+  box-shadow:
+    0 0 25px color-mix(
+      in srgb,
+      var(--gc-glow) 55%,
+      transparent
+    ),
+    0 0 80px color-mix(
+      in srgb,
+      var(--gc-glow) 18%,
+      transparent
+    );
+
+  animation:
+    gcVsPulse
+    2s ease-in-out infinite;
+}
+
+@keyframes gcVsPulse {
+  0%,100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+/* =========================
+   COMPONENT ANALYSIS
+   ========================= */
+
+.gc-score-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0,1fr));
+
+  gap: 16px;
+}
+
+.gc-component {
+  position: relative;
+
+  padding: 22px;
+
+  border-radius: 22px;
+
+  border:
+    1px solid
+    var(--border, rgba(255,255,255,.1));
+
+  background:
+    rgba(255,255,255,.035);
+
+  backdrop-filter: blur(14px);
+
+  overflow: hidden;
+}
+
+.gc-component:hover {
+  transform:
+    translateY(-5px)
+    scale(1.01);
+
+  border-color:
+    color-mix(
+      in srgb,
+      var(--gc-glow) 35%,
+      transparent
+    );
+}
+
+.gc-component-title {
+  font-size: .72rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  opacity: .55;
+}
+
+.gc-component-name {
+  margin-top: 8px;
+  font-weight: 800;
+}
+
+.gc-bar {
+  height: 9px;
+
+  margin-top: 13px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(255,255,255,.08);
+
+  overflow: hidden;
+}
+
+.gc-bar-fill {
+  width: 0;
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--gc-glow),
+      rgba(255,255,255,.8)
+    );
+
+  box-shadow:
+    0 0 18px
+    color-mix(
+      in srgb,
+      var(--gc-glow) 55%,
+      transparent
+    );
+
+  transition:
+    width 1.2s cubic-bezier(.16,1,.3,1);
+}
+
+.gc-score {
+  margin-top: 9px;
+
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+/* =========================
+   WINNER
+   ========================= */
+
+.gc-winner {
+  position: relative;
+
+  padding: 30px;
+
+  text-align: center;
+
+  border-radius: 28px;
+
+  border:
+    1px solid
+    color-mix(
+      in srgb,
+      var(--gc-glow) 40%,
+      transparent
+    );
+
+  background:
+    radial-gradient(
+      circle at center,
+      color-mix(
+        in srgb,
+        var(--gc-glow) 17%,
+        transparent
+      ),
+      transparent 68%
+    );
+
+  overflow: hidden;
+
+  animation:
+    gcWinnerReveal
+    .8s cubic-bezier(.16,1,.3,1);
+}
+
+.gc-winner::before {
+  content: "";
+
+  position: absolute;
+
+  width: 100%;
+  height: 1px;
+
+  top: 0;
+  left: -100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--gc-glow),
+      transparent
+    );
+
+  animation:
+    gcWinnerScan
+    3s linear infinite;
+}
+
+@keyframes gcWinnerReveal {
+  from {
+    opacity: 0;
+    transform:
+      translateY(20px)
+      scale(.94);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+@keyframes gcWinnerScan {
+  to {
+    left: 100%;
+  }
+}
+
+.gc-winner-name {
+  margin-top: 8px;
+
+  font-size: 2.1rem;
+  font-weight: 950;
+
+  text-shadow:
+    0 0 25px
+    color-mix(
+      in srgb,
+      var(--gc-glow) 35%,
+      transparent
+    );
+}
+
+/* =========================
+   METRICS
+   ========================= */
+
+.gc-metrics {
+  display: grid;
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap: 12px;
+}
+
+.gc-metric {
+  padding: 18px;
+
+  text-align: center;
+
+  border-radius: 18px;
+
+  background:
+    rgba(255,255,255,.035);
+
+  border:
+    1px solid
+    var(--border, rgba(255,255,255,.1));
+
+  transition:
+    transform .3s ease,
+    border-color .3s ease;
+}
+
+.gc-metric:hover {
+  transform: translateY(-4px);
+
+  border-color:
+    color-mix(
+      in srgb,
+      var(--gc-glow) 30%,
+      transparent
+    );
+}
+
+.gc-metric strong {
+  display: block;
+
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.gc-metric span {
+  display: block;
+
+  margin-top: 5px;
+
+  font-size: .68rem;
+
+  opacity: .55;
+
+  letter-spacing: .1em;
+
+  text-transform: uppercase;
+}
+
+/* =========================
+   OLD VS BATTLE OFF
+   ========================= */
+
+#battleArena,
+.battle-arena,
+.fighter,
+.fighter-character,
+.hp-container,
+#weapon,
+#countdown,
+#roundText,
+#vs-middle {
+  display: none !important;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 800px) {
+
+  .gc-versus {
+    grid-template-columns: 1fr;
+  }
+
+  .gc-vs-badge {
+    margin: auto;
+  }
+
+  .gc-score-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gc-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .hero::after,
+  #home::after {
+    width: 430px;
+    height: 430px;
+  }
+
+  .gc-machine {
+    padding: 21px;
+  }
+
+  .gc-machine .gc-total {
+    font-size: 2.4rem;
+  }
+}
+
+@media (max-width: 500px) {
+
+  .hero::after,
+  #home::after {
+    width: 320px;
+    height: 320px;
+  }
+
+  .gc-winner {
+    padding: 22px;
+  }
+
+  .gc-winner-name {
+    font-size: 1.55rem;
+  }
+}
+
+/* =========================
+   ACCESSIBILITY
+   ========================= */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline:
+    2px solid var(--gc-glow);
+
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
