@@ -4763,3 +4763,408 @@ console.log(
   }
 
 })();
+/* =========================================================
+   GAMECHECK — PC VS PC FIX
+   ========================================================= */
+
+(function () {
+  "use strict";
+
+  function startPCAnalysis() {
+
+    const result = document.getElementById("battleResult");
+
+    if (!result) {
+      console.error("GameCheck: battleResult not found");
+      return;
+    }
+
+    // Read values safely
+    const getValue = (id) => {
+      const el = document.getElementById(id);
+      return el ? el.value : "";
+    };
+
+    const gpu1 = getValue("gpu1");
+    const gpu2 = getValue("gpu2");
+
+    const cpu1 = getValue("cpu1");
+    const cpu2 = getValue("cpu2");
+
+    const ram1 = getValue("ram1");
+    const ram2 = getValue("ram2");
+
+    // If the selectors are empty, still show the analysis screen
+    // instead of doing nothing.
+    const gpuScore = {
+      "RTX 5090":100,
+      "RTX 5080":96,
+      "RTX 5070 Ti":91,
+      "RTX 5070":87,
+      "RTX 4090":99,
+      "RTX 4080 SUPER":94,
+      "RTX 4080":92,
+      "RTX 4070 Ti SUPER":89,
+      "RTX 4070 Ti":86,
+      "RTX 4070 SUPER":84,
+      "RTX 4070":80,
+      "RTX 4060 Ti":69,
+      "RTX 4060":63,
+      "RTX 3060 Ti":68,
+      "RTX 3060":59,
+      "RTX 3050":45,
+      "RTX 2060":43,
+      "GTX 1660 SUPER":40,
+      "GTX 1650":30,
+      "GTX 1050 Ti":23,
+      "RX 7900 XTX":96,
+      "RX 7900 XT":91,
+      "RX 7800 XT":82,
+      "RX 7700 XT":77,
+      "RX 7600 XT":68,
+      "RX 7600":63,
+      "RX 6700 XT":69,
+      "RX 6600 XT":62,
+      "RX 6600":55,
+      "RX 6500 XT":39,
+      "Intel Arc A770":65,
+      "Intel Arc A750":59
+    };
+
+    const cpuScore = {
+      "Ryzen 9 9950X":100,
+      "Ryzen 9 7950X3D":98,
+      "Ryzen 9 7950X":96,
+      "Ryzen 7 7800X3D":94,
+      "Ryzen 7 7700X":87,
+      "Ryzen 7 7700":84,
+      "Ryzen 5 7600X":79,
+      "Ryzen 5 7600":76,
+      "Ryzen 5 5600":68,
+      "Ryzen 5 3600":55,
+      "Core i9-14900K":100,
+      "Core i7-14700K":94,
+      "Core i5-14600K":89,
+      "Core i5-14400F":78,
+      "Core i5-13400F":74,
+      "Core i5-12400F":70,
+      "Core i7-10700K":70,
+      "Core i5-10400F":58,
+      "Core i3-12100F":55
+    };
+
+    const ramScore = {
+      "4GB DDR4":25,
+      "8GB DDR4":45,
+      "8GB DDR5":52,
+      "16GB DDR4":70,
+      "16GB DDR5":78,
+      "24GB DDR5":84,
+      "32GB DDR4":85,
+      "32GB DDR5":92,
+      "64GB DDR5":100
+    };
+
+    const gs1 = gpuScore[gpu1] || 50;
+    const gs2 = gpuScore[gpu2] || 50;
+
+    const cs1 = cpuScore[cpu1] || 50;
+    const cs2 = cpuScore[cpu2] || 50;
+
+    const rs1 = ramScore[ram1] || 50;
+    const rs2 = ramScore[ram2] || 50;
+
+    const score1 = Math.round(
+      gs1 * 0.45 +
+      cs1 * 0.35 +
+      rs1 * 0.20
+    );
+
+    const score2 = Math.round(
+      gs2 * 0.45 +
+      cs2 * 0.35 +
+      rs2 * 0.20
+    );
+
+    let winner;
+
+    if (score1 === score2) {
+      winner = "DRAW";
+    } else {
+      winner = score1 > score2 ? "PC 1 WINS" : "PC 2 WINS";
+    }
+
+    const fps1 = Math.max(
+      30,
+      Math.round(30 + gs1 * 2 + cs1 * 0.35)
+    );
+
+    const fps2 = Math.max(
+      30,
+      Math.round(30 + gs2 * 2 + cs2 * 0.35)
+    );
+
+    result.style.display = "block";
+
+    result.innerHTML = `
+      <div class="gc-analysis">
+
+        <div class="gc-versus">
+
+          <div class="gc-machine">
+            <div class="gc-component-title">
+              PLAYER 01
+            </div>
+
+            <h3>PC 1</h3>
+
+            <div class="gc-total">
+              <span class="pc-score-number">0</span>
+              <small>/ 100</small>
+            </div>
+          </div>
+
+          <div class="gc-vs-badge">
+            VS
+          </div>
+
+          <div class="gc-machine">
+            <div class="gc-component-title">
+              PLAYER 02
+            </div>
+
+            <h3>PC 2</h3>
+
+            <div class="gc-total">
+              <span class="pc-score-number">0</span>
+              <small>/ 100</small>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="gc-score-grid">
+
+          ${makeComponent(
+            "GPU",
+            gpu1 || "Not selected",
+            gpu2 || "Not selected",
+            gs1,
+            gs2
+          )}
+
+          ${makeComponent(
+            "CPU",
+            cpu1 || "Not selected",
+            cpu2 || "Not selected",
+            cs1,
+            cs2
+          )}
+
+          ${makeComponent(
+            "RAM",
+            ram1 || "Not selected",
+            ram2 || "Not selected",
+            rs1,
+            rs2
+          )}
+
+        </div>
+
+        <div class="gc-winner">
+
+          <div class="gc-component-title">
+            FINAL RESULT
+          </div>
+
+          <div class="gc-winner-name">
+            ${winner}
+          </div>
+
+          <div style="margin-top:10px;opacity:.6">
+            ${Math.abs(score1 - score2)} point difference
+          </div>
+
+        </div>
+
+        <div class="gc-metrics">
+
+          <div class="gc-metric">
+            <strong>${fps1}</strong>
+            <span>PC 1 EST. FPS</span>
+          </div>
+
+          <div class="gc-metric">
+            <strong>${fps2}</strong>
+            <span>PC 2 EST. FPS</span>
+          </div>
+
+          <div class="gc-metric">
+            <strong>${Math.max(score1, score2)}</strong>
+            <span>BEST SCORE</span>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+
+    // Animate scores
+    const numbers =
+      result.querySelectorAll(".pc-score-number");
+
+    numbers.forEach((number, index) => {
+
+      const target =
+        index === 0 ? score1 : score2;
+
+      let current = 0;
+
+      const timer = setInterval(() => {
+
+        current += Math.max(
+          1,
+          Math.ceil(target / 30)
+        );
+
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+
+        number.textContent = current;
+
+      }, 30);
+    });
+
+    // Animate bars
+    setTimeout(() => {
+
+      result
+        .querySelectorAll(".gc-bar-fill")
+        .forEach(bar => {
+
+          bar.style.width =
+            bar.dataset.score + "%";
+
+        });
+
+    }, 150);
+
+    result.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest"
+    });
+  }
+
+
+  function makeComponent(
+    title,
+    name1,
+    name2,
+    score1,
+    score2
+  ) {
+
+    return `
+      <div class="gc-component">
+
+        <div class="gc-component-title">
+          ${title}
+        </div>
+
+        <div class="gc-component-name">
+          PC 1 — ${name1}
+        </div>
+
+        <div class="gc-bar">
+          <div
+            class="gc-bar-fill"
+            data-score="${score1}">
+          </div>
+        </div>
+
+        <div class="gc-score">
+          ${score1}/100
+        </div>
+
+        <div style="height:18px"></div>
+
+        <div class="gc-component-name">
+          PC 2 — ${name2}
+        </div>
+
+        <div class="gc-bar">
+          <div
+            class="gc-bar-fill"
+            data-score="${score2}">
+          </div>
+        </div>
+
+        <div class="gc-score">
+          ${score2}/100
+        </div>
+
+      </div>
+    `;
+  }
+
+
+  /*
+     IMPORTANT:
+     Use event delegation so this works even if
+     the old GameCheck script changes the button.
+  */
+
+  document.addEventListener(
+    "click",
+    function (event) {
+
+      const button =
+        event.target.closest("#startBattle");
+
+      if (!button)
+        return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      startPCAnalysis();
+
+    },
+    true
+  );
+
+
+  // Change the button visually
+  function prepareButton() {
+
+    const button =
+      document.getElementById("startBattle");
+
+    if (!button)
+      return;
+
+    button.textContent =
+      "ANALYZE PC MATCH";
+
+    button.type = "button";
+  }
+
+
+  if (
+    document.readyState === "loading"
+  ) {
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      prepareButton
+    );
+
+  } else {
+
+    prepareButton();
+
+  }
+
+})();
